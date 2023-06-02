@@ -11,6 +11,7 @@
 					<li><a href="book.jsp">Book</a></li>
 					<li><a href="author.jsp">Author</a></li>
 					<li><a href="signin.jsp">Sign In</a></li>
+					<li><a href="signin.jsp">Sign Up</a></li>
 				</ul>
 			</nav>
 			<!-- #nav-menu-container -->
