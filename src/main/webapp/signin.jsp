@@ -1,3 +1,11 @@
+<%
+//Author: Zay Yar Tun
+//Admin No: 2235035
+//Date: 3.6.2023
+//Description: sign in page
+%>
+
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -12,8 +20,24 @@
 	height: 1px;
 	background: #eee;
 }
+/* Autofill styling for the input fields */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+/* Add a margin to the input field when it has a value */
+.form-outline input:not(:placeholder-shown) {
+    margin-top: 20px;
+}
+
+/* Move the label up when the input is autofilled */
+.form-outline input:-webkit-autofill ~ label {
+    transform: translateY(-20px);
+    font-size: 12px;
+    color: gray;
+}
 </style>
-</head>
+
 <!-- Font Awesome -->
 <link
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -35,11 +59,19 @@
 <link rel="stylesheet" href="css/owl.carousel.css">
 <link rel="stylesheet" href="css/main.css">
 <link rel="icon" type="image/png" href="img/logo.png">
-	
+
 <script type="text/javascript"
 	src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.js"></script>
+
+</head>
+
 <body>
-	<a style="position: fixed; top: 15%; left: 15%;" href="index.jsp"><span style="font-size: 20px; font-weight: bold;">&#8592;</span>&ensp;<span>Go Back</span></a>
+	<%
+		String errCode = request.getParameter("errCode");
+	%>
+	<a style="position: fixed; top: 15%; left: 15%;" href="index.jsp"><span
+		style="font-size: 20px; font-weight: bold;">&#8592;</span>&ensp;<span>Go
+			Back</span></a>
 	<section class="vh-100">
 		<div class="container py-5 h-100">
 			<div
@@ -50,17 +82,27 @@
 						class="img-fluid" alt="Phone image">
 				</div>
 				<div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
-					<form>
+					<%
+						if(errCode != null) {
+							if(errCode.equals("invalid")) {
+								out.print("<div class='alert alert-danger' role='alert'>Please enter correct email and password!</div>");
+							}
+							if(errCode.equals("serverError")) {
+								out.print("<div class='alert alert-danger' role='alert'>Internal Server Error. Please try again later!</div>");
+							}
+						}
+					%>
+					<form id="signinForm" action="<%=request.getContextPath()%>/signin" method="post">
 						<!-- Email input -->
 						<div class="form-outline mb-4">
-							<input type="email" id="form1Example13"
+							<input type="email" id="form1Example13" name="email"
 								class="form-control form-control-lg" /> <label
-								class="form-label" for="form1Example13">Email address</label>
+								class="form-label" for="form1Example13">Email</label>
 						</div>
 
 						<!-- Password input -->
 						<div class="form-outline mb-4">
-							<input type="password" id="form1Example23"
+							<input type="password" id="form1Example23" name="password"
 								class="form-control form-control-lg" /> <label
 								class="form-label" for="form1Example23">Password</label>
 						</div>
@@ -76,21 +118,23 @@
 						</div>
 
 						<!-- Submit button -->
-						<button type="submit" class="btn btn-primary btn-lg btn-block">Sign
+						<button id="btnSignIn" type="submit" class="btn btn-primary btn-lg btn-block">Sign
 							in</button>
-							
+
 						<div class="divider d-flex align-items-center my-4">
 							<p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
 						</div>
 
 						<a class="btn btn-primary btn-lg btn-block"
-							style="background-color: #3b5998" href="#!" role="button">NOT A MEMBER?
-						</a> 
+							style="background-color: #3b5998" href="signup.jsp" role="button">NOT
+							A MEMBER? </a>
 					</form>
 				</div>
 			</div>
 		</div>
 	</section>
+
+
 	<script src="js/vendor/jquery-2.2.4.min.js"></script>
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
@@ -112,5 +156,15 @@
 	<script src="js/jquery.counterup.min.js"></script>
 	<script src="js/mail-script.js"></script>
 	<script src="js/main.js"></script>
+	
+	<script>
+		$(document).ready(function() {
+			$('#signinForm').submit(function(e) {
+				$('#btnSignIn').prop('disabled', true);
+				$('#btnSignIn').html('<div class="spinner-border text-dark" role="status"><span class="visually-hidden">Loading...</span></div>');
+				return true;
+			})	
+		});
+	</script>
 </body>
 </html>
