@@ -118,6 +118,7 @@ public class SigninServlet extends HttpServlet {
 				if(isValid) {
 					session.setAttribute("adminID", id);
 					session.setAttribute("role", "admin");
+					response.sendRedirect("admin/adminHomePage.jsp");
 				}
 				else {
 					response.sendRedirect("signin.jsp?errCode=invalid");

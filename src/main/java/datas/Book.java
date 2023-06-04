@@ -1,0 +1,153 @@
+// Author: Zay Yar Tun
+// Admin No: 2235035
+// Date: 4.6.2023
+// Description: to store book data from database 
+
+package datas;
+
+public class Book {
+	private String ISBNNo;
+	private String title;
+	private int page;
+	private double money;
+	private String publisher;
+	private String publicationDate;
+	private int qty;
+	private int rating;
+	private String description;
+	private String image;
+	private String image3D;
+	private String status;
+	private Author[] authors;
+	private Genre[] genres;
+	
+	public Book(String iSBNNo, String title, int page, double money, String publisher, String publicationDate, int qty,
+			int rating, String description, String image, String image3d, String status, Author[] authors, Genre[] genres) {
+		ISBNNo = iSBNNo;
+		this.title = title;
+		this.page = page;
+		this.money = money;
+		this.publisher = publisher;
+		this.publicationDate = publicationDate;
+		this.qty = qty;
+		this.rating = rating;
+		this.description = description;
+		this.image = image;
+		image3D = image3d;
+		this.status = status;
+		this.authors = authors;
+		this.genres = genres;
+	}
+
+	public Genre[] getGenres() {
+		return genres;
+	}
+
+	public void setGenres(Genre[] genres) {
+		this.genres = genres;
+	}
+
+	public String getISBNNo() {
+		return ISBNNo;
+	}
+
+	public void setISBNNo(String iSBNNo) {
+		ISBNNo = iSBNNo;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public double getMoney() {
+		return money;
+	}
+
+	public void setMoney(double money) {
+		this.money = money;
+	}
+
+	public String getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
+
+	public String getPublicationDate() {
+		return publicationDate;
+	}
+
+	public void setPublicationDate(String publicationDate) {
+		this.publicationDate = publicationDate;
+	}
+
+	public int getQty() {
+		return qty;
+	}
+
+	public void setQty(int qty) {
+		this.qty = qty;
+	}
+
+	public int getRating() {
+		return rating;
+	}
+
+	public void setRating(int rating) {
+		this.rating = rating;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getImage3D() {
+		return image3D;
+	}
+
+	public void setImage3D(String image3d) {
+		image3D = image3d;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Author[] getAuthors() {
+		return authors;
+	}
+
+	public void setAuthors(Author[] authors) {
+		this.authors = authors;
+	}
+}
