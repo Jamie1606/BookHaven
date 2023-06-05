@@ -1,11 +1,3 @@
-<%
-// Author: Zay Yar Tun
-// Admin No: 2235035
-// Date: 3.6.2023
-// Description: To make a separate file for website header
-
-%>
-
 <header id="header" id="home">
 	<div class="container">
 		<div class="row align-items-center justify-content-between d-flex">

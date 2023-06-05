@@ -4,7 +4,7 @@
 // Description: To test whether the email and password are correct for sign in
 
 
-package servlets;
+package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import functions.TestReg;
 import java.sql.*;
 
 /**

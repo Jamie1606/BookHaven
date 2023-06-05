@@ -1,9 +1,4 @@
-// Author: Zay Yar Tun
-// Admin No: 2235035
-// Date: 4.6.2023
-// Description: to store genre data from database 
-
-package datas;
+package model;
 
 public class Genre {
 	private int genreID;

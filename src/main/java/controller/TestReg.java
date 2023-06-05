@@ -3,7 +3,7 @@
 // Date: 3.6.2023
 // Description: To test string with regular expressions
 
-package functions;
+package controller;
 
 import java.util.regex.*;
 

@@ -3,7 +3,7 @@
 // Date: 4.6.2023
 // Description: to store book data from database 
 
-package datas;
+package model;
 
 public class Book {
 	private String ISBNNo;

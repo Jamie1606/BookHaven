@@ -3,17 +3,27 @@
 // Date: 4.6.2023
 // Description: to store author data from database 
 
-package datas;
+package model;
+
+import java.sql.Date;
 
 public class Author {
 	private int authorID;
 	private String name;
 	private String nationality;
-	private String birthDate;
+	private Date birthDate;
 	private String biography;
 	private String link;
 	
-	public Author(int authorID, String name, String nationality, String birthDate, String biography, String link) {
+	public Author(String name, String nationality, Date birthDate, String biography, String link) {
+		this.name = name;
+		this.nationality = nationality;
+		this.birthDate = birthDate;
+		this.biography = biography;
+		this.link = link;
+	}
+	
+	public Author(int authorID, String name, String nationality, Date birthDate, String biography, String link) {
 		this.authorID = authorID;
 		this.name = name;
 		this.nationality = nationality;
@@ -46,11 +56,11 @@ public class Author {
 		this.nationality = nationality;
 	}
 
-	public String getBirthDate() {
+	public Date getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(String birthDate) {
+	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
 	}
 
