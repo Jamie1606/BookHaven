@@ -18,7 +18,7 @@
 				<li><a href="authorRegistration.jsp"> <i
 						class="bi bi-circle"></i><span>Author Registration</span>
 				</a></li>
-				<li><a href="bookRegistration.jsp"> <i class="bi bi-circle"></i><span>Book
+				<li><a href="bookRegistration"> <i class="bi bi-circle"></i><span>Book
 							Registration</span>
 				</a></li>
 				<li><a href="bookRegistration.jsp"> <i class="bi bi-circle"></i><span>Genre
