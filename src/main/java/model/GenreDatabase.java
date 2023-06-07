@@ -23,7 +23,7 @@ public class GenreDatabase {
 			// get database connection
 			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
 
-			String sqlStatement = "SELECT * FROM \"public\".\"Genre\"";
+			String sqlStatement = "SELECT * FROM \"public\".\"Genre\" ORDER BY \"Genre\"";
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 
 			genreResultSet = st.executeQuery();

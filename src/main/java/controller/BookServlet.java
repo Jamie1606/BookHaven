@@ -1,8 +1,18 @@
+// Author: Zay Yar Tun
+// Admin No: 2235035
+// Date: 7.6.2023
+// Description: middleware for book
+
 package controller;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,16 +22,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.tomcat.util.http.fileupload.FileItem;
+import org.apache.tomcat.util.http.fileupload.FileItemFactory;
+import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletRequestContext;
 
 import model.Author;
 import model.AuthorDatabase;
+import model.Book;
+import model.BookDatabase;
 import model.Genre;
 import model.GenreDatabase;
 
 /**
  * Servlet implementation class BookServlet
  */
-@WebServlet(urlPatterns = {"/admin/books", "/admin/bookRegistration", "/admin/bookList"})
+@WebServlet(urlPatterns = { "/admin/books", "/admin/bookRegistration", "/admin/bookList" })
 public class BookServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -54,7 +71,10 @@ public class BookServlet extends HttpServlet {
 				while (rs.next()) {
 					// sanitizing output by escaping html special characters
 					authorlist
-							.add(new Author(rs.getInt("AuthorID"), StringEscapeUtils.escapeHtml4(rs.getString("Name")),StringEscapeUtils.escapeHtml4(rs.getString("Nationality")), rs.getDate("BirthDate"), StringEscapeUtils.escapeHtml4(rs.getString("Biography")), StringEscapeUtils.escapeHtml4(rs.getString("Link"))));
+							.add(new Author(rs.getInt("AuthorID"), StringEscapeUtils.escapeHtml4(rs.getString("Name")),
+									StringEscapeUtils.escapeHtml4(rs.getString("Nationality")), rs.getDate("BirthDate"),
+									StringEscapeUtils.escapeHtml4(rs.getString("Biography")),
+									StringEscapeUtils.escapeHtml4(rs.getString("Link"))));
 				}
 			} catch (Exception e) {
 				request.setAttribute("error", "serverError");
@@ -82,17 +102,15 @@ public class BookServlet extends HttpServlet {
 
 		// set the author arraylist as an attribute
 		request.setAttribute("authorList", authorlist);
-		request.setAttribute("genrelist", genrelist);
+		request.setAttribute("genreList", genrelist);
 
 		String targetPage = "";
 		// forward the data to the jsp
-		System.out.println(request.getRequestURI());
 		if (request.getRequestURI().endsWith("bookRegistration")) {
 			targetPage = "bookRegistration.jsp";
 		} else if (request.getRequestURI().endsWith("bookList")) {
 			targetPage = "bookList.jsp";
-		}
-		else {
+		} else {
 			targetPage = "adminHomePage.jsp";
 		}
 		request.getRequestDispatcher(targetPage).forward(request, response);
@@ -107,6 +125,95 @@ public class BookServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
+		ArrayList<String> authors = new ArrayList<String>();
+		ArrayList<String> genres = new ArrayList<String>();
+
+		// check if the request is multipart/form-data
+		if (ServletFileUpload.isMultipartContent(request)) {
+			try {
+				// create handler for file upload
+				ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory());
+
+				// parse the multipar request
+				List<FileItem> items = upload.parseRequest(new ServletRequestContext(request));
+
+				Map<String, String> fields = new HashMap<>();
+
+				// process the form fields and file uploads
+				for (FileItem item : items) {
+					if (item.isFormField()) {
+						// regular form field
+						String fieldName = item.getFieldName();
+						String fieldValue = item.getString();
+
+						if (fieldName.equals("author")) {
+							authors.add(fieldValue);
+						} else if (fieldName.equals("genre")) {
+							genres.add(fieldValue);
+						} else {
+							fields.put(fieldName, fieldValue);
+						}
+
+						System.out.println(fieldName + " - " + fieldValue);
+					} else {
+						// file upload
+					}
+				}
+
+				// getting value from fields
+				String isbn = fields.get("isbn");
+				String title = fields.get("title");
+				String page = fields.get("page");
+				String price = fields.get("price");
+				String qty = fields.get("qty");
+				String publisher = fields.get("publisher");
+				String publicationdate = fields.get("publicationdate");
+				String status = fields.get("status");
+				String description = fields.get("description");
+
+				// checking null and empty values
+				if (isbn != null && !isbn.isEmpty() && title != null && !title.isEmpty() && page != null
+						&& !page.isEmpty() && price != null && !price.isEmpty() && qty != null && !qty.isEmpty()
+						&& publisher != null && !publisher.isEmpty() && publicationdate != null
+						&& !publicationdate.isEmpty() && status != null && !status.isEmpty() && authors.size() != 0
+						&& genres.size() != 0) {
+
+					// test with regular expressions
+					if (TestReg.matchISBN(isbn) && TestReg.matchInteger(page) && TestReg.matchDecimal(price)
+							&& TestReg.matchInteger(qty) && TestReg.matchDate(publicationdate)
+							&& TestReg.matchIntegerArrayList(authors) && TestReg.matchIntegerArrayList(genres)) {
+
+						Date publicationDate = Date.valueOf(LocalDate.parse(publicationdate));
+
+						BookDatabase book_db = new BookDatabase();
+						int condition = book_db.registerBook(
+								new Book(isbn, title, Integer.parseInt(page), Double.parseDouble(price), publisher,
+										publicationDate, Integer.parseInt(qty), description, "", "", status));
+						if (condition == 1) {
+							if (book_db.registerBookAuthor(authors, isbn)) {
+								if (book_db.registerBookGenre(genres, isbn)) {
+									System.out.println("Success");
+								} else {
+									System.out.println("Genre Error");
+								}
+							} else {
+								System.out.println("Author Error");
+							}
+						} else if (condition == 0) {
+							System.out.println("Server Error");
+						} else {
+							System.out.println("Duplicate");
+						}
+					} else {
+						System.out.println("Invalid Data");
+					}
+				} else {
+					System.out.println("Null and Empty");
+				}
+			} catch (Exception e) {
+
+			}
+		}
 	}
 
 }
