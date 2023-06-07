@@ -112,7 +112,7 @@
 										else {
 											out.println("<td>" + birthDate.toString() + "</td>");
 										}
-										out.println("<td><a href=''>Detail</a> | <a href=''>Edit</a> | <a href=''>Delete</a></td>");
+										out.println("<td><a href=''>Edit</a> | <a href=''>Delete</a></td>");
 										out.println("</tr>");
 									}
 								%>
