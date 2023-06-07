@@ -6,6 +6,7 @@
 package controller;
 
 import java.io.IOException;
+<<<<<<< HEAD
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.time.LocalDate;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+=======
+>>>>>>> dd75e72b3b3b5185a207a026cd725b1210fe2aa5
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+<<<<<<< HEAD
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.FileItemFactory;
@@ -39,24 +43,39 @@ import model.GenreDatabase;
  * Servlet implementation class BookServlet
  */
 @WebServlet(urlPatterns = { "/admin/books", "/admin/bookRegistration", "/admin/bookList" })
+=======
+/**
+ * Servlet implementation class BookServlet
+ */
+@WebServlet("/books")
+>>>>>>> dd75e72b3b3b5185a207a026cd725b1210fe2aa5
 public class BookServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public BookServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
 	/**
-	 * @see HttpServlet#HttpServlet()
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	public BookServlet() {
-		super();
-		// TODO Auto-generated constructor stub
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+		RequestDispatcher dispatcher = request.getRequestDispatcher("");
+		dispatcher.include(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+<<<<<<< HEAD
 
 		ArrayList<Author> authorlist = new ArrayList<Author>();
 		ArrayList<Genre> genrelist = new ArrayList<Genre>();
@@ -214,6 +233,9 @@ public class BookServlet extends HttpServlet {
 
 			}
 		}
+=======
+		doGet(request, response);
+>>>>>>> dd75e72b3b3b5185a207a026cd725b1210fe2aa5
 	}
 
 }
