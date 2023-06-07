@@ -1,4 +1,3 @@
-
 <%
 //Author: Zay Yar Tun
 //Admin No: 2235035
@@ -112,19 +111,6 @@
 								</div>
 
 								<div class="col-md-6">
-									<label for="author" class="form-label">Author</label>
-									<select id="author" class="form-control" required>
-										
-									</select>
-								</div>
-								<div class="col-md-6">
-									<label for="genre" class="form-label">Genre</label>
-									<select id="genre" class="form-control" required>
-										
-									</select>
-								</div>
-
-								<div class="col-md-6">
 									<label for="publisher" class="form-label">Publisher</label> <input
 										type="text" class="form-control" id="publisher">
 								</div>
@@ -143,13 +129,13 @@
 										type="file" class="form-control" id="image">
 								</div>
 								<div class="col-md-12">
-									<label for="image3d" class="form-label">3D Image</label> <input
-										type="file" class="form-control" id="image3d"
+									<label for="image3d" class="form-label">3D Image</label>
+									<input type="file" class="form-control" id="image3d"
 										placeholder="Apartment, studio, or floor">
 								</div>
 								<div class="col-md-12">
-									<label for="status" class="form-label">Status</label> <select
-										id="status" class="form-control">
+									<label for="status" class="form-label">Status</label>
+									<select id="status" class="form-control">
 										<option selected value="available">Available</option>
 										<option value="unavailable">Unavailable</option>
 									</select>
@@ -191,8 +177,14 @@
 		class="bi bi-arrow-up-short"></i></a>
 
 	<!-- Vendor JS Files -->
+	<script src="../assets/vendor/apexcharts/apexcharts.min.js"></script>
 	<script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="../assets/vendor/chart.js/chart.umd.js"></script>
+	<script src="../assets/vendor/echarts/echarts.min.js"></script>
+	<script src="../assets/vendor/quill/quill.min.js"></script>
 	<script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>
+	<script src="../assets/vendor/tinymce/tinymce.min.js"></script>
+	<script src="../assets/vendor/php-email-form/validate.js"></script>
 
 	<!-- Template Main JS File -->
 	<script src="../assets/js/main.js"></script>
