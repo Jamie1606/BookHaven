@@ -1,7 +1,7 @@
 <%
 //Author: Zay Yar Tun
 //Admin No: 2235035
-//Date: 5.6.2023
+//Date: 8.6.2023
 //Description: author list page
 %>
 
@@ -26,21 +26,21 @@
 	rel="stylesheet">
 
 <!-- Vendor CSS Files -->
-<link href="../assets/vendor/bootstrap/css/bootstrap.min.css"
+<link href="<%= request.getContextPath() %>/assets/vendor/bootstrap/css/bootstrap.min.css"
 	rel="stylesheet">
-<link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css"
+<link href="<%= request.getContextPath() %>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
 	rel="stylesheet">
-<link href="../assets/vendor/boxicons/css/boxicons.min.css"
+<link href="<%= request.getContextPath() %>/assets/vendor/boxicons/css/boxicons.min.css"
 	rel="stylesheet">
-<link href="../assets/vendor/quill/quill.snow.css" rel="stylesheet">
-<link href="../assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-<link href="../assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-<link href="../assets/vendor/simple-datatables/style.css"
+<link href="<%= request.getContextPath() %>/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+<link href="<%= request.getContextPath() %>/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+<link href="<%= request.getContextPath() %>/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+<link href="<%= request.getContextPath() %>/assets/vendor/simple-datatables/style.css"
 	rel="stylesheet">
 
 <!-- Template Main CSS File -->
-<link href="../assets/css/style.css" rel="stylesheet">
-<link rel="icon" type="image/png" href="../img/logo.png">
+<link href="<%= request.getContextPath() %>/assets/css/style.css" rel="stylesheet">
+<link rel="icon" type="image/png" href="<%= request.getContextPath() %>/img/logo.png">
 
 <!-- =======================================================
   * Template Name: NiceAdmin
@@ -57,11 +57,17 @@
 	<%@ include file="adminsidebar.jsp"%>
 	
 	<%
+		String error = (String)request.getAttribute("error");
+		if(error != null && error.equalsIgnoreCase("invalid")) {
+			out.println("<script>alert('Invalid Request!');</script>");
+			request.removeAttribute("error");
+		}
+	
 		ArrayList<Author> authorList = (ArrayList<Author>)request.getAttribute("authorList");
 		String errCode = (String)request.getAttribute("error");
 		if(errCode != null && errCode.equals("serverError")) {
 			out.println("<script>alert('Internal Server Error!')</script>");
-			response.sendRedirect("adminHomePage.jsp");
+			response.sendRedirect(request.getContextPath() + "/admin/adminHomePage.jsp");
 		}
 	%>
 
@@ -71,7 +77,7 @@
 			<h1>Author Table</h1>
 			<nav>
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="adminHomePage.jsp">Home</a></li>
+					<li class="breadcrumb-item"><a href="<%= request.getContextPath() %>/admin/adminHomePage.jsp">Home</a></li>
 					<li class="breadcrumb-item">Tables</li>
 					<li class="breadcrumb-item active">Author Data</li>
 				</ol>
@@ -112,7 +118,7 @@
 										else {
 											out.println("<td>" + birthDate.toString() + "</td>");
 										}
-										out.println("<td><a href=''>Edit</a> | <a href=''>Delete</a></td>");
+										out.println("<td><a href=''>Detail</a> | <a href='" + request.getContextPath() + "/admin/authorUpdate/" + authorList.get(i).getAuthorID() + " '>Edit</a> | <a href=''>Delete</a></td>");
 										out.println("</tr>");
 									}
 								%>
@@ -140,17 +146,17 @@
 
 	<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
 	<!-- Vendor JS Files -->
-	<script src="../assets/vendor/apexcharts/apexcharts.min.js"></script>
-	<script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<script src="../assets/vendor/chart.js/chart.umd.js"></script>
-	<script src="../assets/vendor/echarts/echarts.min.js"></script>
-	<script src="../assets/vendor/quill/quill.min.js"></script>
-	<script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>
-	<script src="../assets/vendor/tinymce/tinymce.min.js"></script>
-	<script src="../assets/vendor/php-email-form/validate.js"></script>
+	<script src="<%= request.getContextPath() %>/assets/vendor/apexcharts/apexcharts.min.js"></script>
+	<script src="<%= request.getContextPath() %>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="<%= request.getContextPath() %>/assets/vendor/chart.js/chart.umd.js"></script>
+	<script src="<%= request.getContextPath() %>/assets/vendor/echarts/echarts.min.js"></script>
+	<script src="<%= request.getContextPath() %>/assets/vendor/quill/quill.min.js"></script>
+	<script src="<%= request.getContextPath() %>/assets/vendor/simple-datatables/simple-datatables.js"></script>
+	<script src="<%= request.getContextPath() %>/assets/vendor/tinymce/tinymce.min.js"></script>
+	<script src="<%= request.getContextPath() %>/assets/vendor/php-email-form/validate.js"></script>
 
 	<!-- Template Main JS File -->
-	<script src="../assets/js/main.js"></script>
+	<script src="<%= request.getContextPath() %>/assets/js/main.js"></script>
 		
 </body>
 
