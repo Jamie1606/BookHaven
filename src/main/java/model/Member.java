@@ -30,7 +30,6 @@ public class Member {
 
 	public Member(String name, char gender, Date birthDate, String phone, String address, String email,
 			String password) {
-		super();
 		this.memberID = memberID;
 		this.name = name;
 		this.gender = gender;

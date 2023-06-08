@@ -1,13 +1,14 @@
+
 <%
 //Author: Zay Yar Tun
 //Admin No: 2235035
-//Date: 4.6.2023
+//Date: 8.6.2023
 //Description: author registration page
 %>
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="java.util.*, java.text.*"%>
+<%@ page import="java.util.*, java.text.*, model.Author"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,21 +27,33 @@
 	rel="stylesheet">
 
 <!-- Vendor CSS Files -->
-<link href="../assets/vendor/bootstrap/css/bootstrap.min.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/bootstrap/css/bootstrap.min.css"
 	rel="stylesheet">
-<link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
 	rel="stylesheet">
-<link href="../assets/vendor/boxicons/css/boxicons.min.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/boxicons/css/boxicons.min.css"
 	rel="stylesheet">
-<link href="../assets/vendor/quill/quill.snow.css" rel="stylesheet">
-<link href="../assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-<link href="../assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-<link href="../assets/vendor/simple-datatables/style.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.snow.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.bubble.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
 	rel="stylesheet">
 
 <!-- Template Main CSS File -->
-<link href="../assets/css/style.css" rel="stylesheet">
-<link rel="icon" type="image/png" href="../img/logo.png">
+<link href="<%=request.getContextPath()%>/assets/css/style.css"
+	rel="stylesheet">
+<link rel="icon" type="image/png"
+	href="<%=request.getContextPath()%>/img/logo.png">
 
 <!-- =======================================================
   * Template Name: NiceAdmin
@@ -58,6 +71,49 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
+	// set default value for status
+	String status = "register";
+	Author author = null;
+
+	// show error and success for registration
+	String errCode = request.getParameter("errCode");
+	if (errCode != null) {
+		if (errCode.equals("serverError")) {
+			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
+			+ "/admin/authorRegistration.jsp';</script>");
+		} else if (errCode.equals("invalid")) {
+			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
+			+ "/admin/authorRegistration.jsp';</script>");
+		} else {
+			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
+			+ "/admin/authorRegistration.jsp';</script>");
+		}
+	} else {
+		String success = request.getParameter("success");
+		if (success != null) {
+			if (success.equals("register")) {
+		out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
+				+ "/admin/authorRegistration.jsp';</script>");
+			}
+			if (success.equals("update")) {
+		out.println("<script>alert('Author data is successfully updated!'); location='" + request.getContextPath()
+				+ "/admin/authorRegistration.jsp';</script>");
+			}
+		}
+	}
+
+	// check whether it is to update author data
+	status = (String) request.getAttribute("status");
+	request.removeAttribute("status");
+	if (status == null) {
+		status = "register";
+	} else {
+		author = (Author) request.getAttribute("author");
+		request.removeAttribute("author");
+	}
+
+	// calendar for author birthdate
+	// author must be at least 5 years old
 	Calendar calendar = Calendar.getInstance();
 	calendar.setTime(new Date());
 	calendar.add(Calendar.YEAR, -5);
@@ -72,7 +128,8 @@
 			<h1>Author Registration</h1>
 			<nav>
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="adminHomePage.jsp">Home</a></li>
+					<li class="breadcrumb-item"><a
+						href="<%=request.getContextPath()%>admin/adminHomePage.jsp">Home</a></li>
 					<li class="breadcrumb-item">Registration Forms</li>
 					<li class="breadcrumb-item active">Author Registration</li>
 				</ol>
@@ -87,33 +144,44 @@
 							<h5 class="card-title">Author Information</h5>
 
 							<!-- Multi Columns Form -->
-							<form class="row g-3" action="<%= request.getContextPath() %>/admin/authors" method="post">
-								<input type="hidden" name="status" value="register">
+							<form class="row g-3"
+								action="<%=request.getContextPath()%>/admin/authors"
+								method="post">
+								<input type="hidden" name="status" value="<%=status%>">
+								<input type="hidden" name="id"
+									value="<%=(status == "update") ? author.getAuthorID() : ""%>">
 								<div class="col-md-4">
 									<label for="name" class="form-label">Name</label> <input
-										type="text" class="form-control" name="name" id="name" required>
+										type="text" class="form-control" name="name" id="name"
+										value="<%=(status == "update") ? author.getName() : ""%>"
+										required>
 								</div>
 								<div class="col-md-4">
-									<label for="nationality" class="form-label">Nationality</label> <input
-										type="text" class="form-control" name="nationality" id="nationality">
+									<label for="nationality" class="form-label">Nationality</label>
+									<input type="text" class="form-control" name="nationality"
+										value="<%=(status == "update") ? author.getNationality() : ""%>"
+										id="nationality">
 								</div>
 
 								<div class="col-md-4">
 									<label for="birthdate" class="form-label">BirthDate</label> <input
-										type="date" class="form-control" name="birthdate" id="birthdate" max="<%= date_str %>">
+										type="date" class="form-control" name="birthdate"
+										value="<%=(status == "update") ? author.getBirthDate() : ""%>"
+										id="birthdate" max="<%=date_str%>">
 								</div>
 
 								<div class="col-12">
 									<label for="biography" class="form-label">Biography</label>
-									<textarea rows="10" cols="10" class="form-control" name="biography" id="biography"></textarea>
+									<textarea rows="10" cols="10" class="form-control"
+										name="biography" id="biography"><%=(status == "update") ? author.getBiography() : ""%></textarea>
 								</div>
 								<div class="col-12">
 									<label for="link" class="form-label">Link</label> <input
-										type="text" class="form-control" name="link" id="link">
+										type="text" class="form-control" name="link" id="link"
+										value="<%=(status == "update") ? author.getLink() : ""%>">
 								</div>
 								<div class="text-center">
-									<button type="submit" class="btn btn-primary">Save</button>
-									<button type="reset" class="btn btn-secondary">Clear</button>
+									<button type="submit" class="btn btn-primary"><%=(status == "update") ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Multi Columns Form -->
@@ -127,38 +195,32 @@
 	</main>
 	<!-- End #main -->
 
-	<!-- ======= Footer ======= -->
-	<footer id="footer" class="footer">
-		<div class="copyright">
-			&copy; Copyright <strong><span>BookHaven</span></strong>. All Rights
-			Reserved
-		</div>
-		<div class="credits">
-			<!-- All the links in the footer should remain intact. -->
-			<!-- You can delete the links only if you purchased the pro version. -->
-			<!-- Licensing information: https://bootstrapmade.com/license/ -->
-			<!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-			Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-		</div>
-	</footer>
-	<!-- End Footer -->
+	<%@ include file="adminfooter.jsp"%>
 
 	<a href="#"
 		class="back-to-top d-flex align-items-center justify-content-center"><i
 		class="bi bi-arrow-up-short"></i></a>
 
 	<!-- Vendor JS Files -->
-	<script src="../assets/vendor/apexcharts/apexcharts.min.js"></script>
-	<script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<script src="../assets/vendor/chart.js/chart.umd.js"></script>
-	<script src="../assets/vendor/echarts/echarts.min.js"></script>
-	<script src="../assets/vendor/quill/quill.min.js"></script>
-	<script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>
-	<script src="../assets/vendor/tinymce/tinymce.min.js"></script>
-	<script src="../assets/vendor/php-email-form/validate.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/apexcharts/apexcharts.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/chart.js/chart.umd.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/echarts/echarts.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/quill/quill.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
 
 	<!-- Template Main JS File -->
-	<script src="../assets/js/main.js"></script>
+	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
 
 </body>
 
