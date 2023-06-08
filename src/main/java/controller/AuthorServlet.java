@@ -19,11 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.Author;
 import model.AuthorDatabase;
+import model.BookDatabase;
 
 /**
  * Servlet implementation class AuthorServlet
  */
-@WebServlet(urlPatterns = { "/admin/authors", "/admin/authorUpdate/*" })
+@WebServlet(urlPatterns = { "/admin/authors", "/admin/authorUpdate/*", "/admin/authorDelete/*" })
 public class AuthorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -75,21 +76,25 @@ public class AuthorServlet extends HttpServlet {
 							request.setAttribute("author", author_data);
 							request.setAttribute("status", "update");
 							request.getRequestDispatcher("/admin/authorRegistration.jsp").forward(request, response);
+							return;
 						} catch (Exception e) {
 							request.setAttribute("error", "serverError");
 							request.getRequestDispatcher("/admin/authors").forward(request, response);
+							return;
 						}
 					} else {
 						request.setAttribute("error", "invalid");
 						request.getRequestDispatcher("/admin/authors").forward(request, response);
+						return;
 					}
-					return;
 				} else {
 					request.setAttribute("error", "invalid");
 					request.getRequestDispatcher("/admin/authors").forward(request, response);
+					return;
 				}
-				return;
 			}
+		} else if (requestURi.contains("authorDelete")) {
+			doDelete(request, response);
 		} else {
 			ArrayList<Author> authorlist = new ArrayList<Author>();
 
@@ -106,10 +111,10 @@ public class AuthorServlet extends HttpServlet {
 								StringEscapeUtils.escapeHtml4(rs.getString("Link"))));
 					}
 				} catch (Exception e) {
-					request.setAttribute("error", "serverError");
+					request.setAttribute("error", "serverRetrieveError");
 				}
 			} else {
-				request.setAttribute("error", "serverError");
+				request.setAttribute("error", "serverRetrieveError");
 			}
 
 			// set the author arraylist as an attribute
@@ -219,9 +224,43 @@ public class AuthorServlet extends HttpServlet {
 			response.sendRedirect("authorRegistration.jsp?errCode=invalid");
 		}
 	}
-	
+
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
+		AuthorDatabase author_db = new AuthorDatabase();
+		BookDatabase book_db = new BookDatabase();
+		String requestURi = request.getRequestURI();
+		String[] parts = requestURi.split("/");
+
+		if (parts.length == 0) {
+			request.setAttribute("error", "invalid");
+			request.getRequestDispatcher("/admin/authors").forward(request, response);
+			return;
+		} else {
+			String id = parts[parts.length - 1];
+			if (TestReg.matchInteger(id)) {
+				if (book_db.deleteBookAuthor(Integer.parseInt(id), null)) {
+					if(author_db.deleteAuthor(Integer.parseInt(id))) {
+						request.setAttribute("success", "delete");
+						request.getRequestDispatcher("/admin/authors").forward(request, response);
+						return;
+					}
+					else {
+						request.setAttribute("error", "serverError");
+						request.getRequestDispatcher("/admin/authors").forward(request, response);
+						return;
+					}
+				} else {
+					request.setAttribute("error", "serverError");
+					request.getRequestDispatcher("/admin/authors").forward(request, response);
+					return;
+				}
+			} else {
+				request.setAttribute("error", "invalid");
+				request.getRequestDispatcher("/admin/authors").forward(request, response);
+				return;
+			}
+		}
 	}
 }
