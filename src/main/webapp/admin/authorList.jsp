@@ -77,17 +77,33 @@
 		if (error.equals("invalid")) {
 			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath() + "/admin/authors';</script>");
 		}
-		if (error.equals("serverError")) {
+		else if (error.equals("serverError")) {
 			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/authors';</script>");
 		}
-		if (error.equals("serverRetrieveError")) {
+		else if (error.equals("serverRetrieveError")) {
 			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/adminHomePage.jsp';</script>");
+			return;
+		}
+		else if (error.equals("unauthorized")) {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+			return;
+		}
+		else {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+			return;
 		}
 	}
 	if(success != null) {
 		if(success.equals("delete")) {
 			out.println("<script>alert('The author is successfully deleted!'); location='" + request.getContextPath() + "/admin/authors';</script>");
 		}
+	}
+	
+	String servlet = (String)request.getAttribute("servlet");
+	 request.removeAttribute("servlet");
+	if(servlet == null || !servlet.equals("true")) {
+		out.println("<script>alert('Unauthorized!'); location='" + request.getContextPath() + "/admin/adminHomePage.jsp';</script>");
+		return;
 	}
 
 	ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
@@ -145,7 +161,7 @@
 										} else {
 											out.println("<td>" + birthDate.toString() + "</td>");
 										}
-										out.println("<td><a href=''>Detail</a> | <a href='" + request.getContextPath() + "/admin/authorUpdate/"
+										out.println("<td><a href='" + request.getContextPath() + "/admin/authorUpdate/"
 										+ authorList.get(i).getAuthorID() + " '>Edit</a> | <a href='" + request.getContextPath()
 										+ "/admin/authorDelete/" + authorList.get(i).getAuthorID() + "'>Delete</a></td>");
 										out.println("</tr>");
