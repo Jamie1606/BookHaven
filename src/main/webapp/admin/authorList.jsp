@@ -26,21 +26,33 @@
 	rel="stylesheet">
 
 <!-- Vendor CSS Files -->
-<link href="<%= request.getContextPath() %>/assets/vendor/bootstrap/css/bootstrap.min.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/bootstrap/css/bootstrap.min.css"
 	rel="stylesheet">
-<link href="<%= request.getContextPath() %>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
 	rel="stylesheet">
-<link href="<%= request.getContextPath() %>/assets/vendor/boxicons/css/boxicons.min.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/boxicons/css/boxicons.min.css"
 	rel="stylesheet">
-<link href="<%= request.getContextPath() %>/assets/vendor/quill/quill.snow.css" rel="stylesheet">
-<link href="<%= request.getContextPath() %>/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-<link href="<%= request.getContextPath() %>/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-<link href="<%= request.getContextPath() %>/assets/vendor/simple-datatables/style.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.snow.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.bubble.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
 	rel="stylesheet">
 
 <!-- Template Main CSS File -->
-<link href="<%= request.getContextPath() %>/assets/css/style.css" rel="stylesheet">
-<link rel="icon" type="image/png" href="<%= request.getContextPath() %>/img/logo.png">
+<link href="<%=request.getContextPath()%>/assets/css/style.css"
+	rel="stylesheet">
+<link rel="icon" type="image/png"
+	href="<%=request.getContextPath()%>/img/logo.png">
 
 <!-- =======================================================
   * Template Name: NiceAdmin
@@ -55,20 +67,51 @@
 
 	<%@ include file="adminheader.jsp"%>
 	<%@ include file="adminsidebar.jsp"%>
-	
+
 	<%
-		String error = (String)request.getAttribute("error");
-		if(error != null && error.equalsIgnoreCase("invalid")) {
-			out.println("<script>alert('Invalid Request!');</script>");
-			request.removeAttribute("error");
+	String error = (String) request.getAttribute("error");
+	request.removeAttribute("error");
+	String success = (String) request.getAttribute("success");
+	request.removeAttribute("success");
+	if (error != null) {
+		if (error.equals("invalid")) {
+			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath() + "/admin/authors';</script>");
 		}
+		else if (error.equals("serverError")) {
+			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/authors';</script>");
+		}
+		else if (error.equals("serverRetrieveError")) {
+			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/adminHomePage.jsp';</script>");
+			return;
+		}
+		else if (error.equals("unauthorized")) {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+			return;
+		}
+		else {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+			return;
+		}
+	}
+	if(success != null) {
+		if(success.equals("delete")) {
+			out.println("<script>alert('The author is successfully deleted!'); location='" + request.getContextPath() + "/admin/authors';</script>");
+		}
+	}
 	
-		ArrayList<Author> authorList = (ArrayList<Author>)request.getAttribute("authorList");
-		String errCode = (String)request.getAttribute("error");
-		if(errCode != null && errCode.equals("serverError")) {
-			out.println("<script>alert('Internal Server Error!')</script>");
-			response.sendRedirect(request.getContextPath() + "/admin/adminHomePage.jsp");
-		}
+	String servlet = (String)request.getAttribute("servlet");
+	 request.removeAttribute("servlet");
+	if(servlet == null || !servlet.equals("true")) {
+		out.println("<script>alert('Unauthorized!'); location='" + request.getContextPath() + "/admin/adminHomePage.jsp';</script>");
+		return;
+	}
+
+	ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
+	String errCode = (String) request.getAttribute("error");
+	if (errCode != null && errCode.equals("serverError")) {
+		out.println("<script>alert('Internal Server Error!')</script>");
+		response.sendRedirect(request.getContextPath() + "/admin/adminHomePage.jsp");
+	}
 	%>
 
 	<main id="main" class="main">
@@ -77,7 +120,8 @@
 			<h1>Author Table</h1>
 			<nav>
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="<%= request.getContextPath() %>/admin/adminHomePage.jsp">Home</a></li>
+					<li class="breadcrumb-item"><a
+						href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
 					<li class="breadcrumb-item">Tables</li>
 					<li class="breadcrumb-item active">Author Data</li>
 				</ol>
@@ -105,23 +149,24 @@
 									</tr>
 								</thead>
 								<tbody>
-								<%
-									for(int i = 0; i < authorList.size(); i++) {
+									<%
+									for (int i = 0; i < authorList.size(); i++) {
 										out.println("<tr>");
 										out.println("<td>" + (i + 1) + ".</td>");
 										out.println("<td>" + authorList.get(i).getName() + "</td>");
 										out.println("<td>" + authorList.get(i).getNationality() + "</td>");
 										Date birthDate = authorList.get(i).getBirthDate();
-										if(birthDate == null) {
+										if (birthDate == null) {
 											out.println("<td></td>");
-										}
-										else {
+										} else {
 											out.println("<td>" + birthDate.toString() + "</td>");
 										}
-										out.println("<td><a href=''>Detail</a> | <a href='" + request.getContextPath() + "/admin/authorUpdate/" + authorList.get(i).getAuthorID() + " '>Edit</a> | <a href=''>Delete</a></td>");
+										out.println("<td><a href='" + request.getContextPath() + "/admin/authorUpdate/"
+										+ authorList.get(i).getAuthorID() + " '>Edit</a> | <a href='" + request.getContextPath()
+										+ "/admin/authorDelete/" + authorList.get(i).getAuthorID() + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
-								%>
+									%>
 								</tbody>
 							</table>
 							<!-- End Table with stripped rows -->
@@ -132,32 +177,42 @@
 				</div>
 			</div>
 		</section>
-		
+
 		<p id="test-info"></p>
 
 	</main>
 	<!-- End #main -->
 
-	<%@ include file="adminfooter.jsp" %>
+	<%@ include file="adminfooter.jsp"%>
 
 	<a href="#"
 		class="back-to-top d-flex align-items-center justify-content-center"><i
 		class="bi bi-arrow-up-short"></i></a>
 
-	<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.7.0.js"
+		integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+		crossorigin="anonymous"></script>
 	<!-- Vendor JS Files -->
-	<script src="<%= request.getContextPath() %>/assets/vendor/apexcharts/apexcharts.min.js"></script>
-	<script src="<%= request.getContextPath() %>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<script src="<%= request.getContextPath() %>/assets/vendor/chart.js/chart.umd.js"></script>
-	<script src="<%= request.getContextPath() %>/assets/vendor/echarts/echarts.min.js"></script>
-	<script src="<%= request.getContextPath() %>/assets/vendor/quill/quill.min.js"></script>
-	<script src="<%= request.getContextPath() %>/assets/vendor/simple-datatables/simple-datatables.js"></script>
-	<script src="<%= request.getContextPath() %>/assets/vendor/tinymce/tinymce.min.js"></script>
-	<script src="<%= request.getContextPath() %>/assets/vendor/php-email-form/validate.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/apexcharts/apexcharts.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/chart.js/chart.umd.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/echarts/echarts.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/quill/quill.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
 
 	<!-- Template Main JS File -->
-	<script src="<%= request.getContextPath() %>/assets/js/main.js"></script>
-		
+	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
+
 </body>
 
 </html>

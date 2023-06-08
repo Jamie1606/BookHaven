@@ -1,6 +1,6 @@
 // Author: Zay Yar Tun
 // Admin No: 2235035
-// Date: 7.6.2023
+// Date: 8.6.2023
 // Description: database functions related to book
 
 package model;
@@ -98,7 +98,7 @@ public class BookDatabase {
 				PreparedStatement st = db.prepareStatement(sqlStatement);
 				st.setString(1, isbn);
 				st.setInt(2, Integer.parseInt(authors.get(i)));
-				if(st.executeUpdate() != 1) {
+				if (st.executeUpdate() != 1) {
 					isSuccess = false;
 				}
 			}
@@ -118,42 +118,75 @@ public class BookDatabase {
 		// insert data into database (end)
 		return false;
 	}
-	
+
 	// insert and link book and genre into database
-		public boolean registerBookGenre(ArrayList<String> genres, String isbn) {
-			// insert data into database (start)
-			try {
-				// loading postgresql driver
-				Class.forName("org.postgresql.Driver");
+	public boolean registerBookGenre(ArrayList<String> genres, String isbn) {
+		// insert data into database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
 
-				// get database connection
-				Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
 
-				// to check whether each record is successfully inserted
-				boolean isSuccess = true;
-				for (int i = 0; i < genres.size(); i++) {
-					String sqlStatement = "INSERT INTO \"public\".\"BookGenre\" VALUES (?, ?)";
-					PreparedStatement st = db.prepareStatement(sqlStatement);
-					st.setString(1, isbn);
-					st.setInt(2, Integer.parseInt(genres.get(i)));
-					if(st.executeUpdate() != 1) {
-						isSuccess = false;
-					}
+			// to check whether each record is successfully inserted
+			boolean isSuccess = true;
+			for (int i = 0; i < genres.size(); i++) {
+				String sqlStatement = "INSERT INTO \"public\".\"BookGenre\" VALUES (?, ?)";
+				PreparedStatement st = db.prepareStatement(sqlStatement);
+				st.setString(1, isbn);
+				st.setInt(2, Integer.parseInt(genres.get(i)));
+				if (st.executeUpdate() != 1) {
+					isSuccess = false;
 				}
-
-				db.close();
-
-				// if unsuccessful, delete the book data that is already inserted into database
-				if (!isSuccess) {
-
-				} else {
-					return true;
-				}
-
-			} catch (Exception e) {
-				return false;
 			}
-			// insert data into database (end)
+
+			db.close();
+
+			// if unsuccessful, delete the book data that is already inserted into database
+			if (!isSuccess) {
+
+			} else {
+				return true;
+			}
+
+		} catch (Exception e) {
 			return false;
 		}
+		// insert data into database (end)
+		return false;
+	}
+
+	// delete author and book and unlink them
+	public boolean deleteBookAuthor(int authorID, String isbn) {
+		// delete data from database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+			String sqlStatement;
+			PreparedStatement st;
+
+			if (authorID != 0) {
+				sqlStatement = "DELETE FROM \"public\".\"BookAuthor\" WHERE \"AuthorID\" = ?";
+				st = db.prepareStatement(sqlStatement);
+				st.setInt(1, authorID);
+			} else if (isbn != null && !isbn.isEmpty()) {
+				sqlStatement = "DELETE FROM \"public\".\"BookAuthor\" WHERE \"ISBNNo\" = ?";
+				st = db.prepareStatement(sqlStatement);
+				st.setString(1, isbn);
+			} else {
+				return false;
+			}
+
+			st.executeUpdate();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// delete data from database (end)
+	}
 }
