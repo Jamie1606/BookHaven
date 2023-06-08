@@ -1,10 +1,10 @@
 <%
-//Author: Zay Yar Tun
-//Admin No: 2235035
-//Date: 3.6.2023
-//Description: sign in page
+//Author 	  : Thu Htet San
+//Admin No    : 2235022
+//Class       : DIT/FT/2A/02
+//Date        : 6.6.2023
+//Description : sign up page
 %>
-
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -85,51 +85,56 @@ input:-webkit-autofill {
 					<%
 						if(errCode != null) {
 							if(errCode.equals("invalidEmail")) {
-								out.print("<div class='alert alert-danger' role='alert'>Please enter correct email!</div>");
+								out.print("<div class='alert alert-danger' role='alert'>Email Already Exists!</div>");
 							}
-							if(errCode.equals("invalidPassword")) {
-								out.print("<div class='alert alert-danger' role='alert'>Please enter correct password!</div>");
+							if(errCode.equals("invalid")) {
+								out.print("<div class='alert alert-danger' role='alert'>Invalid Data!</div>");
 							}							
-							if(errCode.equals("invalidPostal")) {
-								out.print("<div class='alert alert-danger' role='alert'>Please enter correct Postal Code!</div>");
-							}							
-							if(errCode.equals("invalidPhone")) {
-								out.print("<div class='alert alert-danger' role='alert'>Please enter correct Phone!</div>");
-							}
 							if(errCode.equals("serverError")) {
-								out.print("<div class='alert alert-danger' role='alert'>Internal Server Error. Please try again later!</div>");
+								out.print("<div class='alert alert-danger' role='alert'>Server Error</div>");
 							}
 						}
 					%>
+					
+					<!-- Sign Up Form -->
 					<form id="signupForm" action="<%=request.getContextPath()%>/MemberServlet" method="post">
+						<!-- formName -->
+						<input type="hidden" name="formName" value="signupForm" />
+					
+						<!-- Name input -->
+						<div class="form-outline mb-4">
+							<input type="text" id="nameID" name="name" class="form-control form-control-lg" required/> 
+							<label class="form-label" for="nameID">Name</label>
+						</div>
+					
 						<!-- Email input -->
 						<div class="form-outline mb-4">
-							<input type="email" id="emailID" name="email" class="form-control form-control-lg" /> 
+							<input type="email" id="emailID" name="email" class="form-control form-control-lg" required/> 
 							<label class="form-label" for="emailID">Email</label>
 						</div>
 
 						<!-- Password input -->
 						<div class="form-outline mb-4">
-							<input type="password" id="passwordID" name="password" class="form-control form-control-lg" />
+							<input type="password" id="passwordID" name="password" class="form-control form-control-lg" required/>
 							<label class="form-label" for="passwordID">Password</label>
 						</div>
 						
 						<!-- Address input -->
 						<div class="form-outline mb-4">
-							<input type="password" id="addressID" name="address" class="form-control form-control-lg" /> 
+							<input type="text" id="addressID" name="address" class="form-control form-control-lg" required/> 
 							<label class="form-label" for="addressID">Address</label>
 						</div>
 						
 						<!-- Postal input -->
 						<div class="form-outline mb-4">
-							<input type="number" id="postalCodeID" name="postalCode" class="form-control form-control-lg" />
+							<input type="number" id="postalCodeID" name="postalCode" class="form-control form-control-lg" required/>
 							 <label class="form-label" for="postalCodeID">Postal Code</label>
 						</div>
 						
 						<!-- Phone input -->
 						<div class="form-outline mb-4">
-							<input type="number" id="phoneID" name="phone" class="form-control form-control-lg" />
-							<label class="form-label" for="phone">PhoneID</label>
+							<input type="number" id="phoneID" name="phone" class="form-control form-control-lg" required/>
+							<label class="form-label" for="phoneID">Phone</label>
 						</div>
 						
 						<!-- Submit button -->
@@ -144,6 +149,7 @@ input:-webkit-autofill {
 							style="background-color: #3b5998" href="signin.jsp" role="button">Already
 							A Member? </a>
 					</form>
+					<!-- End Sign Up Form -->
 				</div>
 			</div>
 		</div>

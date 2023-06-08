@@ -21,10 +21,10 @@
 				<li><a href="bookRegistration.jsp"> <i class="bi bi-circle"></i><span>Book
 							Registration</span>
 				</a></li>
-				<li><a href="bookRegistration.jsp"> <i class="bi bi-circle"></i><span>Genre
+				<li><a href="genreRegistration.jsp"> <i class="bi bi-circle"></i><span>Genre
 							Registration</span>
 				</a></li>
-				<li><a href="bookRegistration.jsp"> <i class="bi bi-circle"></i><span>Member
+				<li><a href="memberRegistration.jsp"> <i class="bi bi-circle"></i><span>Member
 							Registration</span>
 				</a></li>
 			</ul></li>
