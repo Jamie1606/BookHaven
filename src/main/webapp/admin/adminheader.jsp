@@ -2,7 +2,7 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="adminHomePage.jsp" class="logo d-flex align-items-center">
+      <a href="<%= request.getContextPath() %>/admin/adminHomePage.jsp" class="logo d-flex align-items-center">
         <img src="../img/logo.png" alt="">
         <span class="d-none d-lg-block">BookHaven</span>
       </a>
@@ -206,7 +206,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="../signout.jsp">
+              <a class="dropdown-item d-flex align-items-center" href="<%= request.getContextPath() %>/signout.jsp">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>

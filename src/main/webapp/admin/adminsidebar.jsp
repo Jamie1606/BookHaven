@@ -40,13 +40,13 @@
 				<li><a href="<%= request.getContextPath() %>/admin/authors"> <i class="bi bi-circle"></i><span>Author
 							List</span>
 				</a></li>
-				<li><a href="authors"> <i class="bi bi-circle"></i><span>Book
+				<li><a href=""> <i class="bi bi-circle"></i><span>Book
 							List</span>
 				</a></li>
-				<li><a href="authors"> <i class="bi bi-circle"></i><span>Genre
+				<li><a href=""> <i class="bi bi-circle"></i><span>Genre
 							List</span>
 				</a></li>
-				<li><a href="authors"> <i class="bi bi-circle"></i><span>Member
+				<li><a href=""> <i class="bi bi-circle"></i><span>Member
 							List</span>
 				</a></li>
 			</ul></li>
