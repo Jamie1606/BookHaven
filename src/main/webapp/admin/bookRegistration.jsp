@@ -126,7 +126,6 @@
 								</div>
 
 								<div class="col-md-6">
-<<<<<<< HEAD
 									<label for="author" class="form-label">Author</label> <select
 										id="author" name="author" class="form-control selectpicker" multiple="multiple" required>
 										<%
@@ -148,8 +147,6 @@
 								</div>
 
 								<div class="col-md-6">
-=======
->>>>>>> dd75e72b3b3b5185a207a026cd725b1210fe2aa5
 									<label for="publisher" class="form-label">Publisher</label> <input
 										type="text" name="publisher" class="form-control" id="publisher" required>
 								</div>
@@ -168,22 +165,12 @@
 										type="file" class="form-control" name="image" id="image" accept="image/*">
 								</div>
 								<div class="col-md-12">
-<<<<<<< HEAD
 									<label for="image3d" class="form-label">3D Image</label> <input
 										type="file" class="form-control" name="image3d" id="image3d" accept="image/*">
 								</div>
 								<div class="col-md-12">
-									<label for="status" class="form-label">Status</label> <select
-										id="status" class="form-control" name="status">
-=======
-									<label for="image3d" class="form-label">3D Image</label>
-									<input type="file" class="form-control" id="image3d"
-										placeholder="Apartment, studio, or floor">
-								</div>
-								<div class="col-md-12">
 									<label for="status" class="form-label">Status</label>
 									<select id="status" class="form-control">
->>>>>>> dd75e72b3b3b5185a207a026cd725b1210fe2aa5
 										<option selected value="available">Available</option>
 										<option value="unavailable">Unavailable</option>
 									</select>
@@ -227,13 +214,10 @@
 	<!-- Vendor JS Files -->
 	<script src="../assets/vendor/apexcharts/apexcharts.min.js"></script>
 	<script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<<<<<<< HEAD
 	<script src="../assets/vendor/tinymce/tinymce.min.js"></script>
-=======
 	<script src="../assets/vendor/chart.js/chart.umd.js"></script>
 	<script src="../assets/vendor/echarts/echarts.min.js"></script>
 	<script src="../assets/vendor/quill/quill.min.js"></script>
->>>>>>> dd75e72b3b3b5185a207a026cd725b1210fe2aa5
 	<script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>
 	<script src="../assets/vendor/tinymce/tinymce.min.js"></script>
 	<script src="../assets/vendor/php-email-form/validate.js"></script>
