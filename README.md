@@ -2,7 +2,7 @@
 This is a bookhaven bookstore Website using jsp.
 
 # Workload
-# (Zay Yar Tun)
+#### (Zay Yar Tun)
 - Authentication.java
 - AuthorServlet.java
 - BookServlet.java
@@ -21,7 +21,7 @@ This is a bookhaven bookstore Website using jsp.
 - index.jsp
 - signout.jsp
 
-# (Thu Htet San)
+#### (Thu Htet San)
 - MemberServlet.java
 - GenreServlet.java
 - Genre.java
