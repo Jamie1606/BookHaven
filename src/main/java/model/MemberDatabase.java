@@ -2,7 +2,7 @@
 //Admin No    : 2235022
 //Class       : DIT/FT/2A/02
 //Date        : 7.6.2023
-//Description : member related database
+//Description : database functions related to "Member" TABLE
 
 package model;
 
