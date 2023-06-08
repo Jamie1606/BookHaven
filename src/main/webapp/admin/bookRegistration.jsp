@@ -1,13 +1,13 @@
 <%
 //Author: Zay Yar Tun
 //Admin No: 2235035
-//Date: 4.6.2023
+//Date: 7.6.2023
 //Description: book registration page
 %>
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="java.util.*, java.text.*"%>
+<%@ page import="java.util.*, java.text.*, model.Author, model.Genre"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,6 +37,17 @@
 <link href="../assets/vendor/remixicon/remixicon.css" rel="stylesheet">
 <link href="../assets/vendor/simple-datatables/style.css"
 	rel="stylesheet">
+	
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<script src="../assets/js/bootstrap-select.js"></script>
 
 <!-- Template Main CSS File -->
 <link href="../assets/css/style.css" rel="stylesheet">
@@ -58,12 +69,16 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
+	// retrieve author and genre list from request attributes sent from book servlet
+	ArrayList<Author> authorList = (ArrayList<Author>)request.getAttribute("authorList");
+	ArrayList<Genre> genreList = (ArrayList<Genre>)request.getAttribute("genreList");
+
 	Calendar calendar = Calendar.getInstance();
 	calendar.setTime(new Date());
 	calendar.add(Calendar.YEAR, 1);
 	Date date = calendar.getTime();
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-	String date_str = formatter.format(date);
+	String dateStr = formatter.format(date);
 	%>
 
 	<main id="main" class="main">
@@ -87,51 +102,71 @@
 							<h5 class="card-title">Book Information</h5>
 
 							<!-- Multi Columns Form -->
-							<form class="row g-3">
+							<form class="row g-3" action="books" method="post" enctype="multipart/form-data">
 								<div class="col-md-12">
 									<label for="isbn" class="form-label">ISBN No.</label> <input
-										type="text" class="form-control" id="isbn">
+										type="text" name="isbn" class="form-control" id="isbn" required>
 								</div>
 								<div class="col-md-12">
 									<label for="title" class="form-label">Title</label> <input
-										type="text" class="form-control" id="title">
+										type="text" name="title" class="form-control" id="title" required>
 								</div>
 
 								<div class="col-md-4">
 									<label for="page" class="form-label">Page</label> <input
-										type="number" class="form-control" id="page" min="1">
+										type="number" name="page" class="form-control" id="page" min="1" required>
 								</div>
 								<div class="col-md-4">
 									<label for="price" class="form-label">Price</label> <input
-										type="number" step=".01" class="form-control" id="price">
+										type="number" name="price" step=".01" min="5" class="form-control" id="price" required>
 								</div>
 								<div class="col-md-4">
 									<label for="qty" class="form-label">Qty</label> <input
-										type="number" class="form-control" id="qty" min="0">
+										type="number" name="qty" class="form-control" id="qty" min="0" required>
+								</div>
+
+								<div class="col-md-6">
+									<label for="author" class="form-label">Author</label> <select
+										id="author" name="author" class="form-control selectpicker" multiple="multiple" required>
+										<%
+											for(Author author: authorList) {
+												out.println("<option value='" + author.getAuthorID() + "'>" + author.getName() + "</option>");
+											}
+										%>
+									</select>
+								</div>
+								<div class="col-md-6">
+									<label for="genre" class="form-label">Genre</label> <select
+										id="genre" name="genre" class="form-control selectpicker" multiple="multiple" required>
+										<%
+											for(Genre genre: genreList) {
+												out.println("<option value='" + genre.getGenreID() + "'>" + genre.getGenre() + "</option>");
+											}
+										%>
+									</select>
 								</div>
 
 								<div class="col-md-6">
 									<label for="publisher" class="form-label">Publisher</label> <input
-										type="text" class="form-control" id="publisher">
+										type="text" name="publisher" class="form-control" id="publisher" required>
 								</div>
 								<div class="col-md-6">
 									<label for="publicationdate" class="form-label">Publication
 										Date</label> <input type="date" class="form-control"
-										id="publicationdate" max="<%=date_str%>">
+										id="publicationdate" name="publicationdate" max="<%=dateStr%>" required>
 								</div>
 
 								<div class="col-12">
 									<label for="description" class="form-label">Description</label>
-									<textarea class="form-control" id="description"></textarea>
+									<textarea class="form-control" name="description" id="description"></textarea>
 								</div>
 								<div class="col-12">
 									<label for="image" class="form-label">Image</label> <input
-										type="file" class="form-control" id="image">
+										type="file" class="form-control" name="image" id="image" accept="image/*">
 								</div>
 								<div class="col-md-12">
-									<label for="image3d" class="form-label">3D Image</label>
-									<input type="file" class="form-control" id="image3d"
-										placeholder="Apartment, studio, or floor">
+									<label for="image3d" class="form-label">3D Image</label> <input
+										type="file" class="form-control" name="image3d" id="image3d" accept="image/*">
 								</div>
 								<div class="col-md-12">
 									<label for="status" class="form-label">Status</label>
@@ -179,6 +214,7 @@
 	<!-- Vendor JS Files -->
 	<script src="../assets/vendor/apexcharts/apexcharts.min.js"></script>
 	<script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="../assets/vendor/tinymce/tinymce.min.js"></script>
 	<script src="../assets/vendor/chart.js/chart.umd.js"></script>
 	<script src="../assets/vendor/echarts/echarts.min.js"></script>
 	<script src="../assets/vendor/quill/quill.min.js"></script>
@@ -188,6 +224,13 @@
 
 	<!-- Template Main JS File -->
 	<script src="../assets/js/main.js"></script>
+	
+	<script>
+		$(document).ready(function() {
+			$('#author').selectpicker();
+			$('#genre').selectpicker();
+		})
+	</script>
 
 </body>
 

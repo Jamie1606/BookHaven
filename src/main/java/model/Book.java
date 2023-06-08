@@ -5,28 +5,46 @@
 
 package model;
 
+import java.sql.Date;
+
 public class Book {
 	private String ISBNNo;
 	private String title;
 	private int page;
-	private double money;
+	private double price;
 	private String publisher;
-	private String publicationDate;
+	private Date publicationDate;
 	private int qty;
-	private int rating;
+	private short rating;
 	private String description;
 	private String image;
 	private String image3D;
 	private String status;
 	private Author[] authors;
 	private Genre[] genres;
-	
-	public Book(String iSBNNo, String title, int page, double money, String publisher, String publicationDate, int qty,
-			int rating, String description, String image, String image3d, String status, Author[] authors, Genre[] genres) {
+
+	public Book(String iSBNNo, String title, int page, double price, String publisher, Date publicationDate, int qty,
+			String description, String image, String image3d, String status) {
 		ISBNNo = iSBNNo;
 		this.title = title;
 		this.page = page;
-		this.money = money;
+		this.price = price;
+		this.publisher = publisher;
+		this.publicationDate = publicationDate;
+		this.qty = qty;
+		this.description = description;
+		this.image = image;
+		image3D = image3d;
+		this.status = status;
+	}
+
+	public Book(String iSBNNo, String title, int page, double price, String publisher, Date publicationDate, int qty,
+			short rating, String description, String image, String image3d, String status, Author[] authors,
+			Genre[] genres) {
+		ISBNNo = iSBNNo;
+		this.title = title;
+		this.page = page;
+		this.price = price;
 		this.publisher = publisher;
 		this.publicationDate = publicationDate;
 		this.qty = qty;
@@ -71,12 +89,12 @@ public class Book {
 		this.page = page;
 	}
 
-	public double getMoney() {
-		return money;
+	public double getPrice() {
+		return price;
 	}
 
-	public void setMoney(double money) {
-		this.money = money;
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	public String getPublisher() {
@@ -87,11 +105,11 @@ public class Book {
 		this.publisher = publisher;
 	}
 
-	public String getPublicationDate() {
+	public Date getPublicationDate() {
 		return publicationDate;
 	}
 
-	public void setPublicationDate(String publicationDate) {
+	public void setPublicationDate(Date publicationDate) {
 		this.publicationDate = publicationDate;
 	}
 
@@ -103,11 +121,11 @@ public class Book {
 		this.qty = qty;
 	}
 
-	public int getRating() {
+	public short getRating() {
 		return rating;
 	}
 
-	public void setRating(int rating) {
+	public void setRating(short rating) {
 		this.rating = rating;
 	}
 

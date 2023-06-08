@@ -27,7 +27,7 @@ public class AuthorDatabase {
 			// get database connection
 			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
 
-			String sqlStatement = "SELECT * FROM \"public\".\"Author\"";
+			String sqlStatement = "SELECT * FROM \"public\".\"Author\" ORDER BY \"Name\"";
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 
 			authorResultSet = st.executeQuery();

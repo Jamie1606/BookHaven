@@ -88,13 +88,11 @@ public class AuthorServlet extends HttpServlet {
 				birthdate = request.getParameter("birthdate");
 				biography = request.getParameter("biography");
 				link = request.getParameter("link");
-				LocalDate date = null;
+				Date birth_Date = null;
 
 				if (birthdate != null && !birthdate.isEmpty()) {
-					date = LocalDate.parse(birthdate);
+					birth_Date = Date.valueOf(LocalDate.parse(birthdate));
 				}
-				
-				Date birth_Date = Date.valueOf(date);
 				
 				AuthorDatabase author_db = new AuthorDatabase();
 				if(author_db.registerAuthor(new Author(name, nationality, birth_Date, biography, link))) {
