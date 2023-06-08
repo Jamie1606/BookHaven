@@ -4,7 +4,7 @@
 	<ul class="sidebar-nav" id="sidebar-nav">
 
 		<li class="nav-item"><a class="nav-link collapsed"
-			href="adminHomePage.jsp"> <i class="bi bi-grid"></i> <span>Dashboard</span>
+			href="<%= request.getContextPath() %>/admin/adminHomePage.jsp"> <i class="bi bi-grid"></i> <span>Dashboard</span>
 		</a></li>
 		<!-- End Dashboard Nav -->
 
@@ -15,7 +15,7 @@
 		</a>
 			<ul id="forms-nav" class="nav-content collapse"
 				data-bs-parent="#sidebar-nav">
-				<li><a href="authorRegistration.jsp"> <i
+				<li><a href="<%= request.getContextPath() %>/admin/authorRegistration.jsp"> <i
 						class="bi bi-circle"></i><span>Author Registration</span>
 				</a></li>
 				<li><a href="bookRegistration"> <i class="bi bi-circle"></i><span>Book
@@ -37,16 +37,16 @@
 		</a>
 			<ul id="tables-nav" class="nav-content collapse "
 				data-bs-parent="#sidebar-nav">
-				<li><a href="authors"> <i class="bi bi-circle"></i><span>Author
+				<li><a href="<%= request.getContextPath() %>/admin/authors"> <i class="bi bi-circle"></i><span>Author
 							List</span>
 				</a></li>
-				<li><a href="authors"> <i class="bi bi-circle"></i><span>Book
+				<li><a href=""> <i class="bi bi-circle"></i><span>Book
 							List</span>
 				</a></li>
-				<li><a href="authors"> <i class="bi bi-circle"></i><span>Genre
+				<li><a href=""> <i class="bi bi-circle"></i><span>Genre
 							List</span>
 				</a></li>
-				<li><a href="authors"> <i class="bi bi-circle"></i><span>Member
+				<li><a href=""> <i class="bi bi-circle"></i><span>Member
 							List</span>
 				</a></li>
 			</ul></li>
