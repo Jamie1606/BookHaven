@@ -4,6 +4,7 @@
 //Date		  : 8.6.2023
 //Description : database functions related to "Genre" TABLE
 
+
 package model;
 
 import java.sql.Connection;
@@ -12,15 +13,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class GenreDatabase {
+
+	
+	//[DATABASE CONFIG]
+
+
 	private final String connURL = "jdbc:postgresql://satao.db.elephantsql.com/mhekoapk";
 	private final String db_username = "mhekoapk";
 	private final String db_password = "o9w2O25Afleif9CCVCEBDQZX4tT79MH7";
 	private ResultSet genreResultSet;
+
 	
+	//[GENRE DATA FROM DATABSE]
+
 	public GenreDatabase() {
-		
 	}
 
+	// select genre from database
 	public boolean getGenre() {
 		try {
 			// loading postgresql driver
@@ -31,8 +40,8 @@ public class GenreDatabase {
 			
 			
 			//select all from "Genre" TABLE
+			String sqlStatement = "SELECT * FROM \"public\".\"Genre\"";
 
-			String sqlStatement = "SELECT * FROM \"public\".\"Genre\" ORDER BY \"Genre\"";
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 
 			genreResultSet = st.executeQuery();
@@ -47,7 +56,8 @@ public class GenreDatabase {
 
 	}// select genre from database (end)
 	
-	// get genre resultset
+	
+	//[RETURN GENRE RESULTSET]
 	public ResultSet getGenreResult() {
 		return genreResultSet;
 	}
