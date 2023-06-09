@@ -18,7 +18,7 @@
 				<li><a href="<%= request.getContextPath() %>/admin/authorRegistration.jsp"> <i
 						class="bi bi-circle"></i><span>Author Registration</span>
 				</a></li>
-				<li><a href="bookRegistration"> <i class="bi bi-circle"></i><span>Book
+				<li><a href="<%= request.getContextPath() %>/admin/bookRegistration"> <i class="bi bi-circle"></i><span>Book
 							Registration</span>
 				</a></li>
 				<li><a href="genreRegistration.jsp"> <i class="bi bi-circle"></i><span>Genre
