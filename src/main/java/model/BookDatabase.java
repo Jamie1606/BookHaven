@@ -57,6 +57,7 @@ public class BookDatabase {
 				return false;
 			}
 		} catch (Exception e) {
+			System.out.println(e);
 			return false;
 		}
 		// insert data into database (end)
@@ -65,6 +66,28 @@ public class BookDatabase {
 	// set resultset to null
 	public void clearBookResult() {
 		this.bookResultSet = null;
+	}
+
+	// select book from database
+	public boolean getBook() {
+		// select book data from database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT * FROM \"public\".\"Book\"";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+
+			bookResultSet = st.executeQuery();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// select book data from database (end)
 	}
 
 	// get specific book by isbn

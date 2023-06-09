@@ -40,7 +40,7 @@
 				<li><a href="<%= request.getContextPath() %>/admin/authors"> <i class="bi bi-circle"></i><span>Author
 							List</span>
 				</a></li>
-				<li><a href=""> <i class="bi bi-circle"></i><span>Book
+				<li><a href="<%= request.getContextPath() %>/admin/books"> <i class="bi bi-circle"></i><span>Book
 							List</span>
 				</a></li>
 				<li><a href=""> <i class="bi bi-circle"></i><span>Genre
