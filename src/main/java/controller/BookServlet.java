@@ -19,6 +19,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.tomcat.util.http.fileupload.FileItem;
@@ -36,7 +37,7 @@ import model.GenreDatabase;
 /**
  * Servlet implementation class BookServlet
  */
-@WebServlet(urlPatterns = { "/admin/books", "/admin/bookRegistration", "/admin/bookList" })
+@WebServlet(urlPatterns = { "/admin/books", "/admin/bookRegistration" })
 /**
  * Servlet implementation class BookServlet
  */
@@ -57,6 +58,14 @@ public class BookServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
+		HttpSession session = request.getSession();
+		Authentication auth = new Authentication();
+
+		if (!auth.testAdmin(session)) {
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+			return;
+		}
 		
 		ArrayList<Author> authorlist = new ArrayList<Author>();
 		ArrayList<Genre> genrelist = new ArrayList<Genre>();
@@ -103,15 +112,16 @@ public class BookServlet extends HttpServlet {
 		// set the author arraylist as an attribute
 		request.setAttribute("authorList", authorlist);
 		request.setAttribute("genreList", genrelist);
+		request.setAttribute("servlet", "true");
 
 		String targetPage = "";
 		// forward the data to the jsp
-		if (request.getRequestURI().endsWith("bookRegistration")) {
-			targetPage = "bookRegistration.jsp";
-		} else if (request.getRequestURI().endsWith("bookList")) {
-			targetPage = "bookList.jsp";
+		if (request.getRequestURI().endsWith("admin/bookRegistration")) {
+			targetPage = "/admin/bookRegistration.jsp";
+		} else if (request.getRequestURI().endsWith("admin/books")) {
+			targetPage = "/admin/bookList.jsp";
 		} else {
-			targetPage = "adminHomePage.jsp";
+			targetPage = "/admin/adminHomePage.jsp";
 		}
 		request.getRequestDispatcher(targetPage).forward(request, response);
 		return;
@@ -125,6 +135,15 @@ public class BookServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
+		HttpSession session = request.getSession();
+		Authentication auth = new Authentication();
+
+		if (!auth.testAdmin(session)) {
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+			return;
+		}
+		
 		ArrayList<String> authors = new ArrayList<String>();
 		ArrayList<String> genres = new ArrayList<String>();
 
@@ -153,8 +172,6 @@ public class BookServlet extends HttpServlet {
 						} else {
 							fields.put(fieldName, fieldValue);
 						}
-
-						System.out.println(fieldName + " - " + fieldValue);
 					} else {
 						// file upload
 					}
@@ -186,32 +203,74 @@ public class BookServlet extends HttpServlet {
 						Date publicationDate = Date.valueOf(LocalDate.parse(publicationdate));
 
 						BookDatabase book_db = new BookDatabase();
-						int condition = book_db.registerBook(
-								new Book(isbn, title, Integer.parseInt(page), Double.parseDouble(price), publisher,
-										publicationDate, Integer.parseInt(qty), description, "", "", status));
-						if (condition == 1) {
-							if (book_db.registerBookAuthor(authors, isbn)) {
-								if (book_db.registerBookGenre(genres, isbn)) {
-									System.out.println("Success");
-								} else {
-									System.out.println("Genre Error");
+						book_db.clearBookResult();
+						
+						if(book_db.getBookByISBN(isbn)) {
+							ResultSet rs = book_db.getBookResult();
+							try {
+								int count = 0;
+								while(rs.next()) {
+									count++;
 								}
-							} else {
-								System.out.println("Author Error");
+								if(count > 0) {
+									request.setAttribute("error", "duplicate");
+									request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+									return;
+								}
 							}
-						} else if (condition == 0) {
-							System.out.println("Server Error");
-						} else {
-							System.out.println("Duplicate");
+							catch(Exception e) {
+								request.setAttribute("error", "serverError");
+								request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+								return;
+							}
+							if(book_db.registerBook(new Book(isbn, title, Integer.parseInt(page), Double.parseDouble(price), publisher,
+									publicationDate, Integer.parseInt(qty), description, "", "", status))) {
+								if(book_db.registerBookAuthor(authors, isbn)) {
+									if(book_db.registerBookGenre(genres, isbn)) {
+										request.setAttribute("success", "register");
+										request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+										return;
+									}
+									else {
+										book_db.deleteBookGenre(0, isbn);
+										book_db.deleteBookAuthor(0, isbn);
+										request.setAttribute("error", "genreError");
+										request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+										return;
+									}
+								}
+								else {
+									book_db.deleteBookAuthor(0, isbn);
+									request.setAttribute("error", "authorError");
+									request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+									return;
+								}
+							}
+							else {
+								request.setAttribute("error", "serverError");
+								request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+								return;
+							}
+						}
+						else {
+							request.setAttribute("error", "serverError");
+							request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+							return;
 						}
 					} else {
-						System.out.println("Invalid Data");
+						request.setAttribute("error", "invalid");
+						request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+						return;
 					}
 				} else {
-					System.out.println("Null and Empty");
+					request.setAttribute("error", "invalid");
+					request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+					return;
 				}
 			} catch (Exception e) {
-
+				request.setAttribute("error", "upload");
+				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+				return;
 			}
 		}
 	}

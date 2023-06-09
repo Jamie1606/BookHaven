@@ -16,7 +16,7 @@ if (!auth.testAdmin(session)) {
 	<div class="d-flex align-items-center justify-content-between">
 		<a href="<%=request.getContextPath()%>/admin/adminHomePage.jsp"
 			class="logo d-flex align-items-center"> <img
-			src="../img/logo.png" alt=""> <span class="d-none d-lg-block">BookHaven</span>
+			src="<%= request.getContextPath() %>/img/logo.png" alt=""> <span class="d-none d-lg-block">BookHaven</span>
 		</a> <i class="bi bi-list toggle-sidebar-btn"></i>
 	</div>
 	<!-- End Logo -->
@@ -115,7 +115,7 @@ if (!auth.testAdmin(session)) {
 					</li>
 
 					<li class="message-item"><a href="#"> <img
-							src="../assets/img/messages-1.jpg" alt="" class="rounded-circle">
+							src="<%= request.getContextPath() %>/assets/img/messages-1.jpg" alt="" class="rounded-circle">
 							<div>
 								<h4>Maria Hudson</h4>
 								<p>Velit asperiores et ducimus soluta repudiandae labore
@@ -128,7 +128,7 @@ if (!auth.testAdmin(session)) {
 					</li>
 
 					<li class="message-item"><a href="#"> <img
-							src="../assets/img/messages-2.jpg" alt="" class="rounded-circle">
+							src="<%= request.getContextPath() %>/assets/img/messages-2.jpg" alt="" class="rounded-circle">
 							<div>
 								<h4>Anna Nelson</h4>
 								<p>Velit asperiores et ducimus soluta repudiandae labore
@@ -141,7 +141,7 @@ if (!auth.testAdmin(session)) {
 					</li>
 
 					<li class="message-item"><a href="#"> <img
-							src="../assets/img/messages-3.jpg" alt="" class="rounded-circle">
+							src="<%= request.getContextPath() %>/assets/img/messages-3.jpg" alt="" class="rounded-circle">
 							<div>
 								<h4>David Muldon</h4>
 								<p>Velit asperiores et ducimus soluta repudiandae labore
@@ -162,7 +162,7 @@ if (!auth.testAdmin(session)) {
 			<li class="nav-item dropdown pe-3"><a
 				class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
 				data-bs-toggle="dropdown"> <img
-					src="../assets/img/profile-img.jpg" alt="Profile"
+					src="<%= request.getContextPath() %>/assets/img/profile-img.jpg" alt="Profile"
 					class="rounded-circle"> <span
 					class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
 			</a> <!-- End Profile Iamge Icon -->
@@ -177,7 +177,7 @@ if (!auth.testAdmin(session)) {
 					</li>
 
 					<li><a class="dropdown-item d-flex align-items-center"
-						href="users-profile.html"> <i class="bi bi-person"></i> <span>My
+						href=""> <i class="bi bi-person"></i> <span>My
 								Profile</span>
 					</a></li>
 					<li>
@@ -185,16 +185,8 @@ if (!auth.testAdmin(session)) {
 					</li>
 
 					<li><a class="dropdown-item d-flex align-items-center"
-						href="users-profile.html"> <i class="bi bi-gear"></i> <span>Account
+						href=""> <i class="bi bi-gear"></i> <span>Account
 								Settings</span>
-					</a></li>
-					<li>
-						<hr class="dropdown-divider">
-					</li>
-
-					<li><a class="dropdown-item d-flex align-items-center"
-						href="pages-faq.html"> <i class="bi bi-question-circle"></i> <span>Need
-								Help?</span>
 					</a></li>
 					<li>
 						<hr class="dropdown-divider">
