@@ -23,10 +23,7 @@ public class BookDatabase {
 	}
 
 	// insert book into database
-	// -1 => book already exists
-	// 1 => success
-	// 0 => server error
-	public int registerBook(Book book) {
+	public boolean registerBook(Book book) {
 		// insert data into database (start)
 		try {
 			// loading postgresql driver
@@ -35,23 +32,8 @@ public class BookDatabase {
 			// get database connection
 			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
 
-			// select book data from database to avoid data duplication
-			String sqlStatement = "SELECT * FROM \"public\".\"Book\" WHERE \"ISBNNo\" = ?";
+			String sqlStatement = "INSERT INTO \"public\".\"Book\" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement st = db.prepareStatement(sqlStatement);
-			st.setString(1, book.getISBNNo());
-			ResultSet rs = st.executeQuery();
-			int count = 0;
-			while (rs.next()) {
-				count++;
-			}
-
-			// return false to avoid duplication if there is 1 record or more
-			if (count >= 1) {
-				return -1;
-			}
-
-			sqlStatement = "INSERT INTO \"public\".\"Book\" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-			st = db.prepareStatement(sqlStatement);
 			st.setString(1, book.getISBNNo());
 			st.setString(2, book.getTitle());
 			st.setInt(3, book.getPage());
@@ -70,15 +52,47 @@ public class BookDatabase {
 			db.close();
 
 			if (rowsAffected == 1) {
-				return 1;
+				return true;
 			} else {
-				return 0;
+				return false;
 			}
 		} catch (Exception e) {
-			System.out.println(e);
-			return 0;
+			return false;
 		}
 		// insert data into database (end)
+	}
+
+	// set resultset to null
+	public void clearBookResult() {
+		this.bookResultSet = null;
+	}
+
+	// get specific book by isbn
+	public boolean getBookByISBN(String isbn) {
+		// select book data from database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT * FROM \"public\".\"Book\" WHERE \"ISBNNo\" = ?";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setString(1, isbn);
+
+			bookResultSet = st.executeQuery();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// select book data from database (end)
+	}
+
+	// get book resultset
+	public ResultSet getBookResult() {
+		return bookResultSet;
 	}
 
 	// insert and link book and author into database
@@ -104,19 +118,11 @@ public class BookDatabase {
 			}
 
 			db.close();
-
-			// if unsuccessful, delete the book data that is already inserted into database
-			if (!isSuccess) {
-
-			} else {
-				return true;
-			}
-
+			return isSuccess;
 		} catch (Exception e) {
 			return false;
 		}
 		// insert data into database (end)
-		return false;
 	}
 
 	// insert and link book and genre into database
@@ -142,22 +148,51 @@ public class BookDatabase {
 			}
 
 			db.close();
-
-			// if unsuccessful, delete the book data that is already inserted into database
-			if (!isSuccess) {
-
-			} else {
-				return true;
-			}
-
+			return isSuccess;
 		} catch (Exception e) {
 			return false;
 		}
 		// insert data into database (end)
-		return false;
+	}
+
+	// delete author and genre and unlink them
+	// if you want to use isbn, give 0 to genreID
+	// if you want to use genreID, give null or empty string to isbn
+	public boolean deleteBookGenre(int genreID, String isbn) {
+		// delete data from database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+			String sqlStatement;
+			PreparedStatement st;
+
+			if (genreID != 0) {
+				sqlStatement = "DELETE FROM \"public\".\"BookGenre\" WHERE \"GenreID\" = ?";
+				st = db.prepareStatement(sqlStatement);
+				st.setInt(1, genreID);
+			} else if (isbn != null && !isbn.isEmpty()) {
+				sqlStatement = "DELETE FROM \"public\".\"BookGenre\" WHERE \"ISBNNo\" = ?";
+				st = db.prepareStatement(sqlStatement);
+				st.setString(1, isbn);
+			} else {
+				return false;
+			}
+
+			st.executeUpdate();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// delete data from database (end)
 	}
 
 	// delete author and book and unlink them
+	// if you want to use isbn, give 0 to authorID
+	// if you want to use authorID, give null or empty string to isbn
 	public boolean deleteBookAuthor(int authorID, String isbn) {
 		// delete data from database (start)
 		try {
