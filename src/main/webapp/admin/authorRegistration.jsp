@@ -97,7 +97,7 @@
 			}
 			if (success.equals("update")) {
 		out.println("<script>alert('Author data is successfully updated!'); location='" + request.getContextPath()
-				+ "/admin/authorRegistration.jsp';</script>");
+				+ "/admin/authors';</script>");
 			}
 		}
 	}
@@ -129,7 +129,7 @@
 			<nav>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item"><a
-						href="<%=request.getContextPath()%>admin/adminHomePage.jsp">Home</a></li>
+						href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
 					<li class="breadcrumb-item">Registration Forms</li>
 					<li class="breadcrumb-item active">Author Registration</li>
 				</ol>

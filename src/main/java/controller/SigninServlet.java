@@ -82,7 +82,7 @@ public class SigninServlet extends HttpServlet {
 		 			response.sendRedirect("sigin.jsp?errCode=serverError");
 		 	}
 			if(isValid) {
-				session.setAttribute("memberID", id);
+				session.setAttribute("memberID", id + "");
 				session.setAttribute("role", "member");
 				response.sendRedirect("index.jsp");
 			}
@@ -115,7 +115,7 @@ public class SigninServlet extends HttpServlet {
 			 			response.sendRedirect("sigin.jsp?errCode=serverError");
 			 	}
 				if(isValid) {
-					session.setAttribute("adminID", id);
+					session.setAttribute("adminID", id + "");
 					session.setAttribute("role", "admin");
 					response.sendRedirect("admin/adminHomePage.jsp");
 				}

@@ -10,20 +10,23 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import model.Author;
 import model.AuthorDatabase;
+import model.BookDatabase;
 
 /**
  * Servlet implementation class AuthorServlet
  */
-@WebServlet(urlPatterns = { "/admin/authors", "/admin/authorUpdate/*" })
+@WebServlet(urlPatterns = { "/admin/authors", "/admin/authorUpdate/*", "/admin/authorDelete/*" })
 public class AuthorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -46,9 +49,17 @@ public class AuthorServlet extends HttpServlet {
 		// create author_db object and clear the result
 		AuthorDatabase author_db = new AuthorDatabase();
 		author_db.clearAuthorResult();
+		HttpSession session = request.getSession();
+		Authentication auth = new Authentication();
+
+		if (!auth.testAdmin(session)) {
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+			return;
+		}
 
 		String requestURi = request.getRequestURI();
-		if (requestURi.contains("authorUpdate")) {
+		if (requestURi.contains("admin/authorUpdate")) {
 			String[] parts = requestURi.split("/");
 			if (parts.length == 0) {
 				request.setAttribute("error", "invalid");
@@ -75,22 +86,27 @@ public class AuthorServlet extends HttpServlet {
 							request.setAttribute("author", author_data);
 							request.setAttribute("status", "update");
 							request.getRequestDispatcher("/admin/authorRegistration.jsp").forward(request, response);
+							return;
 						} catch (Exception e) {
 							request.setAttribute("error", "serverError");
 							request.getRequestDispatcher("/admin/authors").forward(request, response);
+							return;
 						}
 					} else {
 						request.setAttribute("error", "invalid");
 						request.getRequestDispatcher("/admin/authors").forward(request, response);
+						return;
 					}
-					return;
 				} else {
 					request.setAttribute("error", "invalid");
 					request.getRequestDispatcher("/admin/authors").forward(request, response);
+					return;
 				}
-				return;
 			}
-		} else {
+		} else if (requestURi.contains("admin/authorDelete")) {
+			doDelete(request, response);
+		} else if (requestURi.contains("admin/authors")) {
+
 			ArrayList<Author> authorlist = new ArrayList<Author>();
 
 			boolean condition = author_db.getAuthor();
@@ -106,19 +122,25 @@ public class AuthorServlet extends HttpServlet {
 								StringEscapeUtils.escapeHtml4(rs.getString("Link"))));
 					}
 				} catch (Exception e) {
-					request.setAttribute("error", "serverError");
+					request.setAttribute("error", "serverRetrieveError");
 				}
 			} else {
-				request.setAttribute("error", "serverError");
+				request.setAttribute("error", "serverRetrieveError");
 			}
 
 			// set the author arraylist as an attribute
 			request.setAttribute("authorList", authorlist);
+			request.setAttribute("servlet", "true");
 
 			// forward the data to the jsp
 			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
 			return;
+		} else {
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+			return;
 		}
+
 	}
 
 	/**
@@ -129,6 +151,15 @@ public class AuthorServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
+		Authentication auth = new Authentication();
+		HttpSession session = request.getSession();
+
+		if (!auth.testAdmin(session)) {
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+			return;
+		}
+		
 		// values passed from author registration form
 		String status = request.getParameter("status");
 		String name, nationality, birthdate, biography, link;
@@ -144,6 +175,13 @@ public class AuthorServlet extends HttpServlet {
 
 				if (birthdate != null && !birthdate.isEmpty() && TestReg.matchDate(birthdate)) {
 					birth_Date = Date.valueOf(LocalDate.parse(birthdate));
+					LocalDate testDate = birth_Date.toLocalDate();
+					LocalDate currentDate = LocalDate.now();
+					long diff = ChronoUnit.DAYS.between(testDate, currentDate) / 365;
+					if(diff < 5) {
+						response.sendRedirect("authorRegistration.jsp?errCode=invalid");
+						return;
+					}
 				}
 
 				AuthorDatabase author_db = new AuthorDatabase();
@@ -168,6 +206,14 @@ public class AuthorServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
+		Authentication auth = new Authentication();
+		HttpSession session = request.getSession();
+		if (!auth.testAdmin(session)) {
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+			return;
+		}
+		
 		// values passed from author registration form
 		String status = request.getParameter("status");
 		String id, name, nationality, birthdate, biography, link;
@@ -219,9 +265,50 @@ public class AuthorServlet extends HttpServlet {
 			response.sendRedirect("authorRegistration.jsp?errCode=invalid");
 		}
 	}
-	
+
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		Authentication auth = new Authentication();
+		HttpSession session = request.getSession();
+		if (!auth.testAdmin(session)) {
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+			return;
+		}
 		
+		AuthorDatabase author_db = new AuthorDatabase();
+		BookDatabase book_db = new BookDatabase();
+		String requestURi = request.getRequestURI();
+		String[] parts = requestURi.split("/");
+
+		if (parts.length == 0) {
+			request.setAttribute("error", "invalid");
+			request.getRequestDispatcher("/admin/authors").forward(request, response);
+			return;
+		} else {
+			String id = parts[parts.length - 1];
+			if (TestReg.matchInteger(id)) {
+				if (book_db.deleteBookAuthor(Integer.parseInt(id), null)) {
+					if (author_db.deleteAuthor(Integer.parseInt(id))) {
+						request.setAttribute("success", "delete");
+						request.getRequestDispatcher("/admin/authors").forward(request, response);
+						return;
+					} else {
+						request.setAttribute("error", "serverError");
+						request.getRequestDispatcher("/admin/authors").forward(request, response);
+						return;
+					}
+				} else {
+					request.setAttribute("error", "serverError");
+					request.getRequestDispatcher("/admin/authors").forward(request, response);
+					return;
+				}
+			} else {
+				request.setAttribute("error", "invalid");
+				request.getRequestDispatcher("/admin/authors").forward(request, response);
+				return;
+			}
+		}
 	}
 }
