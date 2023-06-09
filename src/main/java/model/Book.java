@@ -39,6 +39,22 @@ public class Book {
 	}
 
 	public Book(String iSBNNo, String title, int page, double price, String publisher, Date publicationDate, int qty,
+			short rating, String description, String image, String image3d, String status) {
+		ISBNNo = iSBNNo;
+		this.title = title;
+		this.page = page;
+		this.price = price;
+		this.publisher = publisher;
+		this.publicationDate = publicationDate;
+		this.qty = qty;
+		this.rating = rating;
+		this.description = description;
+		this.image = image;
+		image3D = image3d;
+		this.status = status;
+	}
+
+	public Book(String iSBNNo, String title, int page, double price, String publisher, Date publicationDate, int qty,
 			short rating, String description, String image, String image3d, String status, Author[] authors,
 			Genre[] genres) {
 		ISBNNo = iSBNNo;

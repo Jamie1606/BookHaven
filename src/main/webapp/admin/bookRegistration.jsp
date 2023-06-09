@@ -93,6 +93,10 @@
 			out.println("<script>alert('Error in linking genre and book! Please try with edit function in bookList!'); location='" + request.getContextPath() + "/admin/bookRegistration';</script>");
 			return;
 		}
+		else if (error.equals("duplicate")) {
+			out.println("<script>alert('This book is already registered in database!'); location='" + request.getContextPath() + "/admin/bookRegistration';</script>");
+			return;
+		}
 		else {
 			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
 			return;
@@ -208,13 +212,6 @@
 								<div class="col-md-12">
 									<label for="image3d" class="form-label">3D Image</label> <input
 										type="file" class="form-control" name="image3d" id="image3d" accept="image/*">
-								</div>
-								<div class="col-md-12">
-									<label for="status" class="form-label">Status</label>
-									<select id="status" name="status" class="form-control">
-										<option selected value="available">Available</option>
-										<option value="unavailable">Unavailable</option>
-									</select>
 								</div>
 								<div class="text-center">
 									<button id="btnSave" type="submit" class="btn btn-primary">Save</button>
