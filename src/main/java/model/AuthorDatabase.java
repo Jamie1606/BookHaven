@@ -58,7 +58,7 @@ public class AuthorDatabase {
 			// get database connection
 			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
 
-			String sqlStatement = "SELECT * FROM \"public\".\"Author\" WHERE \"AuthorID\" = ? LIMIT 1";
+			String sqlStatement = "SELECT * FROM \"public\".\"Author\" WHERE \"AuthorID\" = ?";
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 			st.setInt(1, id);
 

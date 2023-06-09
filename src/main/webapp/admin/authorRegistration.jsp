@@ -27,9 +27,9 @@
 	rel="stylesheet">
 
 <!-- Vendor CSS Files -->
-<link
-	href="<%=request.getContextPath()%>/assets/vendor/bootstrap/css/bootstrap.min.css"
-	rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <link
 	href="<%=request.getContextPath()%>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
 	rel="stylesheet">
@@ -144,7 +144,7 @@
 							<h5 class="card-title">Author Information</h5>
 
 							<!-- Multi Columns Form -->
-							<form class="row g-3"
+							<form id="authorForm" class="row g-3"
 								action="<%=request.getContextPath()%>/admin/authors"
 								method="post">
 								<input type="hidden" name="status" value="<%=status%>">
@@ -177,11 +177,12 @@
 								</div>
 								<div class="col-12">
 									<label for="link" class="form-label">Link</label> <input
-										type="text" class="form-control" name="link" id="link"
+										type="text" class="form-control" autocomplete="off"
+										name="link" id="link"
 										value="<%=(status == "update") ? author.getLink() : ""%>">
 								</div>
 								<div class="text-center">
-									<button type="submit" class="btn btn-primary"><%=(status == "update") ? "Update" : "Save"%></button>
+									<button id="btnSave" type="submit" class="btn btn-primary"><%=(status == "update") ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Multi Columns Form -->
@@ -202,10 +203,14 @@
 		class="bi bi-arrow-up-short"></i></a>
 
 	<!-- Vendor JS Files -->
+	<script src="<%= request.getContextPath() %>/js/vendor/jquery-2.2.4.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script src="<%= request.getContextPath() %>/js/vendor/bootstrap.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/apexcharts/apexcharts.min.js"></script>
-	<script
-		src="<%=request.getContextPath()%>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/chart.js/chart.umd.js"></script>
 	<script
@@ -222,6 +227,15 @@
 	<!-- Template Main JS File -->
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
 
+	<script>
+		$(document).ready(function() {							
+			$('#authorForm').submit(function(e) {
+				$('#btnSave').prop('disabled',true);
+				$('#btnSave').html('<div class="spinner-border text-dark" role="status"><span class="visually-hidden">Loading...</span></div>');
+				return true;
+			})
+		});
+	</script>
 </body>
 
 </html>

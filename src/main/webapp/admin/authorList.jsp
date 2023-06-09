@@ -102,7 +102,7 @@
 	String servlet = (String)request.getAttribute("servlet");
 	 request.removeAttribute("servlet");
 	if(servlet == null || !servlet.equals("true")) {
-		out.println("<script>alert('Unauthorized!'); location='" + request.getContextPath() + "/admin/adminHomePage.jsp';</script>");
+		out.println("<script>location='" + request.getContextPath() + "/admin/authors';</script>");
 		return;
 	}
 
