@@ -47,7 +47,7 @@ public class GenreServlet extends HttpServlet {
 		//[DEFINE] resultSet arrayList(Genre) and database
 		ArrayList<Genre> genreList=new ArrayList<Genre>();
 		GenreDatabase genre_db=new GenreDatabase();
-		
+		System.out.print("in servlet");
 		//[TRUE-database execution successful]
 		//[FALSE-fail]
 		boolean condition=genre_db.getGenre();
