@@ -148,6 +148,7 @@
 
 							<!-- Multi Columns Form -->
 							<form id="bookForm" class="row g-3" action="books" method="post" enctype="multipart/form-data">
+								<input type="hidden" value="register" name="status" >
 								<div class="col-md-12">
 									<label for="isbn" class="form-label">ISBN No.</label> <input
 										type="text" name="isbn" class="form-control" id="isbn" required>
