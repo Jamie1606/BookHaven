@@ -46,7 +46,7 @@ import model.GenreDatabase;
 /**
  * Servlet implementation class BookServlet
  */
-@WebServlet(urlPatterns = { "/admin/books", "/admin/bookRegistration", "/admin/bookUpdate", "/admin/bookDelete" })
+@WebServlet(urlPatterns = { "/admin/books", "/admin/bookRegistration", "/admin/bookUpdate/*", "/admin/bookDelete/*" })
 /**
  * Servlet implementation class BookServlet
  */
@@ -274,18 +274,19 @@ public class BookServlet extends HttpServlet {
 				String qty = fields.get("qty");
 				String publisher = fields.get("publisher");
 				String publicationdate = fields.get("publicationdate");
-				String status = "available";
+				String bookstatus = "available";
 				String description = fields.get("description");
+				String status = fields.get("status");
 
 				// checking null and empty values
 				if (isbn != null && !isbn.isEmpty() && title != null && !title.isEmpty() && page != null
 						&& !page.isEmpty() && price != null && !price.isEmpty() && qty != null && !qty.isEmpty()
 						&& publisher != null && !publisher.isEmpty() && publicationdate != null
-						&& !publicationdate.isEmpty() && status != null && !status.isEmpty() && authors.size() != 0
+						&& !publicationdate.isEmpty() && authors.size() != 0 && status != null && !status.isEmpty()
 						&& genres.size() != 0) {
 					
 					if(Integer.parseInt(qty) <= 0) {
-						status = "unavailable";
+						bookstatus = "unavailable";
 					}
 
 					// test with regular expressions
@@ -297,6 +298,18 @@ public class BookServlet extends HttpServlet {
 
 						BookDatabase book_db = new BookDatabase();
 						book_db.clearBookResult();
+						
+						if(status.equals("register")) {
+							
+						}
+						else if(status.equals("update")) {
+							
+						}
+						else {
+							request.setAttribute("error", "unauthorized");
+							request.getRequestDispatcher("/admin/bookList.jsp").forward(request, response);
+							return;
+						}
 
 						if (book_db.getBookByISBN(isbn)) {
 							ResultSet rs = book_db.getBookResult();
@@ -318,7 +331,7 @@ public class BookServlet extends HttpServlet {
 							}
 							if (book_db.registerBook(new Book(isbn, title, Integer.parseInt(page),
 									Double.parseDouble(price), publisher, publicationDate, Integer.parseInt(qty),
-									description, image, image3d, status))) {
+									description, image, image3d, bookstatus))) {
 								if (book_db.registerBookAuthor(authors, isbn)) {
 									if (book_db.registerBookGenre(genres, isbn)) {
 										request.setAttribute("success", "register");
