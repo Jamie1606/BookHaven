@@ -77,10 +77,10 @@
 	if (error != null) {
 		if (error.equals("invalid")) {
 			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath()
-			+ "/admin/authors';</script>");
+			+ "/admin/books';</script>");
 		} else if (error.equals("serverError")) {
 			out.println(
-			"<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/authors';</script>");
+			"<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/books';</script>");
 		} else if (error.equals("serverRetrieveError")) {
 			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
 			+ "/admin/adminHomePage.jsp';</script>");
@@ -98,7 +98,7 @@
 	if (success != null) {
 		if (success.equals("delete")) {
 			out.println("<script>alert('The author is successfully deleted!'); location='" + request.getContextPath()
-			+ "/admin/authors';</script>");
+			+ "/admin/books';</script>");
 		}
 	}
 
