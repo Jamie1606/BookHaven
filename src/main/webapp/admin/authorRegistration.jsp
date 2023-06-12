@@ -108,8 +108,14 @@
 	if (status == null) {
 		status = "register";
 	} else {
-		author = (Author) request.getAttribute("author");
-		request.removeAttribute("author");
+		if(status.equals("update")) {
+			author = (Author) request.getAttribute("author");
+			request.removeAttribute("author");
+		}
+		else {
+			
+		}
+		
 	}
 
 	// calendar for author birthdate
@@ -149,40 +155,40 @@
 								method="post">
 								<input type="hidden" name="status" value="<%=status%>">
 								<input type="hidden" name="id"
-									value="<%=(status == "update") ? author.getAuthorID() : ""%>">
+									value="<%=(status.equals("update")) ? author.getAuthorID() : ""%>">
 								<div class="col-md-4">
 									<label for="name" class="form-label">Name</label> <input
 										type="text" class="form-control" name="name" id="name"
-										value="<%=(status == "update") ? author.getName() : ""%>"
+										value="<%=(status.equals("update")) ? author.getName() : ""%>"
 										required>
 								</div>
 								<div class="col-md-4">
 									<label for="nationality" class="form-label">Nationality</label>
 									<input type="text" class="form-control" name="nationality"
-										value="<%=(status == "update") ? author.getNationality() : ""%>"
+										value="<%=(status.equals("update")) ? author.getNationality() : ""%>"
 										id="nationality">
 								</div>
 
 								<div class="col-md-4">
 									<label for="birthdate" class="form-label">BirthDate</label> <input
 										type="date" class="form-control" name="birthdate"
-										value="<%=(status == "update") ? author.getBirthDate() : ""%>"
+										value="<%=(status.equals("update")) ? author.getBirthDate() : ""%>"
 										id="birthdate" max="<%=date_str%>">
 								</div>
 
 								<div class="col-12">
 									<label for="biography" class="form-label">Biography</label>
 									<textarea rows="10" cols="10" class="form-control"
-										name="biography" id="biography"><%=(status == "update") ? author.getBiography() : ""%></textarea>
+										name="biography" id="biography"><%=(status.equals("update")) ? author.getBiography() : ""%></textarea>
 								</div>
 								<div class="col-12">
 									<label for="link" class="form-label">Link</label> <input
 										type="text" class="form-control" autocomplete="off"
 										name="link" id="link"
-										value="<%=(status == "update") ? author.getLink() : ""%>">
+										value="<%=(status.equals("update")) ? author.getLink() : ""%>">
 								</div>
 								<div class="text-center">
-									<button id="btnSave" type="submit" class="btn btn-primary"><%=(status == "update") ? "Update" : "Save"%></button>
+									<button id="btnSave" type="submit" class="btn btn-primary"><%=(status.equals("update")) ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Multi Columns Form -->

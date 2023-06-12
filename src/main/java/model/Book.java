@@ -39,7 +39,6 @@ public class Book {
 	}
 
 	public Book(String iSBNNo, String title, double price, String description, String image) {
-		super();
 		ISBNNo = iSBNNo;
 		this.title = title;
 		this.price = price;
