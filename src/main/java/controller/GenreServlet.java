@@ -21,6 +21,7 @@ import org.apache.commons.text.StringEscapeUtils;
 
 //[IMPORT FROM MODEL]
 import model.Book;
+import model.BookDatabase;
 import model.Genre;
 import model.GenreDatabase;
 
@@ -30,95 +31,103 @@ import model.GenreDatabase;
 @WebServlet("/GenreServlet")
 public class GenreServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public GenreServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
-		System.out.print("in servlet\n");
-		String formName = request.getParameter("formName");
-		if(formName!=null) {
-		if(formName.equals("genreListForm")) {
-			System.out.print("in genreListForms\n");
-			//[DEFINE] database
-			GenreDatabase genre_db=new GenreDatabase();
-		int genreID = Integer.valueOf(request.getParameter("genre"));
-			ArrayList<Book> bookList=new ArrayList<Book>();
-			//[TRUE-database execution successful]
-			//[FALSE-fail]
-			boolean condition=genre_db.getBookByGenreID(genreID);
-			System.out.println(condition);
-			if(condition) {
-				System.out.println("getBook success");
-				//[ASSIGN RESULT]
-				ResultSet rs=genre_db.getGenreResult();
-				try {
-					while(rs.next()) {
-						//ESCAPE:StringEscapeUtils.escapeHtml4
-						bookList.add(new Book(rs.getString("ISBNNo"), rs.getString("Title"), rs.getDouble("Price"), rs.getString("Description"), rs.getString("Image")));
-					}
-				}
-				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					request.setAttribute("errCode", "serverError");
-				}
-			}else {
-				request.setAttribute("errCode", "serverError");
-			}
-			
-			//[SEND arrayList to bookGenre.jsp]
-			request.setAttribute("bookList",bookList);
-			request.setAttribute("result",true);
-			request.getRequestDispatcher("bookGenre.jsp").forward(request,response);
-			System.out.println("before return");
-		}
+	public GenreServlet() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
-		//[DEFINE] database
-		GenreDatabase genre_db=new GenreDatabase();
-		//[DEFINE] resultSet arrayList(Genre)
-		ArrayList<Genre> genreList=new ArrayList<Genre>();
-		//[TRUE-database execution successful]
-		//[FALSE-fail]
-		boolean condition=genre_db.getGenre();
-		if(condition) {
-			//[ASSIGN RESULT]
-			ResultSet rs=genre_db.getGenreResult();
-			try {
-				while(rs.next()) {
-					//ESCAPE:StringEscapeUtils.escapeHtml4
-					genreList.add(new Genre(rs.getInt("GenreID"),(StringEscapeUtils.escapeHtml4(rs.getString("Genre")))));
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+
+		System.out.print("in servlet\n");
+		String formName = request.getParameter("formName");
+		if (formName != null) {
+			if (formName.equals("genreListForm")) {
+				System.out.print("in genreListForms\n");
+				
+				// [DEFINE] database
+				GenreDatabase genre_db = new GenreDatabase();
+				BookDatabase book_db = new BookDatabase();
+				book_db.clearBookResult();
+				
+				int genreID = Integer.valueOf(request.getParameter("genre"));
+				ArrayList<Book> bookList = new ArrayList<Book>();
+				// [TRUE-database execution successful]
+				// [FALSE-fail]
+
+				if (book_db.getBookByGenreID(genreID)) {
+					System.out.println("getBook success");
+					// [ASSIGN RESULT]
+					ResultSet rs = book_db.getBookResult();
+					try {
+						while (rs.next()) {
+							// ESCAPE:StringEscapeUtils.escapeHtml4
+							bookList.add(new Book(rs.getString("ISBNNo"), rs.getString("Title"), rs.getDouble("Price"),
+									rs.getString("Description"), rs.getString("Image")));
+						}
+					} catch (Exception e) {
+						System.out.println(e);
+						// TODO Auto-generated catch block
+						request.setAttribute("errCode", "serverError");
+					}
+				} else {
+					request.setAttribute("errCode", "serverError");
 				}
+
+				// [SEND arrayList to bookGenre.jsp]
+				request.setAttribute("bookList", bookList);
+				request.setAttribute("result", true);
+				request.getRequestDispatcher("bookGenre.jsp").forward(request, response);
+				return;
 			}
-			catch (SQLException e) {
+		}
+
+		// [DEFINE] database
+		GenreDatabase genre_db = new GenreDatabase();
+		// [DEFINE] resultSet arrayList(Genre)
+		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		// [TRUE-database execution successful]
+		// [FALSE-fail]
+		boolean condition = genre_db.getGenre();
+		if (condition) {
+			// [ASSIGN RESULT]
+			ResultSet rs = genre_db.getGenreResult();
+			try {
+				while (rs.next()) {
+					// ESCAPE:StringEscapeUtils.escapeHtml4
+					genreList.add(
+							new Genre(rs.getInt("GenreID"), (StringEscapeUtils.escapeHtml4(rs.getString("Genre")))));
+				}
+			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				request.setAttribute("errCode", "serverError");
 			}
-		}else {
+		} else {
 			request.setAttribute("errCode", "serverError");
 		}
-		
-		//[SEND arrayList to bookGenre.jsp]
-		request.setAttribute("genreList",genreList);
-		request.setAttribute("status",true);
-		request.getRequestDispatcher("bookGenre.jsp").forward(request,response);
-		System.out.println("get genreList");
+
+		// [SEND arrayList to bookGenre.jsp]
+		request.setAttribute("genreList", genreList);
+		request.setAttribute("status", true);
+		request.getRequestDispatcher("bookGenre.jsp").forward(request, response);
+		return;
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

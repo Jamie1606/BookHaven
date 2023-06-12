@@ -18,7 +18,7 @@
 <!-- meta character set -->
 <meta charset="UTF-8">
 <!-- Site Title -->
-<title>Book</title>
+<title>BookHaven | Book</title>
 
 <link
 	href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700"
@@ -38,7 +38,7 @@
 
 	<%@ include file="header.jsp"%><!-- #header -->
 	<%
-	if (request.getAttribute("status")==null) {
+	if (request.getAttribute("status") == null) {
 	%>
 	<jsp:include page="/GenreServlet" />
 	<%
@@ -64,20 +64,21 @@
 							<%
 							if (genreList != null) {
 							%>
-								<form id="genreListForm" method="get" action="<%=request.getContextPath()%>/GenreServlet">
+							<form id="genreListForm" method="get"
+								action="<%=request.getContextPath()%>/GenreServlet">
 								<input type="hidden" name="formName" value="genreListForm" />
-							<%
+								<%
 								for (int i = 0; i < genreList.size(); i++) {
-							%>
-							<input type="submit" value="<%=genreList.get(i).getGenre()%>"
-								class="btn btn-light mt-10 ml-10">
-							<input name="genre" type="hidden" value="<%=genreList.get(i).getGenreID()%>">
-							<%
-							}
+								%>
+								<input type="submit" value="<%=genreList.get(i).getGenre()%>"
+									class="btn btn-light mt-10 ml-10"> <input name="genre"
+									type="hidden" value="<%=genreList.get(i).getGenreID()%>">
+								<%
+								}
 								out.print("</form>");
-							}
-							%>
-
+								}
+								%>
+							
 						</div>
 					</div>
 				</div>
@@ -95,32 +96,34 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="row">
-			<!-- DYNAMIC RESULT -->
-			<% 
-			if(request.getAttribute("result")!=null){
-				ArrayList<Book> bookList = (ArrayList<Book>) request.getAttribute("bookList");
-				for (int i = 0; i < bookList.size(); i++) {
-			%>
-			<div class="col-lg-3 col-md-4 col-sm-6">
+				<!-- DYNAMIC RESULT -->
+				<%
+				if (request.getAttribute("result") != null) {
+					ArrayList<Book> bookList = (ArrayList<Book>) request.getAttribute("bookList");
+					for (int i = 0; i < bookList.size(); i++) {
+				%>
+				<div class="col-lg-3 col-md-4 col-sm-6">
 					<div class="single-course item">
-						<img class="img-fluid" src="<%=bookList.get(i).getImage()%>" alt="">
+						<img class="img-fluid" src="<%=bookList.get(i).getImage()%>"
+							alt="">
 						<p class="sale-btn">For Sale</p>
 						<div class="details">
 							<a href="#"><h4>
-									<%= bookList.get(i).getTitle()%> <span class="price float-right">$25</span>
+									<%=bookList.get(i).getTitle()%>
+									<span class="price float-right">$25</span>
 								</h4></a>
-							<p><%= bookList.get(i).getPrice()%></p>
+							<p><%=bookList.get(i).getPrice()%></p>
 						</div>
 					</div>
 				</div>
-			<%
-			}
-			}
-			%>
-			<!-- DYNAMIC RESULT END-->
-			
+				<%
+				}
+				}
+				%>
+				<!-- DYNAMIC RESULT END-->
+
 				<div class="col-lg-3 col-md-4 col-sm-6">
 					<div class="single-course item">
 						<img class="img-fluid" src="img/c1.jpg" alt="">
@@ -212,8 +215,8 @@
 				interest documentary, or short film to show off their creative
 				prowess. Many have great ideas and want to “wow” the<sup>Superscript</sup>
 				scene, or video renters with their big project. But once you have
-				the<sub>Subscript</sub> “in the can” (no easy feat), how do you move
-				from a
+				the<sub>Subscript</sub> “in the can” (no easy feat), how do you
+				move from a
 				<del>Strike</del>
 				through of master DVDs with the <u>“Underline”</u> marked
 				hand-written title inside a secondhand CD case, to a pile of
@@ -427,8 +430,8 @@
 				<h3 class="mb-30">Block Quotes</h3>
 				<div class="row">
 					<div class="col-lg-12">
-						<blockquote class="generic-blockquote">“Recently, the
-							US Federal government banned online casinos from operating in
+						<blockquote class="generic-blockquote">“Recently,
+							the US Federal government banned online casinos from operating in
 							America by making it illegal to transfer money to them through
 							any US bank or payment system. As a result of this law, most of
 							the popular online casino networks such as Party Gaming and

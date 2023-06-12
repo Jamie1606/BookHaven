@@ -174,6 +174,29 @@ public class BookDatabase {
 		}
 		// select bookauthor data from database (end)
 	}
+	
+	// get book data from database by genreid
+	public boolean getBookByGenreID(int id) {
+		// select book data from database by genreID (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT b.*, bg.\"GenreID\" FROM \"public\".\"BookGenre\" AS bg, \"public\".\"Book\" AS b WHERE bg.\"ISBNNo\" = b.\"ISBNNo\" AND bg.\"GenreID\" = ?";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setInt(1, id);
+
+			bookResultSet = st.executeQuery();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// select book data from database by genreID (end)
+	}
 
 	// get bookgenre data from database
 	public boolean getBookGenreByISBN(String isbn) {
