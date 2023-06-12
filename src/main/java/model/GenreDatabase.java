@@ -22,7 +22,7 @@ public class GenreDatabase {
 	private final String db_username = "mhekoapk";
 	private final String db_password = "o9w2O25Afleif9CCVCEBDQZX4tT79MH7";
 	private ResultSet genreResultSet;
-
+	private ResultSet bookResultSet;
 	
 	//[GENRE DATA FROM DATABSE]
 
@@ -61,4 +61,33 @@ public class GenreDatabase {
 	public ResultSet getGenreResult() {
 		return genreResultSet;
 	}
+	
+	//Retrieve books according to specific genre
+	public boolean getBookByGenreID(int ID) {
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT * FROM \"public\".\"Book\" b JOIN \"public\".\"BookGenre\" g ON b.\"ISBNNo\" = g.\"ISBNNo\" WHERE g.\"GenreID\" = ? ;";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setInt(1, ID);
+
+			bookResultSet = st.executeQuery();
+			System.out.print(bookResultSet);
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		
+	}//Retrieve books according to specific genre (end)
+	
+	//[RETURN BOOK RESULTSET]
+	public ResultSet getBookResult() {
+		return bookResultSet;
+	}
+	
 }
