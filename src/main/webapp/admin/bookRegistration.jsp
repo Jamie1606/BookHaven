@@ -1,3 +1,4 @@
+
 <%
 //Author: Zay Yar Tun
 //Admin No: 2235035
@@ -7,7 +8,8 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="java.util.*, java.text.*, model.Author, model.Genre"%>
+<%@ page
+	import="java.util.*, java.text.*, model.Author, model.Genre, model.Book"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,29 +28,52 @@
 	rel="stylesheet">
 
 <!-- Vendor CSS Files -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<link href="<%=request.getContextPath()%>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
 	rel="stylesheet">
-<link href="<%=request.getContextPath()%>/assets/vendor/boxicons/css/boxicons.min.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/boxicons/css/boxicons.min.css"
 	rel="stylesheet">
-<link href="<%=request.getContextPath()%>/assets/vendor/quill/quill.snow.css" rel="stylesheet">
-<link href="<%=request.getContextPath()%>/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-<link href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-<link href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.snow.css"
 	rel="stylesheet">
-	
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.bubble.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
+	rel="stylesheet">
+
 <!-- bootstrap-select -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-<script src="<%=request.getContextPath()%>/assets/js/bootstrap-select.js"></script>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+	integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
+	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"
+	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+	crossorigin="anonymous"></script>
+<script
+	src="<%=request.getContextPath()%>/assets/js/bootstrap-select.js"></script>
 <!-- bootstrap-select -->
 
 <!-- Template Main CSS File -->
-<link href="<%=request.getContextPath()%>/assets/css/style.css" rel="stylesheet">
-<link rel="icon" type="image/png" href="<%=request.getContextPath()%>/img/logo.png">
+<link href="<%=request.getContextPath()%>/assets/css/style.css"
+	rel="stylesheet">
+<link rel="icon" type="image/png"
+	href="<%=request.getContextPath()%>/img/logo.png">
 
 <!-- =======================================================
   * Template Name: NiceAdmin
@@ -72,51 +97,83 @@
 	request.removeAttribute("success");
 	if (error != null) {
 		if (error.equals("invalid")) {
-			out.println("<script>alert('Invalid Request or Data!'); location='" + request.getContextPath() + "/admin/bookRegistration';</script>");
-		}
-		else if (error.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/bookRegistration';</script>");
-		}
-		else if (error.equals("upload")) {
-			out.println("<script>alert('Error in uploading data!'); location='" + request.getContextPath() + "/admin/bookRegistration';</script>");
+			out.println("<script>alert('Invalid Request or Data!'); location='" + request.getContextPath()
+			+ "/admin/bookRegistration';</script>");
+		} else if (error.equals("serverError")) {
+			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
+			+ "/admin/bookRegistration';</script>");
+		} else if (error.equals("upload")) {
+			out.println("<script>alert('Error in uploading data!'); location='" + request.getContextPath()
+			+ "/admin/bookRegistration';</script>");
 			return;
-		}
-		else if (error.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+		} else if (error.equals("unauthorized")) {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
+			+ "/signin.jsp';</script>");
 			return;
-		}
-		else if (error.equals("authorError")) {
-			out.println("<script>alert('Error in linking author and book! Please try with edit function in bookList!'); location='" + request.getContextPath() + "/admin/bookRegistration';</script>");
+		} else if (error.equals("authorError")) {
+			out.println(
+			"<script>alert('Error in linking author and book! Please try with edit function in bookList!'); location='"
+					+ request.getContextPath() + "/admin/bookRegistration';</script>");
 			return;
-		}
-		else if (error.equals("genreError")) {
-			out.println("<script>alert('Error in linking genre and book! Please try with edit function in bookList!'); location='" + request.getContextPath() + "/admin/bookRegistration';</script>");
+		} else if (error.equals("genreError")) {
+			out.println(
+			"<script>alert('Error in linking genre and book! Please try with edit function in bookList!'); location='"
+					+ request.getContextPath() + "/admin/bookRegistration';</script>");
 			return;
-		}
-		else if (error.equals("duplicate")) {
-			out.println("<script>alert('This book is already registered in database!'); location='" + request.getContextPath() + "/admin/bookRegistration';</script>");
+		} else if (error.equals("duplicate")) {
+			out.println("<script>alert('This book is already registered in database!'); location='"
+			+ request.getContextPath() + "/admin/bookRegistration';</script>");
 			return;
-		}
-		else {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+		} else {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
+			+ "/signin.jsp';</script>");
 			return;
 		}
 	}
-	if(success != null) {
-		if(success.equals("register")) {
-			out.println("<script>alert('Book data is successfully added!'); location='" + request.getContextPath() + "/admin/bookRegistration';</script>");
+	if (success != null) {
+		if (success.equals("register")) {
+			out.println("<script>alert('Book data is successfully added!'); location='" + request.getContextPath()
+			+ "/admin/bookRegistration';</script>");
+		}
+		if (success.equals("update")) {
+			out.println("<script>alert('Book data is successfully updated!'); location='" + request.getContextPath()
+			+ "/admin/books';</script>");
 		}
 	}
-	
-	String servlet = (String)request.getAttribute("servlet");
-	if(servlet == null || !servlet.equals("true")) {
+
+	String servlet = (String) request.getAttribute("servlet");
+	if (servlet == null || !servlet.equals("true")) {
 		out.println("<script>location='" + request.getContextPath() + "/admin/bookRegistration';</script>");
 		return;
 	}
-	
+
 	// retrieve author and genre list from request attributes sent from book servlet
-	ArrayList<Author> authorList = (ArrayList<Author>)request.getAttribute("authorList");
-	ArrayList<Genre> genreList = (ArrayList<Genre>)request.getAttribute("genreList");
+
+	String status = (String) request.getAttribute("status");
+	request.removeAttribute("status");
+	Book book = null;
+	ArrayList<Author> bookAuthorList = new ArrayList<Author>();;
+	ArrayList<Genre> bookGenreList = new ArrayList<Genre>();
+
+	if (status == null) {
+		status = "register";
+	} else {
+		if (status.equals("update")) {
+			book = (Book) request.getAttribute("book");
+			request.removeAttribute("book");
+			bookAuthorList = (ArrayList<Author>) request.getAttribute("bookAuthorList");
+			request.removeAttribute("bookAuthorList");
+			bookGenreList = (ArrayList<Genre>) request.getAttribute("bookGenreList");
+			request.removeAttribute("bookGenreList");
+		} else {
+
+		}
+	}
+
+	ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
+	ArrayList<Genre> genreList = (ArrayList<Genre>) request.getAttribute("genreList");
+	request.removeAttribute("authorList");
+	request.removeAttribute("genreList");
 
 	Calendar calendar = Calendar.getInstance();
 	calendar.setTime(new Date());
@@ -147,75 +204,124 @@
 							<h5 class="card-title">Book Information</h5>
 
 							<!-- Multi Columns Form -->
-							<form id="bookForm" class="row g-3" action="books" method="post" enctype="multipart/form-data">
-								<input type="hidden" value="register" name="status" >
+							<form id="bookForm" class="row g-3" action="books" method="post"
+								enctype="multipart/form-data">
+								<input type="hidden" value="<%=status%>" name="status">
 								<div class="col-md-12">
 									<label for="isbn" class="form-label">ISBN No.</label> <input
-										type="text" name="isbn" class="form-control" id="isbn" required>
+										type="text" name="isbn" class="form-control" id="isbn"
+										value="<%=status.equals("update") ? book.getISBNNo() : ""%>"
+										required <%=status.equals("update") ? "readonly" : ""%>>
 								</div>
 								<div class="col-md-12">
 									<label for="title" class="form-label">Title</label> <input
-										type="text" name="title" class="form-control" id="title" required>
+										type="text" name="title" class="form-control" id="title"
+										value="<%=status.equals("update") ? book.getTitle() : ""%>"
+										required>
 								</div>
 
 								<div class="col-md-4">
 									<label for="page" class="form-label">Page</label> <input
-										type="number" name="page" class="form-control" id="page" min="1" required>
+										type="number" name="page" class="form-control" id="page"
+										min="1"
+										value="<%=status.equals("update") ? book.getPage() : ""%>"
+										required>
 								</div>
 								<div class="col-md-4">
 									<label for="price" class="form-label">Price</label> <input
-										type="number" name="price" step=".01" min="5" class="form-control" id="price" required>
+										type="number" name="price" step=".01" min="5"
+										value="<%=status.equals("update") ? book.getPrice() : ""%>"
+										class="form-control" id="price" required>
 								</div>
 								<div class="col-md-4">
 									<label for="qty" class="form-label">Qty</label> <input
-										type="number" name="qty" class="form-control" id="qty" min="0" required>
+										type="number" name="qty" class="form-control" id="qty"
+										value="<%=status.equals("update") ? book.getQty() : ""%>"
+										min="0" required>
 								</div>
 
 								<div class="col-md-6">
 									<label for="author" class="form-label">Author</label> <select
-										id="author" name="author" class="form-control selectpicker" multiple="multiple" required>
+										id="author" name="author" class="form-control selectpicker"
+										multiple="multiple" required>
 										<%
-											for(Author author: authorList) {
+										for (Author author : authorList) {
+											boolean isSelected = false;
+											for(Author bookAuthor: bookAuthorList) {
+												if(author.getAuthorID() == bookAuthor.getAuthorID()) {
+													isSelected = true;
+													break;
+												}
+											}
+											if(isSelected) {
+												out.println("<option value='" + author.getAuthorID() + "' selected>" + author.getName() + "</option>");
+											}
+											else {
 												out.println("<option value='" + author.getAuthorID() + "'>" + author.getName() + "</option>");
 											}
+										}
 										%>
 									</select>
 								</div>
 								<div class="col-md-6">
 									<label for="genre" class="form-label">Genre</label> <select
-										id="genre" name="genre" class="form-control selectpicker" multiple="multiple" required>
+										id="genre" name="genre" class="form-control selectpicker"
+										multiple="multiple" required>
 										<%
-											for(Genre genre: genreList) {
+										for (Genre genre : genreList) {
+											boolean isSelected = false;
+											for(Genre bookGenre: bookGenreList) {
+												if(genre.getGenreID() == bookGenre.getGenreID()) {
+													isSelected = true;
+													break;
+												}
+											}
+											if(isSelected) {
+												out.println("<option value='" + genre.getGenreID() + "' selected>" + genre.getGenre() + "</option>");
+											}
+											else {
 												out.println("<option value='" + genre.getGenreID() + "'>" + genre.getGenre() + "</option>");
 											}
+										}
 										%>
 									</select>
 								</div>
 
 								<div class="col-md-6">
 									<label for="publisher" class="form-label">Publisher</label> <input
-										type="text" name="publisher" class="form-control" id="publisher" required>
+										type="text" name="publisher" class="form-control"
+										value="<%=status.equals("update") ? book.getPublisher() : ""%>"
+										id="publisher" required>
 								</div>
 								<div class="col-md-6">
 									<label for="publicationdate" class="form-label">Publication
 										Date</label> <input type="date" class="form-control"
-										id="publicationdate" name="publicationdate" max="<%=dateStr%>" required>
+										id="publicationdate" name="publicationdate" max="<%=dateStr%>"
+										value="<%=status.equals("update") ? book.getPublicationDate() : ""%>"
+										required>
 								</div>
 
 								<div class="col-12">
 									<label for="description" class="form-label">Description</label>
-									<textarea class="form-control" name="description" id="description"></textarea>
+									<textarea rows="10" cols="10" class="form-control"
+										name="description" id="description"><%=status.equals("update") ? book.getDescription() : ""%></textarea>
 								</div>
 								<div class="col-12">
 									<label for="image" class="form-label">Image</label> <input
-										type="file" class="form-control" name="image" id="image" accept="image/*">
+										type="file" class="form-control" name="image" id="image"
+										accept="image/*"> <input type="hidden"
+										value="<%=status.equals("update") ? book.getImage() : ""%>"
+										name="oldimage">
 								</div>
 								<div class="col-md-12">
 									<label for="image3d" class="form-label">3D Image</label> <input
-										type="file" class="form-control" name="image3d" id="image3d" accept="image/*">
+										type="file" class="form-control" name="image3d" id="image3d"
+										accept="image/*"> <input type="hidden"
+										value="<%=status.equals("update") ? book.getImage3D() : ""%>"
+										name="oldimage3d">
 								</div>
 								<div class="text-center">
-									<button id="btnSave" type="submit" class="btn btn-primary">Save</button>
+									<button id="btnSave" type="submit" class="btn btn-primary"><%=(status.equals("update")) ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Multi Columns Form -->
@@ -229,35 +335,50 @@
 	</main>
 	<!-- End #main -->
 
-	<%@ include file="adminfooter.jsp" %>
+	<%@ include file="adminfooter.jsp"%>
 
 	<a href="#"
 		class="back-to-top d-flex align-items-center justify-content-center"><i
 		class="bi bi-arrow-up-short"></i></a>
 
 	<!-- Vendor JS Files -->
-	<script src="<%=request.getContextPath()%>/assets/vendor/apexcharts/apexcharts.min.js"></script>
-	<script src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
-	<script src="<%=request.getContextPath()%>/assets/vendor/chart.js/chart.umd.js"></script>
-	<script src="<%=request.getContextPath()%>/assets/vendor/echarts/echarts.min.js"></script>
-	<script src="<%=request.getContextPath()%>/assets/vendor/quill/quill.min.js"></script>
-	<script src="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
-	<script src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
-	<script src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/apexcharts/apexcharts.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/chart.js/chart.umd.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/echarts/echarts.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/quill/quill.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
 
 	<!-- Template Main JS File -->
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
-	
+
 	<script>
-		$(document).ready(function() {
-			$('#author').selectpicker();
-			$('#genre').selectpicker();
-			$('#bookForm').submit(function(e) {
-				$('#btnSave').prop('disabled',true);
-				$('#btnSave').html('<div class="spinner-border text-dark" role="status"><span class="visually-hidden">Loading...</span></div>');
-				return true;
-			});
-		})
+		$(document)
+				.ready(
+						function() {
+							$('#author').selectpicker();
+							$('#genre').selectpicker();
+							$('#bookForm')
+									.submit(
+											function(e) {
+												$('#btnSave').prop('disabled',
+														true);
+												$('#btnSave')
+														.html(
+																'<div class="spinner-border text-dark" role="status"><span class="visually-hidden">Loading...</span></div>');
+												return true;
+											});
+						})
 	</script>
 
 </body>

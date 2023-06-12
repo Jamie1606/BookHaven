@@ -10,6 +10,10 @@ public class Genre {
 	private int genreID;
 	private String genre;
 	
+	public Genre(int genreID) {
+		this.genreID = genreID;
+	}
+	
 	public Genre(int genreID, String genre) {
 		this.genreID = genreID;
 		this.genre = genre;
