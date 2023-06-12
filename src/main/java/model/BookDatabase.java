@@ -63,6 +63,45 @@ public class BookDatabase {
 		// insert data into database (end)
 	}
 
+	// update book in database
+	public boolean updateBook(Book book) {
+		// update data in database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "UPDATE \"public\".\"Book\" SET \"Title\" = ?, \"Page\" = ?, \"Price\" = ?, \"Publisher\" = ?, \"PublicationDate\" = ?, \"Qty\" = ?, \"Description\" = ?, \"Image\" = ?, \"Image3D\" = ?, \"Status\" = ? WHERE \"ISBNNo\" = ?";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setString(1, book.getTitle());
+			st.setInt(2, book.getPage());
+			st.setDouble(3, book.getPrice());
+			st.setString(4, book.getPublisher());
+			st.setDate(5, Date.valueOf(book.getPublicationDate().toString()));
+			st.setInt(6, book.getQty());
+			st.setString(7, book.getDescription());
+			st.setString(8, book.getImage());
+			st.setString(9, book.getImage3D());
+			st.setString(10, book.getStatus());
+			st.setString(11, book.getISBNNo());
+
+			int rowsAffected = st.executeUpdate();
+
+			db.close();
+
+			if (rowsAffected == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		// update data in database (end)
+	}
+
 	// set resultset to null
 	public void clearBookResult() {
 		this.bookResultSet = null;
@@ -111,6 +150,52 @@ public class BookDatabase {
 			return false;
 		}
 		// select book data from database (end)
+	}
+
+	// get bookauthor data from database
+	public boolean getBookAuthorByISBN(String isbn) {
+		// select bookauthor data from database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT * FROM \"public\".\"BookAuthor\" WHERE \"ISBNNo\" = ?";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setString(1, isbn);
+
+			bookResultSet = st.executeQuery();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// select bookauthor data from database (end)
+	}
+
+	// get bookgenre data from database
+	public boolean getBookGenreByISBN(String isbn) {
+		// select bookgenre data from database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT * FROM \"public\".\"BookGenre\" WHERE \"ISBNNo\" = ?";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setString(1, isbn);
+
+			bookResultSet = st.executeQuery();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// select bookgenre data from database (end)
 	}
 
 	// get book resultset

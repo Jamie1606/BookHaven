@@ -107,7 +107,7 @@ public class AuthorServlet extends HttpServlet {
 			doDelete(request, response);
 		} else if (requestURi.contains("admin/authors")) {
 
-			ArrayList<Author> authorlist = new ArrayList<Author>();
+			ArrayList<Author> authorList = new ArrayList<Author>();
 
 			boolean condition = author_db.getAuthor();
 			if (condition) {
@@ -115,7 +115,7 @@ public class AuthorServlet extends HttpServlet {
 				try {
 					while (rs.next()) {
 						// sanitizing output by escaping html special characters
-						authorlist.add(new Author(rs.getInt("AuthorID"),
+						authorList.add(new Author(rs.getInt("AuthorID"),
 								StringEscapeUtils.escapeHtml4(rs.getString("Name")),
 								StringEscapeUtils.escapeHtml4(rs.getString("Nationality")), rs.getDate("BirthDate"),
 								StringEscapeUtils.escapeHtml4(rs.getString("Biography")),
@@ -129,7 +129,7 @@ public class AuthorServlet extends HttpServlet {
 			}
 
 			// set the author arraylist as an attribute
-			request.setAttribute("authorList", authorlist);
+			request.setAttribute("authorList", authorList);
 			request.setAttribute("servlet", "true");
 
 			// forward the data to the jsp

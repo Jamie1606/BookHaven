@@ -15,6 +15,10 @@ public class Author {
 	private String biography;
 	private String link;
 	
+	public Author(int authorID) {
+		this.authorID = authorID;
+	}
+	
 	public Author(String name, String nationality, Date birthDate, String biography, String link) {
 		this.name = name;
 		this.nationality = nationality;
