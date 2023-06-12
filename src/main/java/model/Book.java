@@ -38,6 +38,14 @@ public class Book {
 		this.status = status;
 	}
 
+	public Book(String iSBNNo, String title, double price, String description, String image) {
+		ISBNNo = iSBNNo;
+		this.title = title;
+		this.price = price;
+		this.description = description;
+		this.image = image;
+	}
+
 	public Book(String iSBNNo, String title, int page, double price, String publisher, Date publicationDate, int qty,
 			short rating, String description, String image, String image3d, String status) {
 		ISBNNo = iSBNNo;
