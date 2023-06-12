@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.text.StringEscapeUtils;
 
 //[IMPORT FROM MODEL]
+import model.Book;
 import model.Genre;
 import model.GenreDatabase;
 
@@ -44,10 +45,49 @@ public class GenreServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		//[DEFINE] resultSet arrayList(Genre) and database
-		ArrayList<Genre> genreList=new ArrayList<Genre>();
+		System.out.print("in servlet\n");
+		String formName = request.getParameter("formName");
+		if(formName!=null) {
+		if(formName.equals("genreListForm")) {
+			System.out.print("in genreListForms\n");
+			//[DEFINE] database
+			GenreDatabase genre_db=new GenreDatabase();
+		int genreID = Integer.valueOf(request.getParameter("genre"));
+			ArrayList<Book> bookList=new ArrayList<Book>();
+			//[TRUE-database execution successful]
+			//[FALSE-fail]
+			boolean condition=genre_db.getBookByGenreID(genreID);
+			System.out.println(condition);
+			if(condition) {
+				System.out.println("getBook success");
+				//[ASSIGN RESULT]
+				ResultSet rs=genre_db.getGenreResult();
+				try {
+					while(rs.next()) {
+						//ESCAPE:StringEscapeUtils.escapeHtml4
+						bookList.add(new Book(rs.getString("ISBNNo"), rs.getString("Title"), rs.getDouble("Price"), rs.getString("Description"), rs.getString("Image")));
+					}
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					request.setAttribute("errCode", "serverError");
+				}
+			}else {
+				request.setAttribute("errCode", "serverError");
+			}
+			
+			//[SEND arrayList to bookGenre.jsp]
+			request.setAttribute("bookList",bookList);
+			request.setAttribute("result",true);
+			request.getRequestDispatcher("bookGenre.jsp").forward(request,response);
+			System.out.println("before return");
+		}
+	}
+
+		//[DEFINE] database
 		GenreDatabase genre_db=new GenreDatabase();
-		System.out.print("in servlet");
+		//[DEFINE] resultSet arrayList(Genre)
+		ArrayList<Genre> genreList=new ArrayList<Genre>();
 		//[TRUE-database execution successful]
 		//[FALSE-fail]
 		boolean condition=genre_db.getGenre();
@@ -72,6 +112,7 @@ public class GenreServlet extends HttpServlet {
 		request.setAttribute("genreList",genreList);
 		request.setAttribute("status",true);
 		request.getRequestDispatcher("bookGenre.jsp").forward(request,response);
+		System.out.println("get genreList");
 	}
 
 	/**

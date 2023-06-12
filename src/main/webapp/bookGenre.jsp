@@ -1,4 +1,5 @@
-<%@ page import="java.util.ArrayList, model.Genre"%>
+<!-- [IMPORT] -->
+<%@ page import="java.util.ArrayList, model.Genre, model.Book"%>
 
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
@@ -37,7 +38,7 @@
 
 	<%@ include file="header.jsp"%><!-- #header -->
 	<%
-	if (request.getAttribute("status") == null) {
+	if (request.getAttribute("status")==null) {
 	%>
 	<jsp:include page="/GenreServlet" />
 	<%
@@ -62,12 +63,18 @@
 						<div class="button-group-area mt-10">
 							<%
 							if (genreList != null) {
+							%>
+								<form id="genreListForm" method="get" action="<%=request.getContextPath()%>/GenreServlet">
+								<input type="hidden" name="formName" value="genreListForm" />
+							<%
 								for (int i = 0; i < genreList.size(); i++) {
 							%>
-							<button type="button" value="<%=genreList.get(i).getGenre()%>"
-								class="btn btn-light mt-10 ml-10"><%=genreList.get(i).getGenre()%></button>
+							<input type="submit" value="<%=genreList.get(i).getGenre()%>"
+								class="btn btn-light mt-10 ml-10">
+							<input name="genre" type="hidden" value="<%=genreList.get(i).getGenreID()%>">
 							<%
 							}
+								out.print("</form>");
 							}
 							%>
 
@@ -77,6 +84,125 @@
 			</div>
 	</section>
 	<!-- End banner Area -->
+	<!-- Start course Area -->
+	<section class="course-area section-gap" id="course">
+		<div class="container">
+			<div class="row d-flex justify-content-center">
+				<div class="menu-content pb-60 col-lg-9">
+					<div class="title text-center">
+						<h1 class="mb-10">Top Courses That are open for Students</h1>
+						<p>Who are in extremely love with eco friendly system.</p>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+			<!-- DYNAMIC RESULT -->
+			<% 
+			if(request.getAttribute("result")!=null){
+				ArrayList<Book> bookList = (ArrayList<Book>) request.getAttribute("bookList");
+				for (int i = 0; i < bookList.size(); i++) {
+			%>
+			<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="single-course item">
+						<img class="img-fluid" src="<%=bookList.get(i).getImage()%>" alt="">
+						<p class="sale-btn">For Sale</p>
+						<div class="details">
+							<a href="#"><h4>
+									<%= bookList.get(i).getTitle()%> <span class="price float-right">$25</span>
+								</h4></a>
+							<p><%= bookList.get(i).getPrice()%></p>
+						</div>
+					</div>
+				</div>
+			<%
+			}
+			}
+			%>
+			<!-- DYNAMIC RESULT END-->
+			
+				<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="single-course item">
+						<img class="img-fluid" src="img/c1.jpg" alt="">
+						<p class="sale-btn">For Sale</p>
+						<div class="details">
+							<a href="#"><h4>
+									Breakthrough Thinking <span class="price float-right">$25</span>
+								</h4></a>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+								sed do eiusmod tempor incididunt ut labore et dolore magna</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="single-course item">
+						<img class="img-fluid" src="img/c2.jpg" alt="">
+						<p class="sale-btn">For Sale</p>
+						<div class="details">
+							<a href="#"><h4>
+									Breakthrough Thinking <span class="price float-right">$25</span>
+								</h4></a>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+								sed do eiusmod tempor incididunt ut labore et dolore magna</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="single-course item">
+						<img class="img-fluid" src="img/c3.jpg" alt="">
+						<p class="sale-btn">For Sale</p>
+						<div class="details">
+							<a href="#"><h4>
+									Breakthrough Thinking <span class="price float-right">$25</span>
+								</h4></a>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+								sed do eiusmod tempor incididunt ut labore et dolore magna</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="single-course item">
+						<img class="img-fluid" src="img/c1.jpg" alt="">
+						<p class="sale-btn">For Sale</p>
+						<div class="details">
+							<a href="#"><h4>
+									Breakthrough Thinking <span class="price float-right">$25</span>
+								</h4></a>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+								sed do eiusmod tempor incididunt ut labore et dolore magna</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="single-course item">
+						<img class="img-fluid" src="img/c2.jpg" alt="">
+						<p class="sale-btn">For Sale</p>
+						<div class="details">
+							<a href="#"><h4>
+									Breakthrough Thinking <span class="price float-right">$25</span>
+								</h4></a>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+								sed do eiusmod tempor incididunt ut labore et dolore magna</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="single-course item">
+						<img class="img-fluid" src="img/c3.jpg" alt="">
+						<p class="sale-btn">For Sale</p>
+						<div class="details">
+							<a href="#"><h4>
+									Breakthrough Thinking <span class="price float-right">$25</span>
+								</h4></a>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+								sed do eiusmod tempor incididunt ut labore et dolore magna</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End course Area -->
 	<!-- Start Sample Area -->
 	<section class="sample-text-area">
 		<div class="container">
