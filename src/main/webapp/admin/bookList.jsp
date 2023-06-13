@@ -97,8 +97,9 @@
 	}
 	if (success != null) {
 		if (success.equals("delete")) {
-			out.println("<script>alert('The author is successfully deleted!'); location='" + request.getContextPath()
+			out.println("<script>alert('The book is successfully deleted!'); location='" + request.getContextPath()
 			+ "/admin/books';</script>");
+			return;
 		}
 	}
 

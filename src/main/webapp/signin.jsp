@@ -66,6 +66,7 @@ input:-webkit-autofill {
 </head>
 
 <body>
+	<%@ include file="header.jsp" %>
 	<%
 		String errCode = request.getParameter("errCode");
 	%>
@@ -133,6 +134,8 @@ input:-webkit-autofill {
 			</div>
 		</div>
 	</section>
+	
+	<%@ include file="footer.jsp" %>
 
 
 	<script src="js/vendor/jquery-2.2.4.min.js"></script>

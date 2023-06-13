@@ -164,6 +164,9 @@ public class AuthorServlet extends HttpServlet {
 		String status = request.getParameter("status");
 		String name, nationality, birthdate, biography, link;
 
+		if(status == null) {
+			response.sendRedirect("authorRegistration.jsp?errCode=unauthorized");
+		}
 		if (status.equals("register")) {
 			name = request.getParameter("name");
 			if (name != null && !name.isBlank()) {
@@ -292,21 +295,21 @@ public class AuthorServlet extends HttpServlet {
 				if (book_db.deleteBookAuthor(Integer.parseInt(id), null)) {
 					if (author_db.deleteAuthor(Integer.parseInt(id))) {
 						request.setAttribute("success", "delete");
-						request.getRequestDispatcher("/admin/authors").forward(request, response);
+						request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
 						return;
 					} else {
 						request.setAttribute("error", "serverError");
-						request.getRequestDispatcher("/admin/authors").forward(request, response);
+						request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
 						return;
 					}
 				} else {
 					request.setAttribute("error", "serverError");
-					request.getRequestDispatcher("/admin/authors").forward(request, response);
+					request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
 					return;
 				}
 			} else {
 				request.setAttribute("error", "invalid");
-				request.getRequestDispatcher("/admin/authors").forward(request, response);
+				request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
 				return;
 			}
 		}
