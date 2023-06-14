@@ -108,6 +108,7 @@
 
 	<script>
 		$(document).ready(function() {
+			console.log("Ready");
 			fetch('<%= request.getContextPath() %>/books/latest',
 			{
 				method: 'GET'
@@ -116,6 +117,7 @@
 			.then(data => {
 				var list = data.list;
 				var status = data.status;
+				console.log(list);
 				if(status == "serverError") {
 					alert('Error in retrieving latest book!');
 				}

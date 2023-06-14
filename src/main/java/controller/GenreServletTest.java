@@ -46,14 +46,14 @@ public class GenreServletTest extends HttpServlet {
 
 		String requestURi = request.getRequestURI();
 		if (requestURi.endsWith("/genres/all")) {
-			// [DEFINE] database
+			// [DEFINE] database and resultSet arrayList(Genre)
 			GenreDatabase genre_db = new GenreDatabase();
-			// [DEFINE] resultSet arrayList(Genre)
 			ArrayList<Genre> genreList = new ArrayList<Genre>();
 			// [TRUE-database execution successful]
 			// [FALSE-fail]
 			boolean condition = genre_db.getGenre();
 			if (condition) {
+				
 				// [ASSIGN RESULT]
 				ResultSet rs = genre_db.getGenreResult();
 				try {
