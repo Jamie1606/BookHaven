@@ -178,7 +178,11 @@ System.out.println("in memberRegistrationForm");
 					String postalCode = fields.get("postalCode");
 					String email = fields.get("email");
 					String password = fields.get("password");
+<<<<<<< Updated upstream
+					
+=======
 					;
+>>>>>>> Stashed changes
 					String oldimage = fields.get("oldimage");
 
 					// checking null and empty values
@@ -190,14 +194,28 @@ System.out.println("in memberRegistrationForm");
 						// test with regular expressions
 						if (TestReg.matchEmail(email) && TestReg.matchPassword(password) && TestReg.matchPhone(phone)
 								&& TestReg.matchPostalCode(postalCode) && TestReg.matchGender(gender)
+<<<<<<< Updated upstream
+								&& TestReg.matchDate(birthDate)) {
+							address += " S" + postalCode;
+=======
 								&& TestReg.matchDate(birthDate) && TestReg.matchIntegerArrayList(authors)
 								&& TestReg.matchIntegerArrayList(genres)) {
+>>>>>>> Stashed changes
 
 							Date birth_date = Date.valueOf(LocalDate.parse(birthDate));
 
 							BookDatabase book_db = new BookDatabase();
 							book_db.clearBookResult();
 							int count = 0;
+<<<<<<< Updated upstream
+char genderChar = gender.charAt(0);
+							if (status.equals("register")) {
+								
+System.out.println("in register");
+								// call function from MemberDatabase
+								int condition = member_db
+										.registerMember(new Member(name,genderChar,birth_date, phone, address, email, password,image));
+=======
 
 							if (status.equals("register")) {
 
@@ -205,6 +223,7 @@ System.out.println("in register");
 								// call function from MemberDatabase
 								int condition = member_db
 										.registerMember(new Member(name, phone, address, email, password));
+>>>>>>> Stashed changes
 								if (condition == 1) {
 									response.sendRedirect("signin.jsp");
 								} else if (condition == -1) {
@@ -225,7 +244,11 @@ System.out.println("in register");
 								}
 								// call function from MemberDatabase
 								int condition = member_db
+<<<<<<< Updated upstream
+										.registerMember(new Member(name,genderChar,birth_date, phone, address, email, password,image));
+=======
 										.registerMember(new Member(name, phone, address, email, password));
+>>>>>>> Stashed changes
 								if (condition == 1) {
 									response.sendRedirect("signin.jsp");
 								} else if (condition == -1) {
