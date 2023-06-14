@@ -8,7 +8,7 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="java.util.*, java.text.*"%>
+<%@ page import="java.util.*, java.text.*, model.Member"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,21 +27,33 @@
 	rel="stylesheet">
 
 <!-- Vendor CSS Files -->
-<link href="../assets/vendor/bootstrap/css/bootstrap.min.css"
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
 	rel="stylesheet">
-<link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/boxicons/css/boxicons.min.css"
 	rel="stylesheet">
-<link href="../assets/vendor/boxicons/css/boxicons.min.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.snow.css"
 	rel="stylesheet">
-<link href="../assets/vendor/quill/quill.snow.css" rel="stylesheet">
-<link href="../assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-<link href="../assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-<link href="../assets/vendor/simple-datatables/style.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.bubble.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
 	rel="stylesheet">
 
 <!-- Template Main CSS File -->
-<link href="../assets/css/style.css" rel="stylesheet">
-<link rel="icon" type="image/png" href="../img/logo.png">
+<link href="<%=request.getContextPath()%>/assets/css/style.css"
+	rel="stylesheet">
+<link rel="icon" type="image/png"
+	href="<%=request.getContextPath()%>/img/logo.png">
 
 <!-- =======================================================
   * Template Name: NiceAdmin
@@ -53,21 +65,74 @@
 </head>
 
 <body>
-	<%
-		String errCode = request.getParameter("errCode");
-	boolean success = Boolean.valueOf(request.getParameter("success"));
-	%>
+
 	<%@ include file="adminheader.jsp"%>
 
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
+
+	String status = "register";
+	Member member=null;
+	// show error and success for registration
+	String errCode = request.getParameter("errCode");
+	if (errCode != null) {
+		if (errCode.equals("serverError")) {
+			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
+			+ "/admin/memberRegistration.jsp';</script>");
+		} else if (errCode.equals("invalid")) {
+			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
+			+ "/admin/memberRegistration.jsp';</script>");
+		}else if (errCode.equals("invalidEmail")) {
+			out.println("<script>alert('Invalid Email!'); location='" + request.getContextPath()
+			+ "/admin/memberRegistration.jsp';</script>");
+		}else if (errCode.equals("upload")) {
+			out.println("<script>alert('Error in uploading data!'); location='" + request.getContextPath()
+			+ "/admin/memberRegistration';</script>");
+			return;
+		}   else {
+			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
+			+ "/admin/memberRegistration.jsp';</script>");
+		}
+	} else {
+		String success = request.getParameter("success");
+		if (success != null) {
+			if (success.equals("register")) {
+		out.println("<script>alert('Member data is successfully added!'); location='" + request.getContextPath()
+				+ "/admin/genreRegistration.jsp';</script>");
+			}
+			if (success.equals("update")) {
+		out.println("<script>alert('Member data is successfully updated!'); location='" + request.getContextPath()
+				+ "/admin/members';</script>");
+			}
+		}
+	}
+	
+
+	// check whether it is to update author data
+	status = (String) request.getAttribute("status");
+	request.removeAttribute("status");
+	if (status == null) {
+		status = "register";
+	} else {
+		if(status.equals("update")) {
+			member = (Member) request.getAttribute("author");
+			request.removeAttribute("author");
+		}
+		else {
+			
+		}
+		
+	}
+	
 	Calendar calendar = Calendar.getInstance();
 	calendar.setTime(new Date());
 	calendar.add(Calendar.YEAR, -5);
 	Date date = calendar.getTime();
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	String date_str = formatter.format(date);
+	
+	
 	%>
 
 	<main id="main" class="main">
@@ -83,22 +148,7 @@
 			</nav>
 		</div>
 		<!-- End Page Title -->
-				<%
-						if(errCode != null) {
-							if(errCode.equals("invalidEmail")) {
-								out.print("<div class='alert alert-danger' role='alert'>Email Already Exists!</div>");
-							}
-							if(errCode.equals("invalid")) {
-								out.print("<div class='alert alert-danger' role='alert'>Invalid Data!</div>");
-							}							
-							if(errCode.equals("serverError")) {
-								out.print("<div class='alert alert-danger' role='alert'>Server Error</div>");
-							}
-						}
-		if(success) {
-			out.print("<div class='alert alert-success' role='success'>Successfully Added!</div>");
-		}
-		%>
+
 		
 		<section class="section">
 			<div class="row">
@@ -108,7 +158,7 @@
 							<h5 class="card-title">Member Information</h5>
 
 							<!-- Member Registration Form -->
-							<form id="memberRegistrationForm" class="row g-3" action="<%= request.getContextPath() %>/MemberServlet" method="post">
+							<form id="memberRegistrationForm" class="row g-3" action="<%= request.getContextPath() %>/admin/members" method="post">
 								
 								<!-- formName -->
 								<input type="hidden" name="formName" value="memberRegistrationForm" />
@@ -173,8 +223,7 @@
 								
 								<!-- Submit button -->
 								<div class="text-center">
-									<button type="submit" class="btn btn-primary">Save</button>
-									<button type="reset" class="btn btn-secondary">Clear</button>
+									<button id="btnSave" type="submit" class="btn btn-primary"><%=(status.equals("update")) ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Member Registration Form -->

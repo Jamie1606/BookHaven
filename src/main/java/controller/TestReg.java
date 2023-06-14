@@ -17,6 +17,8 @@ public class TestReg {
 	private static final String datePattern = "^[\\d]{4}-[\\d]{2}-[\\d]{2}$";
 	private static final String phonePattern = "^[0-9]{8}$";
 	private static final String postalCodePattern = "^[0-9]{6}$";
+	private static final String genderPattern = "^[MF]$";
+
 
 	public static boolean matchEmail(String test) {
 		return Pattern.matches(emailPattern, test);
@@ -57,4 +59,8 @@ public class TestReg {
 	public static boolean matchPostalCode(String test) {
 		return Pattern.matches(postalCodePattern, test);
 	}
+	
+    public static boolean matchGender(String test) {
+        return Pattern.matches(genderPattern, test);
+    }
 }
