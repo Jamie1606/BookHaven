@@ -96,6 +96,7 @@
 	if(success != null) {
 		if(success.equals("delete")) {
 			out.println("<script>alert('The author is successfully deleted!'); location='" + request.getContextPath() + "/admin/authors';</script>");
+			return;
 		}
 	}
 	

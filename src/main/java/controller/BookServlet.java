@@ -36,6 +36,8 @@ import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletRequestContext;
 
+import com.google.gson.Gson;
+
 import model.Author;
 import model.AuthorDatabase;
 import model.Book;
@@ -46,7 +48,8 @@ import model.GenreDatabase;
 /**
  * Servlet implementation class BookServlet
  */
-@WebServlet(urlPatterns = { "/admin/books", "/admin/bookRegistration", "/admin/bookUpdate/*", "/admin/bookDelete/*" })
+@WebServlet(urlPatterns = { "/admin/books", "/books/latestrelease", "/books/latest", "/admin/bookRegistration",
+		"/admin/bookUpdate/*", "/admin/bookDelete/*" })
 /**
  * Servlet implementation class BookServlet
  */
@@ -82,18 +85,18 @@ public class BookServlet extends HttpServlet {
 		book_db.clearBookResult();
 		author_db.clearAuthorResult();
 
-		if (!auth.testAdmin(session)) {
-			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
-			return;
-		}
-
 		request.setAttribute("servlet", "true");
 
 		String targetPage = "";
 		String requestURi = request.getRequestURI();
 		// forward the data to the jsp
 		if (requestURi.endsWith("admin/bookRegistration")) {
+			if (!auth.testAdmin(session)) {
+				request.setAttribute("error", "unauthorized");
+				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+				return;
+			}
+
 			// get author data from database and put data in arraylist
 			if (author_db.getAuthor()) {
 				ResultSet rs = author_db.getAuthorResult();
@@ -134,6 +137,12 @@ public class BookServlet extends HttpServlet {
 
 			targetPage = "/admin/bookRegistration.jsp";
 		} else if (requestURi.contains("admin/bookUpdate")) {
+			if (!auth.testAdmin(session)) {
+				request.setAttribute("error", "unauthorized");
+				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+				return;
+			}
+
 			ArrayList<Author> bookAuthorList = new ArrayList<Author>();
 			ArrayList<Genre> bookGenreList = new ArrayList<Genre>();
 
@@ -164,16 +173,15 @@ public class BookServlet extends HttpServlet {
 					} else {
 						request.setAttribute("error", "serverError");
 					}
-					
-					if(book_db.getBookAuthorByISBN(id)) {
+
+					if (book_db.getBookAuthorByISBN(id)) {
 						ResultSet rs = book_db.getBookResult();
 						book_db.clearBookResult();
 						try {
-							while(rs.next()) {
+							while (rs.next()) {
 								bookAuthorList.add(new Author(rs.getInt("AuthorID")));
 							}
-						}
-						catch(Exception e) {
+						} catch (Exception e) {
 							request.setAttribute("error", "serverError");
 						}
 					}
@@ -193,16 +201,15 @@ public class BookServlet extends HttpServlet {
 					} else {
 						request.setAttribute("error", "serverError");
 					}
-					
-					if(book_db.getBookGenreByISBN(id)) {
+
+					if (book_db.getBookGenreByISBN(id)) {
 						ResultSet rs = book_db.getBookResult();
 						book_db.clearBookResult();
 						try {
-							while(rs.next()) {
+							while (rs.next()) {
 								bookGenreList.add(new Genre(rs.getInt("GenreID")));
 							}
-						}
-						catch(Exception e) {
+						} catch (Exception e) {
 							request.setAttribute("error", "serverError");
 						}
 					}
@@ -250,6 +257,12 @@ public class BookServlet extends HttpServlet {
 				}
 			}
 		} else if (requestURi.endsWith("admin/books")) {
+			if (!auth.testAdmin(session)) {
+				request.setAttribute("error", "unauthorized");
+				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+				return;
+			}
+
 			ArrayList<Book> bookList = new ArrayList<Book>();
 
 			boolean condition = book_db.getBook();
@@ -279,8 +292,76 @@ public class BookServlet extends HttpServlet {
 			request.setAttribute("servlet", "true");
 
 			targetPage = "/admin/bookList.jsp";
-		} else {
-			targetPage = "/admin/adminHomePage.jsp";
+		} else if (requestURi.contains("/admin/bookDelete/")) {
+			if (!auth.testAdmin(session)) {
+				request.setAttribute("error", "unauthorized");
+				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+				return;
+			}
+
+			doDelete(request, response);
+		} else if (requestURi.endsWith("/books/latestrelease")) {
+			ArrayList<Book> book = new ArrayList<Book>();
+			String error = "";
+			if (book_db.getLatestBook(9)) {
+				ResultSet rs = book_db.getBookResult();
+
+				try {
+					while (rs.next()) {
+						book.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
+								rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
+								rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
+								StringEscapeUtils.escapeHtml4(rs.getString("Description")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Image")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+					}
+				} catch (Exception e) {
+					error = "serverError";
+				}
+			} else {
+				error = "serverError";
+			}
+			Gson gson = new Gson();
+			JSONObjects<Book> obj = new JSONObjects<>(book, error);
+			String json = gson.toJson(obj);
+			response.setContentType("application/json");
+			response.getWriter().write(json);
+			return;
+		} else if (requestURi.endsWith("/books/latest")) {
+			ArrayList<Book> book = new ArrayList<Book>();
+			String error = "";
+			if (book_db.getLatestBook(1)) {
+				ResultSet rs = book_db.getBookResult();
+
+				try {
+					while (rs.next()) {
+						book.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
+								rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
+								rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
+								StringEscapeUtils.escapeHtml4(rs.getString("Description")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Image")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+					}
+				} catch (Exception e) {
+					error = "serverError";
+				}
+			} else {
+				error = "serverError";
+			}
+			Gson gson = new Gson();
+			JSONObjects<Book> obj = new JSONObjects<>(book, error);
+			String json = gson.toJson(obj);
+			response.setContentType("application/json");
+			response.getWriter().write(json);
+			return;
+		}
+
+		else {
+			targetPage = "/signin.jsp";
 		}
 		request.getRequestDispatcher(targetPage).forward(request, response);
 		return;
@@ -309,6 +390,7 @@ public class BookServlet extends HttpServlet {
 		// Append the desired path relative to the root of the project
 		String imagePath = currentProjectPath + "JAD CA1 BookHaven" + File.separator + "src" + File.separator + "main"
 				+ File.separator + "webapp" + File.separator + "img" + File.separator + "books" + File.separator;
+		String storedImagePath = "/img/books/";
 
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
@@ -349,7 +431,6 @@ public class BookServlet extends HttpServlet {
 					} else {
 						// file upload
 						String fileName = item.getName();
-						System.out.println(fileName);
 						InputStream fileContent = item.getInputStream(); // get image content
 						String uploadPath;
 
@@ -360,7 +441,7 @@ public class BookServlet extends HttpServlet {
 								directory.mkdirs();
 							}
 							Files.copy(fileContent, Paths.get(uploadPath), StandardCopyOption.REPLACE_EXISTING);
-							image = uploadPath;
+							image = storedImagePath + "normal/" + fileName;
 						}
 						if (fieldName.equals("image3d") && !fileName.isEmpty()) {
 							uploadPath = imagePath + "3d" + File.separator + fileName; // image upload destination
@@ -369,7 +450,7 @@ public class BookServlet extends HttpServlet {
 								directory.mkdirs();
 							}
 							Files.copy(fileContent, Paths.get(uploadPath), StandardCopyOption.REPLACE_EXISTING);
-							image3d = uploadPath;
+							image3d = storedImagePath + "3d/" + fileName;
 						}
 					}
 				}
@@ -534,4 +615,55 @@ public class BookServlet extends HttpServlet {
 		}
 	}
 
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		Authentication auth = new Authentication();
+		HttpSession session = request.getSession();
+		if (!auth.testAdmin(session)) {
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/admin/bookList.jsp").forward(request, response);
+			return;
+		}
+
+		BookDatabase book_db = new BookDatabase();
+		book_db.clearBookResult();
+		String requestURi = request.getRequestURI();
+		String[] parts = requestURi.split("/");
+		if (parts.length == 0) {
+			request.setAttribute("error", "invalid");
+			request.getRequestDispatcher("/admin/bookList.jsp").forward(request, response);
+			return;
+		} else {
+			String id = parts[parts.length - 1];
+
+			if (TestReg.matchISBN(id)) {
+				if (book_db.deleteBookGenre(0, id)) {
+					if (book_db.deleteBookAuthor(0, id)) {
+						if (book_db.deleteBook(id)) {
+							request.setAttribute("success", "delete");
+							request.getRequestDispatcher("/admin/bookList.jsp").forward(request, response);
+							return;
+						} else {
+							request.setAttribute("error", "serverError");
+							request.getRequestDispatcher("/admin/bookList.jsp").forward(request, response);
+							return;
+						}
+					} else {
+						request.setAttribute("error", "serverError");
+						request.getRequestDispatcher("/admin/bookList.jsp").forward(request, response);
+						return;
+					}
+				} else {
+					request.setAttribute("error", "serverError");
+					request.getRequestDispatcher("/admin/bookList.jsp").forward(request, response);
+					return;
+				}
+			} else {
+				request.setAttribute("error", "invalid");
+				request.getRequestDispatcher("/admin/bookList.jsp").forward(request, response);
+				return;
+			}
+		}
+	}
 }

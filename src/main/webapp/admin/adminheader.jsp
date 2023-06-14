@@ -164,13 +164,13 @@ if (!auth.testAdmin(session)) {
 				data-bs-toggle="dropdown"> <img
 					src="<%= request.getContextPath() %>/assets/img/profile-img.jpg" alt="Profile"
 					class="rounded-circle"> <span
-					class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+					class="d-none d-md-block dropdown-toggle ps-2">Admin</span>
 			</a> <!-- End Profile Iamge Icon -->
 
 				<ul
 					class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
 					<li class="dropdown-header">
-						<h6>Kevin Anderson</h6> <span>Web Designer</span>
+						<h6>System Admin</h6>
 					</li>
 					<li>
 						<hr class="dropdown-divider">
