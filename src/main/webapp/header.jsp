@@ -9,7 +9,7 @@
 				<ul class="nav-menu">
 					<li><a href="<%= request.getContextPath() %>/index.jsp">Home</a></li>
 					<li><a href="<%= request.getContextPath() %>/book.jsp">Book</a></li>
-					<li><a href="<%= request.getContextPath() %>/BookGenreTest.jsp">Genre</a></li>
+					<li><a href="<%= request.getContextPath() %>/bookGenre.jsp">Genre</a></li>
 					<li><a href="<%= request.getContextPath() %>/author.jsp">Author</a></li>
 					<li><a href="<%= request.getContextPath() %>/signin.jsp">Sign In</a></li>
 					<li><a href="<%= request.getContextPath() %>/signup.jsp">Sign Up</a></li>

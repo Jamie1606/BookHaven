@@ -75,7 +75,7 @@ public class MemberServlet extends HttpServlet {
 		// create MemberDatabase object
 		MemberDatabase member_db = new MemberDatabase();
 		String formName = request.getParameter("formName");
-System.out.println("in doPost");
+		System.out.println("in doPost");
 		// [FROM SIGN UP FORM]
 		if (formName.equals("signupForm")) {
 			// [GET VALUES] assign values from "signup form"
@@ -105,7 +105,7 @@ System.out.println("in doPost");
 		// [FROM MEMBER REGISTRATION FORM]
 		else if (formName.equals("memberRegistrationForm")) {
 
-System.out.println("in memberRegistrationForm");
+			System.out.println("in memberRegistrationForm");
 			// [CHECK AUTHENTICATION]
 			Authentication auth = new Authentication();
 			HttpSession session = request.getSession();
@@ -130,7 +130,6 @@ System.out.println("in memberRegistrationForm");
 			String imagePath = currentProjectPath + "JAD CA1 BookHaven" + File.separator + "src" + File.separator
 					+ "main" + File.separator + "webapp" + File.separator + "img" + File.separator + "books"
 					+ File.separator;
-
 
 			// check if the request is multipart/form-data
 			if (ServletFileUpload.isMultipartContent(request)) {
@@ -190,8 +189,7 @@ System.out.println("in memberRegistrationForm");
 						// test with regular expressions
 						if (TestReg.matchEmail(email) && TestReg.matchPassword(password) && TestReg.matchPhone(phone)
 								&& TestReg.matchPostalCode(postalCode) && TestReg.matchGender(gender)
-								&& TestReg.matchDate(birthDate) && TestReg.matchIntegerArrayList(authors)
-								&& TestReg.matchIntegerArrayList(genres)) {
+								&& TestReg.matchDate(birthDate)) {
 
 							Date birth_date = Date.valueOf(LocalDate.parse(birthDate));
 
@@ -201,7 +199,7 @@ System.out.println("in memberRegistrationForm");
 
 							if (status.equals("register")) {
 
-System.out.println("in register");
+								System.out.println("in register");
 								// call function from MemberDatabase
 								int condition = member_db
 										.registerMember(new Member(name, phone, address, email, password));
@@ -241,7 +239,8 @@ System.out.println("in register");
 							} else {
 								// [status loop]
 								request.setAttribute("error", "serverError");
-								request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request, response);
+								request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
+										response);
 								return;
 							}
 						}

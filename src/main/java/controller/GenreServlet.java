@@ -36,7 +36,8 @@ import model.GenreDatabase;
 /**
  * Servlet implementation class GenreServlet
  */
-@WebServlet(urlPatterns = { "/genres/all", "/genres/books/*", "/admin/genreRegistration", "/admin/genres", "/admin/genreUpdate/*", "/admin/genreDelete/*" })
+@WebServlet(urlPatterns = { "/genres/all", "/genres/books/*", "/admin/genreRegistration", "/admin/genres",
+		"/admin/genreUpdate/*", "/admin/genreDelete/*" })
 public class GenreServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -150,7 +151,7 @@ public class GenreServlet extends HttpServlet {
 				return;
 			}
 			// [CKECK AUTHENTICATION-END]
-			
+
 			// [DEFINE] database and resultSet arrayList(Genre)
 			GenreDatabase genre_db = new GenreDatabase();
 			ArrayList<Genre> genreList = new ArrayList<Genre>();
@@ -178,10 +179,9 @@ public class GenreServlet extends HttpServlet {
 			// forward the data to the jsp
 			request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
 			return;
-		} 
+		}
 		if (requestURi.contains("admin/genreUpdate")) {
-			
-			
+
 			// [CKECK AUTHENTICATION]
 			HttpSession session = request.getSession();
 			Authentication auth = new Authentication();
@@ -191,7 +191,7 @@ public class GenreServlet extends HttpServlet {
 				return;
 			}
 			// [CKECK AUTHENTICATION-END]
-			
+
 			String[] parts = requestURi.split("/");
 			if (parts.length == 0) {
 				request.setAttribute("error", "invalid");
@@ -209,11 +209,12 @@ public class GenreServlet extends HttpServlet {
 						try {
 							while (rs.next()) {
 								// sanitizing output by escaping html special characters
-								genreData = new Genre(rs.getInt("GenreID"), StringEscapeUtils.escapeHtml4(rs.getString("Genre")));
+								genreData = new Genre(rs.getInt("GenreID"),
+										StringEscapeUtils.escapeHtml4(rs.getString("Genre")));
 								break;
 							}
-							
-							request.setAttribute("genre", genreData); //[SEND TO registration form]
+
+							request.setAttribute("genre", genreData); // [SEND TO registration form]
 							request.setAttribute("status", "update");
 							request.getRequestDispatcher("/admin/genreRegistration.jsp").forward(request, response);
 							return;
@@ -234,7 +235,7 @@ public class GenreServlet extends HttpServlet {
 				}
 			}
 		} else if (requestURi.contains("admin/genreDelete")) {
-			
+
 			// [CKECK AUTHENTICATION]
 			HttpSession session = request.getSession();
 			Authentication auth = new Authentication();
@@ -245,8 +246,7 @@ public class GenreServlet extends HttpServlet {
 			}
 			// [CKECK AUTHENTICATION-END]
 			doDelete(request, response);
-		}
-		else {
+		} else {
 			// invalid do something
 		}
 	}
@@ -296,7 +296,7 @@ public class GenreServlet extends HttpServlet {
 			response.sendRedirect("genreRegistration.jsp?errCode=invalid");
 		}
 	}
-	
+
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
@@ -308,18 +308,19 @@ public class GenreServlet extends HttpServlet {
 			request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
 			return;
 		}
-		
+
 		// values passed from author registration form
 		String status = request.getParameter("status");
 		String genreID, genre;
 
-		System.out.println("status: "+status);
+		System.out.println("status: " + status);
 		if (status.equals("update")) {
 			genreID = request.getParameter("genreID");
 			genre = request.getParameter("genre");
 
-			System.out.println("genreID: "+genreID);
-			if (genreID != null && !genreID.isBlank() && TestReg.matchInteger(genreID) && genre != null && !genre.isBlank()) {
+			System.out.println("genreID: " + genreID);
+			if (genreID != null && !genreID.isBlank() && TestReg.matchInteger(genreID) && genre != null
+					&& !genre.isBlank()) {
 
 				GenreDatabase genre_db = new GenreDatabase();
 				genre_db.clearGenreResult();
@@ -335,10 +336,10 @@ public class GenreServlet extends HttpServlet {
 						response.sendRedirect("genreRegistration.jsp?errCode=serverError");
 					}
 
-					System.out.println("count: "+count);
+					System.out.println("count: " + count);
 					if (count == 1) {
-						if (genre_db
-								.updateGenre(new Genre(Integer.parseInt(genreID), StringEscapeUtils.escapeHtml4(genre)))) {
+						if (genre_db.updateGenre(
+								new Genre(Integer.parseInt(genreID), StringEscapeUtils.escapeHtml4(genre)))) {
 							response.sendRedirect("genreRegistration.jsp?success=update");
 						} else {
 							response.sendRedirect("genreRegistration.jsp?errCode=serverError");
@@ -365,7 +366,7 @@ public class GenreServlet extends HttpServlet {
 			request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
 			return;
 		}
-		
+
 		GenreDatabase genre_db = new GenreDatabase();
 		BookDatabase book_db = new BookDatabase();
 		String requestURi = request.getRequestURI();
@@ -400,6 +401,5 @@ public class GenreServlet extends HttpServlet {
 			}
 		}
 	}
-	
-	
+
 }

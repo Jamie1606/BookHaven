@@ -49,6 +49,9 @@
 				<li><a href=""> <i class="bi bi-circle"></i><span>Member
 							List</span>
 				</a></li>
+				<li><a href="<%= request.getContextPath() %>/admin/reviews"> <i class="bi bi-circle"></i><span>Review
+							List</span>
+				</a></li>
 			</ul></li>
 		<!-- End Tables Nav -->
 	</ul>

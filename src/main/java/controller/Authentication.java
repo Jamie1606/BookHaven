@@ -43,7 +43,32 @@ public class Authentication {
 		return false;
 	}
 	
-	public boolean testMember() {
+	// unfinished
+	public boolean testMember(HttpSession session) {
+		String memberID = (String)session.getAttribute("memberID");
+		String role = (String)session.getAttribute("role");
+		AdminDatabase admin_db = new AdminDatabase();
+		admin_db.clearAdminResult();
+		
+		if(role != null && role.equals("member") && memberID != null && TestReg.matchInteger(memberID)) {
+			if(admin_db.getAdminByID(Integer.parseInt(memberID))) {
+				ResultSet rs = admin_db.getAdminResult();
+				int count = 0;
+				try {
+					while(rs.next()) {
+						count++;
+					}
+				}
+				catch(Exception e) {
+					session.invalidate();
+					return false;
+				}
+				if(count == 1) {
+					return true;
+				}
+			}
+		}
+		session.invalidate();
 		return false;
 	}
 }

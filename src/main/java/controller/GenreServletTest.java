@@ -23,7 +23,7 @@ import model.GenreDatabase;
 /**
  * Servlet implementation class GenreServletTest
  */
-@WebServlet(urlPatterns = { "/genress/all", "/genres/bookss/*" })
+@WebServlet(urlPatterns = { "/genres/all", "/genres/books/*" })
 public class GenreServletTest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
