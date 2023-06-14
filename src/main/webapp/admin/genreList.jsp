@@ -15,7 +15,7 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>BookHaven | Author List</title>
+<title>BookHaven | Genre List</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
@@ -95,14 +95,14 @@
 	}
 	if(success != null) {
 		if(success.equals("delete")) {
-			out.println("<script>alert('The author is successfully deleted!'); location='" + request.getContextPath() + "/admin/authors';</script>");
+			out.println("<script>alert('The genre is successfully deleted!'); location='" + request.getContextPath() + "/admin/genres';</script>");
 		}
 	}
 	
 	String servlet = (String)request.getAttribute("servlet");
 	 request.removeAttribute("servlet");
 	if(servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + "/admin/authors';</script>");
+		out.println("<script>location='" + request.getContextPath() + "/admin/genres';</script>");
 		return;
 	}
 
@@ -137,28 +137,21 @@
 								<thead>
 									<tr>
 										<th scope="col">No.</th>
-										<th scope="col">Name</th>
-										<th scope="col">Nationality</th>
-										<th scope="col">BirthDate</th>
+										<th scope="col">ID</th>
+										<th scope="col">Genre</th>
 										<th scope="col">Action</th>
 									</tr>
 								</thead>
 								<tbody>
 									<%
-									for (int i = 0; i < authorList.size(); i++) {
+									for (int i = 0; i < genreList.size(); i++) {
 										out.println("<tr>");
 										out.println("<td>" + (i + 1) + ".</td>");
-										out.println("<td>" + authorList.get(i).getName() + "</td>");
-										out.println("<td>" + authorList.get(i).getNationality() + "</td>");
-										Date birthDate = authorList.get(i).getBirthDate();
-										if (birthDate == null) {
-											out.println("<td></td>");
-										} else {
-											out.println("<td>" + birthDate.toString() + "</td>");
-										}
-										out.println("<td><a href='" + request.getContextPath() + "/admin/authorUpdate/"
-										+ authorList.get(i).getAuthorID() + " '>Edit</a> | <a href='" + request.getContextPath()
-										+ "/admin/authorDelete/" + authorList.get(i).getAuthorID() + "'>Delete</a></td>");
+										out.println("<td>" + genreList.get(i).getGenreID() + "</td>");
+										out.println("<td>" + genreList.get(i).getGenre() + "</td>");
+										out.println("<td><a href='" + request.getContextPath() + "/admin/genreUpdate/"
+										+ genreList.get(i).getGenreID() + " '>Edit</a> | <a href='" + request.getContextPath()
+										+ "/admin/genreDelete/" + genreList.get(i).getGenreID()  + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
 									%>

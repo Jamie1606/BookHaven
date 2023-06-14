@@ -8,7 +8,7 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="java.util.*, java.text.*"%>
+<%@ page import="java.util.*, java.text.*, model.Genre"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,21 +27,33 @@
 	rel="stylesheet">
 
 <!-- Vendor CSS Files -->
-<link href="../assets/vendor/bootstrap/css/bootstrap.min.css"
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
 	rel="stylesheet">
-<link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/boxicons/css/boxicons.min.css"
 	rel="stylesheet">
-<link href="../assets/vendor/boxicons/css/boxicons.min.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.snow.css"
 	rel="stylesheet">
-<link href="../assets/vendor/quill/quill.snow.css" rel="stylesheet">
-<link href="../assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-<link href="../assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-<link href="../assets/vendor/simple-datatables/style.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.bubble.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
 	rel="stylesheet">
 
 <!-- Template Main CSS File -->
-<link href="../assets/css/style.css" rel="stylesheet">
-<link rel="icon" type="image/png" href="../img/logo.png">
+<link href="<%=request.getContextPath()%>/assets/css/style.css"
+	rel="stylesheet">
+<link rel="icon" type="image/png"
+	href="<%=request.getContextPath()%>/img/logo.png">
 
 <!-- =======================================================
   * Template Name: NiceAdmin
@@ -59,12 +71,56 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	Calendar calendar = Calendar.getInstance();
-	calendar.setTime(new Date());
-	calendar.add(Calendar.YEAR, -5);
-	Date date = calendar.getTime();
-	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-	String date_str = formatter.format(date);
+	
+	// set default value for status
+	String status = "register";
+	Genre genre=null;
+			
+	// show error and success for registration
+	String errCode = request.getParameter("errCode");
+	if (errCode != null) {
+		if (errCode.equals("serverError")) {
+			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
+			+ "/admin/genreRegistration.jsp';</script>");
+		} else if (errCode.equals("invalid")) {
+			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
+			+ "/admin/genreRegistration.jsp';</script>");
+		} else {
+			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
+			+ "/admin/genreRegistration.jsp';</script>");
+		}
+	} else {
+		String success = request.getParameter("success");
+		if (success != null) {
+			if (success.equals("register")) {
+		out.println("<script>alert('Genre data is successfully added!'); location='" + request.getContextPath()
+				+ "/admin/genreRegistration.jsp';</script>");
+			}
+			if (success.equals("update")) {
+		out.println("<script>alert('Genre data is successfully updated!'); location='" + request.getContextPath()
+				+ "/admin/genres';</script>");
+			}
+		}
+	}
+	// check whether it is to update author data
+	status = (String) request.getAttribute("status");
+	request.removeAttribute("status");
+	if (status == null) {
+		status = "register";
+	} else {
+		if(status.equals("update")) {
+			
+			//to retrieve data to the form [IF UPDATE]
+			genre = (Genre) request.getAttribute("genre");
+			request.removeAttribute("genre");
+		}
+		else {
+			
+		}
+		
+	}
+	
+	
 	%>
 
 	<main id="main" class="main">
@@ -88,33 +144,20 @@
 							<h5 class="card-title">Genre Information</h5>
 
 							<!-- Multi Columns Form -->
-							<form class="row g-3" action="<%= request.getContextPath() %>/admin/authors" method="post">
-								<input type="hidden" name="status" value="register">
-								<div class="col-md-4">
-									<label for="name" class="form-label">Name</label> <input
-										type="text" class="form-control" name="name" id="name" required>
+							<form class="row g-3" action="<%= request.getContextPath() %>/admin/genres" method="post">
+								<input type="hidden" name="status" value="<%=status%>">
+								<% if(status.equals("update")){ %>
+								<div class="col-md-6">
+									<label for="genreID" class="form-label">ID</label> <input
+										type="text" class="form-control" name="genreID" id="genreID" value="<%= genre.getGenreID() %>" readonly>
 								</div>
-								<div class="col-md-4">
-									<label for="nationality" class="form-label">Nationality</label> <input
-										type="text" class="form-control" name="nationality" id="nationality">
-								</div>
-
-								<div class="col-md-4">
-									<label for="birthdate" class="form-label">BirthDate</label> <input
-										type="date" class="form-control" name="birthdate" id="birthdate" max="<%= date_str %>">
-								</div>
-
-								<div class="col-12">
-									<label for="biography" class="form-label">Biography</label>
-									<textarea rows="10" cols="10" class="form-control" name="biography" id="biography"></textarea>
-								</div>
-								<div class="col-12">
-									<label for="link" class="form-label">Link</label> <input
-										type="text" class="form-control" name="link" id="link">
+								<% } %>
+								<div class=<%= (status.equals("update"))? "col-md-6" : "col-md-12" %>>
+									<label for="genre" class="form-label">Genre</label> <input
+										type="text" class="form-control" name="genre" id="genre" value="<%=(status.equals("update")) ? genre.getGenre() : ""%>" required>
 								</div>
 								<div class="text-center">
-									<button type="submit" class="btn btn-primary">Save</button>
-									<button type="reset" class="btn btn-secondary">Clear</button>
+									<button id="btnSave" type="submit" class="btn btn-primary"><%=(status.equals("update")) ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Multi Columns Form -->

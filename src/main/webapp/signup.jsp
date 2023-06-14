@@ -97,7 +97,7 @@ input:-webkit-autofill {
 					%>
 					
 					<!-- Sign Up Form -->
-					<form id="signupForm" action="<%=request.getContextPath()%>/MemberServlet" method="post">
+					<form id="signupForm" action="<%=request.getContextPath()%>/signup" method="post">
 						<!-- formName -->
 						<input type="hidden" name="formName" value="signupForm" />
 					
