@@ -63,6 +63,29 @@ public class BookDatabase {
 		// insert data into database (end)
 	}
 
+	// select latest book from database
+	public boolean getLatestBook(int limit) {
+		// select book data from database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT * FROM \"public\".\"Book\" ORDER BY \"PublicationDate\" DESC LIMIT ?";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setInt(1, limit);
+
+			bookResultSet = st.executeQuery();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// select book data from database (end)
+	}
+
 	// update book in database
 	public boolean updateBook(Book book) {
 		// update data in database (start)
@@ -174,7 +197,7 @@ public class BookDatabase {
 		}
 		// select bookauthor data from database (end)
 	}
-	
+
 	// get book data from database by genreid
 	public boolean getBookByGenreID(int id) {
 		// select book data from database by genreID (start)
@@ -346,6 +369,31 @@ public class BookDatabase {
 			} else {
 				return false;
 			}
+
+			st.executeUpdate();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// delete data from database (end)
+	}
+
+	// delete book and unlink them
+	public boolean deleteBook(String isbn) {
+		// delete data from database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+			String sqlStatement;
+			PreparedStatement st;
+
+			sqlStatement = "DELETE FROM \"public\".\"Book\" WHERE \"ISBNNo\" = ?";
+			st = db.prepareStatement(sqlStatement);
+			st.setString(1, isbn);
 
 			st.executeUpdate();
 			db.close();

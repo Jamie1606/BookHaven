@@ -125,8 +125,8 @@
 			+ request.getContextPath() + "/admin/bookRegistration';</script>");
 			return;
 		} else {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signin.jsp';</script>");
+			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
+			+ "/admin/bookRegistration.jsp';</script>");
 			return;
 		}
 	}
@@ -166,7 +166,9 @@
 			bookGenreList = (ArrayList<Genre>) request.getAttribute("bookGenreList");
 			request.removeAttribute("bookGenreList");
 		} else {
-
+			out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
+			+ "/signin.jsp';</script>");
+			return;
 		}
 	}
 

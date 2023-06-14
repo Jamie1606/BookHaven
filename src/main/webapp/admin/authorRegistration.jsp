@@ -84,9 +84,15 @@
 		} else if (errCode.equals("invalid")) {
 			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
 			+ "/admin/authorRegistration.jsp';</script>");
-		} else {
+		} else if (errCode.equals("unauthorized")) {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
+			+ "/signin.jsp';</script>");
+			return;
+		} 
+		else {
 			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
 			+ "/admin/authorRegistration.jsp';</script>");
+			return;
 		}
 	} else {
 		String success = request.getParameter("success");
@@ -113,7 +119,9 @@
 			request.removeAttribute("author");
 		}
 		else {
-			
+			out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
+			+ "/signin.jsp';</script>");
+			return;
 		}
 		
 	}
