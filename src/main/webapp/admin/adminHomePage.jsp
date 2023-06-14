@@ -1,3 +1,4 @@
+
 <%
 //Author: Zay Yar Tun
 //Admin No: 2235035
@@ -52,9 +53,20 @@
 
 <body>
 
-	<%@ include file="adminheader.jsp" %>
+	<%
+	String error = (String) request.getAttribute("error");
+	if (error != null) {
+		if (error.equals("unauthorized")) {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
+			+ "/signin.jsp';</script>");
+			return;
+		}
+	}
+	%>
 
-	<%@ include file="adminsidebar.jsp" %>
+	<%@ include file="adminheader.jsp"%>
+
+	<%@ include file="adminsidebar.jsp"%>
 
 	<main id="main" class="main">
 

@@ -252,7 +252,7 @@ public class BookServlet extends HttpServlet {
 					}
 				} else {
 					request.setAttribute("error", "invalid");
-					request.getRequestDispatcher("/admin/authors").forward(request, response);
+					request.getRequestDispatcher("/admin/books").forward(request, response);
 					return;
 				}
 			}
@@ -622,7 +622,7 @@ public class BookServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/bookList.jsp").forward(request, response);
+			request.getRequestDispatcher("/admin/adminHomePage.jsp").forward(request, response);
 			return;
 		}
 

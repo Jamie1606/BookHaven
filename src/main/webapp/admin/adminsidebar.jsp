@@ -21,10 +21,10 @@
 				<li><a href="<%= request.getContextPath() %>/admin/bookRegistration"> <i class="bi bi-circle"></i><span>Book
 							Registration</span>
 				</a></li>
-				<li><a href="genreRegistration.jsp"> <i class="bi bi-circle"></i><span>Genre
+				<li><a href="<%= request.getContextPath() %>/admin/genreRegistration.jsp"> <i class="bi bi-circle"></i><span>Genre
 							Registration</span>
 				</a></li>
-				<li><a href="memberRegistration.jsp"> <i class="bi bi-circle"></i><span>Member
+				<li><a href="<%= request.getContextPath() %>/admin/memberRegistration.jsp"> <i class="bi bi-circle"></i><span>Member
 							Registration</span>
 				</a></li>
 			</ul></li>
@@ -47,6 +47,9 @@
 							List</span>
 				</a></li>
 				<li><a href=""> <i class="bi bi-circle"></i><span>Member
+							List</span>
+				</a></li>
+				<li><a href="<%= request.getContextPath() %>/admin/reviews"> <i class="bi bi-circle"></i><span>Review
 							List</span>
 				</a></li>
 			</ul></li>
