@@ -37,7 +37,7 @@ public class GenreDatabase {
 
 			// get database connection
 			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
-			
+
 			
 			//select all from "Genre" TABLE
 			String sqlStatement = "SELECT * FROM \"public\".\"Genre\"";
@@ -45,6 +45,7 @@ public class GenreDatabase {
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 
 			genreResultSet = st.executeQuery();
+
 			db.close();
 			//successful
 			return true;
@@ -71,6 +72,7 @@ public class GenreDatabase {
 			// get database connection
 			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
 
+			System.out.println("before dbStatement");
 			String sqlStatement = "SELECT * FROM \"public\".\"Book\" b JOIN \"public\".\"BookGenre\" g ON b.\"ISBNNo\" = g.\"ISBNNo\" WHERE g.\"GenreID\" = ? ;";
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 			st.setInt(1, ID);
