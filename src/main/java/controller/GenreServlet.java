@@ -78,7 +78,6 @@ public class GenreServlet extends HttpServlet {
 								new Genre(rs.getInt("GenreID"), StringEscapeUtils.escapeHtml4(rs.getString("Genre"))));
 					}
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					request.setAttribute("errCode", "serverError");
 				}
 			} else {
