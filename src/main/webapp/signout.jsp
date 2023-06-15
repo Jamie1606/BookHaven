@@ -6,5 +6,11 @@
 %>
 <%
 session.invalidate();
-response.sendRedirect("index.jsp");
+String error = (String) request.getAttribute("error");
+if(error != null && error.equals("unauthorized")) {
+	out.println("<script>alert('Unauthorized'); location = 'index.jsp';</script>");
+}
+else {
+	out.println("<script>location='index.jsp';</script>");
+}
 %>

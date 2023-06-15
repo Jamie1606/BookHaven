@@ -74,8 +74,10 @@
 
 	String status = "register";
 	Member member=null;
+	String postalCode="";
+	String address="";
 	// show error and success for registration
-	String errCode = request.getParameter("errCode");
+	String errCode = (String)request.getAttribute("errCode");
 	if (errCode != null) {
 		if (errCode.equals("serverError")) {
 			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
@@ -95,11 +97,11 @@
 			+ "/admin/memberRegistration.jsp';</script>");
 		}
 	} else {
-		String success = request.getParameter("success");
+		String success = (String)request.getAttribute("success");
 		if (success != null) {
 			if (success.equals("register")) {
 		out.println("<script>alert('Member data is successfully added!'); location='" + request.getContextPath()
-				+ "/admin/genreRegistration.jsp';</script>");
+				+ "/admin/memberRegistration.jsp';</script>");
 			}
 			if (success.equals("update")) {
 		out.println("<script>alert('Member data is successfully updated!'); location='" + request.getContextPath()
@@ -116,8 +118,11 @@
 		status = "register";
 	} else {
 		if(status.equals("update")) {
-			member = (Member) request.getAttribute("author");
-			request.removeAttribute("author");
+			member = (Member) request.getAttribute("member");
+			request.removeAttribute("member");
+			String completeAdderss=member.getAddress();
+			postalCode=completeAdderss.substring(completeAdderss.length() - 6);//get last 6 char
+			address= completeAdderss.substring(0, completeAdderss.length() - 7);//delete last 7 char
 		}
 		else {
 			
@@ -132,7 +137,7 @@
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	String date_str = formatter.format(date);
 	
-	
+
 	%>
 
 	<main id="main" class="main">
@@ -158,66 +163,68 @@
 							<h5 class="card-title">Member Information</h5>
 
 							<!-- Member Registration Form -->
-							<form id="memberRegistrationForm" class="row g-3" action="<%= request.getContextPath() %>/admin/members" method="post">
+							<form id="memberRegistrationForm" class="row g-3" action="<%= request.getContextPath() %>/admin/members" method="post" enctype="multipart/form-data">
 								
 								<!-- formName -->
 								<input type="hidden" name="formName" value="memberRegistrationForm" />
 								
+								<input type="hidden" name="status" value="<%= status %>"/>
+								
 								<!-- Name input -->
 								<div class="col-12">
 									<label for="nameID" class="form-label">Name</label> 
-									<input type="text" class="form-control" name="name" id="nameID" required>
+									<input type="text" class="form-control" name="name" id="nameID"  value="<%=(status.equals("update")) ? member.getName() : "" %>" required>
 								</div>
 													
 								<!-- Email input -->
 								<div class="col-12">
 									<label for="emailID" class="form-label">Email</label> 
-									<input type="email" class="form-control" name="email" id="emailID" required>
+									<input type="email" class="form-control" name="email" id="emailID" value="<%=(status.equals("update")) ? member.getEmail() : "" %>"  required>
 								</div>
 														
 								<!-- Password input -->
 								<div class="col-12">
 									<label for="passwordID" class="form-label">Password</label> 
-									<input type="password" class="form-control" name="password" id="passwordID" required>
+									<input type="password" class="form-control" name="password" id="passwordID" value="<%=(status.equals("update")) ? member.getPassword() : "" %>"  required>
 								</div>
 												
 								<!-- Address input -->
 								<div class="col-8">
 									<label for="addressID" class="form-label">Address</label> 
-									<input type="text" class="form-control" name="address" id="addressID" required>
+									<input type="text" class="form-control" name="address" id="addressID" value="<%=(status.equals("update")) ? address : "" %>"   required>
 								</div>
 								
 								<!-- Postal input -->
 								<div class="col-4">
 									<label for="postalCodeID" class="form-label">Postal Code</label> 
-									<input type="number" class="form-control" name="postalCode" id="postalCodeID" required>
+									<input type="number" class="form-control" name="postalCode" id="postalCodeID" value="<%=(status.equals("update")) ? postalCode : "" %>"  required>
 								</div>
 
 								<!-- Phone input -->
 								<div class="col-md-4">
 									<label for="phoneID" class="form-label">Phone</label> <input
-										type="number" class="form-control" name="phone" id="phoneID" required>
+										type="number" class="form-control" name="phone" id="phoneID" value="<%=(status.equals("update")) ? member.getPhone() : "" %>" required>
 								</div>
 								
 								<!-- Birth Date input -->
 								<div class="col-md-4">
 									<label for="birthDateID" class="form-label">Birth Date</label>
-									<input type="date" class="form-control" name="birthDate" id=""birthDate"">
+									<input type="date" class="form-control" name="birthDate" id="birthDateID" value="<%=(status.equals("update")) ? member.getBirthDate() : ""%>" required>
 								</div>
 									
 								<!-- Gender input -->
 								<div class="col-md-4">
 									<label for="genderID" class="form-label">Gender</label>
-									  <select name="gender" id="genderID">
-									    <option value></option>
-									    <option value="F">F</option>
-									    <option value="M">M</option>
+									  <select name="gender" id="genderID" required>
+									    <option <%=(status.equals("update") && member.getGender() == 'F') ? "selected" : ""%> value="F">F</option>
+									    <option <%=(status.equals("update") && member.getGender() == 'M') ? "selected" : ""%> value="M">M</option>
 									  </select>
 								</div>
 
 								<!-- Image input -->
 								<div class="col-12">
 									<label for="imageID" class="form-label">Image</label>
+									<input type="hidden" name="oldimage" value="<%=(status.equals("update")) ? member.getImage() : ""%>">
 									<input type="file" class="form-control" id="imageID" name="image">
 								</div>
 								

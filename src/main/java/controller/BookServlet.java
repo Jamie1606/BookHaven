@@ -397,6 +397,9 @@ public class BookServlet extends HttpServlet {
 			request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
 			return;
 		}
+		
+		ArrayList<String> authors = new ArrayList<String>();
+		ArrayList<String> genres = new ArrayList<String>();
 
 		// check if the request is multipart/form-data
 		if (ServletFileUpload.isMultipartContent(request)) {
@@ -409,6 +412,7 @@ public class BookServlet extends HttpServlet {
 
 				Map<String, String> fields = new HashMap<>();
 				String image = null;
+				String image3d = null;
 
 				// process the form fields and file uploads
 				for (FileItem item : items) {

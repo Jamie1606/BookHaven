@@ -14,21 +14,22 @@ import java.sql.ResultSet;
 import java.sql.Types;
 
 public class MemberDatabase {
-	
-	//[DATABASE CONFIG]
+
+	// [DATABASE CONFIG]
 	private final String connURL = "jdbc:postgresql://satao.db.elephantsql.com/mhekoapk";
 	private final String db_username = "mhekoapk";
 	private final String db_password = "o9w2O25Afleif9CCVCEBDQZX4tT79MH7";
 	private ResultSet memberResultSet;
-	
+
 	public MemberDatabase() {
-		
+
 	}
-	
+
 	// -1 => invalid email
 	// 0 => server Error
 	// 1 => success
-	// insert member into database
+	
+	// [REGISTER MEMBER] insert member into database
 	public int registerMember(Member member) {
 		// insert data into database (start)
 		try {
@@ -37,26 +38,24 @@ public class MemberDatabase {
 
 			// get database connection
 			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
-			
-			
-			//[CHECK DUPLICATE EMAIL]
+
+			// [CHECK DUPLICATE EMAIL]
 			String sqlStatement = "SELECT * FROM \"public\".\"Member\" WHERE \"Email\"=?";
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 			st.setString(1, member.getEmail());
 			ResultSet rs = st.executeQuery();
 			int count = 0;
-			
-			while(rs.next())
-			{
+
+			while (rs.next()) {
 				count++;
 			}
-			if(count > 0)
-			{
-				//duplication exists
+			if (count > 0) {
+				// duplication exists
 				return -1;
 			}
-			
-			//[INSERT DATA TO TABLE]
+			// [CHECK DUPLICATE EMAIL-END]
+
+			// [INSERT DATA TO TABLE]
 			sqlStatement = "INSERT INTO \"public\".\"Member\" (\"Name\", \"Email\", \"Password\", \"Address\", \"Phone\",\"Gender\",\"BirthDate\",\"Image\") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 			st = db.prepareStatement(sqlStatement);
 			st.setString(1, member.getName());
@@ -64,13 +63,12 @@ public class MemberDatabase {
 			st.setString(3, member.getPassword());
 			st.setString(4, member.getAddress());
 			st.setString(5, member.getPhone());
-			if(member.getGender()!='\0') {
+			if (member.getGender() != '\0') {
 				st.setString(6, String.valueOf(member.getGender()));
-			}
-			else {
+			} else {
 				st.setString(6, "");
 			}
-			
+
 			if (member.getBirthDate() == null) {
 				st.setNull(7, Types.DATE);
 			} else {
@@ -82,22 +80,167 @@ public class MemberDatabase {
 				st.setString(8, member.getImage());
 			}
 			int rowsAffected = st.executeUpdate();
-			
-			//[CLOSE CONNECTION]
+
+			// [CLOSE CONNECTION]
 			db.close();
-			
-			if(rowsAffected == 1) {
-				//successful
+
+			if (rowsAffected == 1) {
+				// successful
 				return 1;
-			}
-			else {
+			} else {
 				return 0;
 			}
 		} catch (Exception e) {
 			return 0;
 		}
-		
-}
-// insert data into database (end)	
+
+	}
+	//[REGISTER MEMBER-END]
 	
+	//[RETIRIEVE ALL MEMBER]
+	public boolean getMember() {
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			// select all from "Genre" TABLE
+			String sqlStatement = "SELECT * FROM \"public\".\"Member\"";
+
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+
+			memberResultSet = st.executeQuery();
+
+			db.close();
+			// successful
+			return true;
+		} catch (Exception e) {
+
+			System.out.println("db error:");
+			return false;
+		}
+
+	}
+	//[RETIRIEVE ALL MEMBER-END]
+	
+	//[RETIRIEVE MEMBER BY ID] select member from database BY ID
+	public boolean getMemberByID(int ID) {
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			// select from "Member" TABLE
+			String sqlStatement = "SELECT * FROM \"public\".\"Member\" WHERE \"MemberID\"=?";
+
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setInt(1, ID);
+			memberResultSet = st.executeQuery();
+			
+			db.close();
+			// successful
+			return true;
+		} catch (Exception e) {
+
+			System.out.println("db error:");
+			return false;
+		}
+
+	}
+	//[RETIRIEVE MEMBER BY ID-END]
+	
+	// [RETURN MEMBER RESULTSET]
+	public ResultSet getMemberResult() {
+		return memberResultSet;
+	}
+	// [RETURN MEMBER RESULTSET-END]
+	
+	// [UPDATE MEMBER] update member data to database
+	public int updateMember(Member member) {
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+			// [CHECK DUPLICATE EMAIL]
+			String sqlStatement = "SELECT * FROM \"public\".\"Member\" WHERE \"Email\"=?";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setString(1, member.getEmail());
+			ResultSet rs = st.executeQuery();
+			int count = 0;
+
+			while (rs.next()) {
+				count++;
+			}
+			if (count > 0) {
+				// duplication exists
+				return -1;
+			}
+			// [CHECK DUPLICATE EMAIL-END]
+			
+			// select all from "Genre" TABLE
+			sqlStatement = "UPDATE \"public\".\"Member\" SET \"Name\" = ?, \"Gender\" = ?, \"BirthDate\" = ?, \"Phone\" = ?, \"Address\" = ?, \"Email\" = ?, \"Password\" = ?, \"Image\" = ? WHERE \"MemberID\" = ?;";
+			st = db.prepareStatement(sqlStatement);
+			st.setString(1, member.getName());
+			st.setString(2, String.valueOf(member.getGender()));
+			st.setDate(3, Date.valueOf(member.getBirthDate().toString()));
+			st.setString(4, member.getPhone());
+			st.setString(5, member.getAddress());
+			st.setString(6, member.getEmail());
+			st.setString(7, member.getPassword());
+			st.setString(8, member.getImage());
+			st.setInt(9, member.getMemberID());
+
+			int rowsAffected = st.executeUpdate();
+
+			db.close();
+			if (rowsAffected == 1) {
+				// successful
+				return 1;
+			} else {
+				return 0;
+			}
+		} catch (Exception e) {
+
+			System.out.println("db error:");
+			return 0;
+		}
+
+	}
+	//[UPDATE MEMBER-END]
+	
+	// [DELETE MEMBER] delete member from database
+	public boolean deleteMember(int id) {
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "DELETE FROM \"public\".\"Member\" WHERE \"MemberID\" = ?";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setInt(1, id);
+
+			int rowsAffected = st.executeUpdate();
+			db.close();
+
+			if (rowsAffected == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		//[DELETE MEMBER-END]
+	}
+
+// insert data into database (end)	
+
 }
