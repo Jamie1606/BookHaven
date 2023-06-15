@@ -476,7 +476,7 @@ public class BookServlet extends HttpServlet {
 			request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
 			return;
 		}
-
+		
 		ArrayList<String> authors = new ArrayList<String>();
 		ArrayList<String> genres = new ArrayList<String>();
 

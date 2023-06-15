@@ -71,8 +71,7 @@ public class GenreDatabase {
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 			st.setInt(1, ID);
 			genreResultSet = st.executeQuery();
-			
-			System.out.println("genreResultSet: ");
+
 			db.close();
 			// successful
 			return true;
@@ -82,7 +81,7 @@ public class GenreDatabase {
 			return false;
 		}
 
-	}// select genre from database (end)
+	}// select genre from database by ID (end)
 
 	// set resultset to null
 	public void clearGenreResult() {
@@ -123,7 +122,6 @@ public class GenreDatabase {
 			}
 		} catch (Exception e) {
 
-			System.out.println("db error:");
 			return false;
 		}
 

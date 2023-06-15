@@ -46,7 +46,6 @@ public class GenreServlet extends HttpServlet {
 	 */
 	public GenreServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -55,7 +54,6 @@ public class GenreServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 
 		// response.getWriter().append("Served at: ").append(request.getContextPath());
 
@@ -116,13 +114,16 @@ public class GenreServlet extends HttpServlet {
 							while (rs.next()) {
 								// ESCAPE:StringEscapeUtils.escapeHtml4
 								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getDouble("Price"),
+										StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
+										rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
+										rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
 										StringEscapeUtils.escapeHtml4(rs.getString("Description")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image"))));
+										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
 							}
 						} catch (Exception e) {
 							System.out.println(e);
-							// TODO Auto-generated catch block
 							request.setAttribute("errCode", "serverError");
 						}
 					} else {
@@ -178,9 +179,10 @@ public class GenreServlet extends HttpServlet {
 			// forward the data to the jsp
 			request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
 			return;
-		}
-		if (requestURi.contains("admin/genreUpdate")) {
-
+		} 
+		else if (requestURi.contains("admin/genreUpdate")) {
+			
+			
 			// [CKECK AUTHENTICATION]
 			HttpSession session = request.getSession();
 			Authentication auth = new Authentication();
@@ -194,7 +196,7 @@ public class GenreServlet extends HttpServlet {
 			String[] parts = requestURi.split("/");
 			if (parts.length == 0) {
 				request.setAttribute("error", "invalid");
-				request.getRequestDispatcher("/admin/authors").forward(request, response);
+				request.getRequestDispatcher("/admin/genres").forward(request, response);
 				return;
 			} else {
 				// [DEFINE] database and resultSet arrayList(Genre)
@@ -245,7 +247,11 @@ public class GenreServlet extends HttpServlet {
 			}
 			// [CKECK AUTHENTICATION-END]
 			doDelete(request, response);
-		} else {
+		}
+		else {
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
+			return;
 			// invalid do something
 		}
 	}

@@ -59,8 +59,18 @@
 	</section>
 	<!-- End Category Area -->
 	<!-- Start Result Area -->
-	<section class="course-area section-gap" id="bookResultList">
-		
+	<section class="course-area section-gap">
+		<div class="container">
+			<div class="row d-flex justify-content-center">
+				<div class="menu-content pb-60 col-lg-9">
+					<div class="title text-center">
+						<h1 class="mb-10" id="search-text"></h1>
+					</div>
+				</div>
+			</div>
+			<div class="row" style="margin-bottom: 0px;" id="bookResultList">
+			</div>
+		</div>
 	</section>
 	<!-- End Result Area -->
 
@@ -105,41 +115,37 @@
 				if(data.status == "true") {
 					var htmlString = "";
 					for(let i = 0; i < genreList.length; i++) {
-						htmlString += "<button onclick='submitGenre(" + genreList[i].genreID + ")' class='btn btn-light mt-10 ml-10'>"+ genreList[i].genre + "</button>";
+						htmlString += "<button onclick='submitGenre(" + genreList[i].genreID + ", \""+ genreList[i].genre +"\")' class='btn btn-light mt-10 ml-10'>"+ genreList[i].genre + "</button>";
 					}
 					$('#genreList').html(htmlString);
 				}
 			})
 		});
 		
-		function submitGenre(id) {
+		function submitGenre(id, name) {
 			fetch('<%=request.getContextPath()%>/genres/books/' + id, {
 				method: 'GET'
 			})
 			.then(response => response.json())
 			.then(data => {
-				console.log(data);
 				var status = data.status;
 				var bookList = data.list;
+				console.log(bookList);
 				if(data.status == "true") {
 					var htmlString = "";
-					htmlString+="<div class='constainer'>"
-					htmlString+="<h1 class='mb-10'>RESULT</h1>"
-					htmlString += "<div class='row'>";
 					for(let i = 0; i < bookList.length; i++) {
-						htmlString+="<div class='col-lg-3 col-md-4 col-sm-6'>";   
-						htmlString+="<div class='single-course item'>";
-						htmlString+="<a href='#'><img href='#' class='img-fluid' src='https://pm1.narvii.com/6464/71a3e3b46d0b0b3b60fc30af9d556fedf43b9495_hq.jpg' alt=''></a>";
-						htmlString+="<a href='#'><p class='sale-btn'>Add to cart</p></a>";
-						htmlString+="<div class='details'>";
-						htmlString+="<a href='#'><h4>"+bookList[i].title+" <span class='price float-right'>"+bookList[i].price+"</span></h4></a>";
-						htmlString+="</div></div></div>";
+						if(i >= 3) {
+							htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 115px; left: 80px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a><p></p></div></div>';
 						}
+						else {
+							htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 95px; left: 80px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a><p></p></div></div>';
+						}
+					}
 					if(bookList.length==0){
 						htmlString+="<p>No Items Found</p>";
 					}
-					htmlString += "</div></div>";
 					$('#bookResultList').html(htmlString);
+					document.getElementById('search-text').innerHTML = name + " Books";
 				}
 			})
 		}

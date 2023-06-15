@@ -28,8 +28,9 @@ public class Member {
 		this.password = password;
 	}
 
-	public Member(String name, char gender, Date birthDate, String phone, String address, String email,
-			String password) {
+	public Member(int memberID, String name, char gender, Date birthDate, String phone, String address, String email,String password,
+			String image) {
+		this.memberID = memberID;
 		this.name = name;
 		this.gender = gender;
 		this.birthDate = birthDate;
@@ -37,6 +38,19 @@ public class Member {
 		this.address = address;
 		this.email = email;
 		this.password = password;
+		this.image = image;
+	}
+
+	public Member(String name, char gender, Date birthDate, String phone, String address, String email,
+			String password, String image) {
+		this.name = name;
+		this.gender = gender;
+		this.birthDate = birthDate;
+		this.phone = phone;
+		this.address = address;
+		this.email = email;
+		this.password = password;
+		this.image = image;
 	}
 
 	public Member(int memberID, String name, char gender, Date birthDate, String phone, String address, String email,

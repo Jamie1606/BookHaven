@@ -2,7 +2,7 @@
 //Admin No    : 2235022
 //Class       : DIT/FT/2A/02
 //Date		  : 7.6.2023
-//Description : Genre Class
+//Description : to store Genre data from database
 
 package model;
 
