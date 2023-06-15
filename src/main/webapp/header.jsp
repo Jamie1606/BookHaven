@@ -1,4 +1,4 @@
-<header id="header" id="home">
+<header id="header">
 	<div class="container">
 		<div class="row align-items-center justify-content-between d-flex">
 			<div id="logo">
@@ -20,3 +20,5 @@
 	</div>
 </header>
 <!-- #header -->
+<div style="position: absolute; top:0; left: 0; width: 100%; height: 60px; background-image: linear-gradient(90deg, #f45622 0%, #f53e54 100%);">
+</div>
