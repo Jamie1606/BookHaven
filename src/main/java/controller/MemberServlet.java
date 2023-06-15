@@ -53,7 +53,6 @@ public class MemberServlet extends HttpServlet {
 	 */
 	public MemberServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -62,7 +61,6 @@ public class MemberServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 
 		String requestURi = request.getRequestURI();
 		// [DEFINE] database and resultSet arrayList(Member)
@@ -242,8 +240,6 @@ public class MemberServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		// TODO Auto-generated method stub
 
 		// create MemberDatabase object
 		MemberDatabase member_db = new MemberDatabase();

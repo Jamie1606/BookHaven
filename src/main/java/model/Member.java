@@ -30,7 +30,6 @@ public class Member {
 
 	public Member(int memberID, String name, char gender, Date birthDate, String phone, String address, String email,String password,
 			String image) {
-		super();
 		this.memberID = memberID;
 		this.name = name;
 		this.gender = gender;
@@ -43,8 +42,7 @@ public class Member {
 	}
 
 	public Member(String name, char gender, Date birthDate, String phone, String address, String email,
-			String password,String image) {
-		this.memberID = memberID;
+			String password, String image) {
 		this.name = name;
 		this.gender = gender;
 		this.birthDate = birthDate;
@@ -52,7 +50,7 @@ public class Member {
 		this.address = address;
 		this.email = email;
 		this.password = password;
-		this.image=image;
+		this.image = image;
 	}
 
 	public Member(int memberID, String name, char gender, Date birthDate, String phone, String address, String email,

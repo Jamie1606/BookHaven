@@ -105,12 +105,11 @@ public class AuthorServlet extends HttpServlet {
 			}
 		} else if (requestURi.contains("admin/authorDelete")) {
 			doDelete(request, response);
-		} else if (requestURi.contains("admin/authors")) {
+		} else if (requestURi.endsWith("admin/authors")) {
 
 			ArrayList<Author> authorList = new ArrayList<Author>();
 
-			boolean condition = author_db.getAuthor();
-			if (condition) {
+			if (author_db.getAuthor()) {
 				ResultSet rs = author_db.getAuthorResult();
 				try {
 					while (rs.next()) {
@@ -140,7 +139,6 @@ public class AuthorServlet extends HttpServlet {
 			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
 			return;
 		}
-
 	}
 
 	/**

@@ -48,7 +48,7 @@ import model.GenreDatabase;
 /**
  * Servlet implementation class BookServlet
  */
-@WebServlet(urlPatterns = { "/admin/books", "/books/latestrelease", "/books/latest", "/admin/bookRegistration",
+@WebServlet(urlPatterns = { "/admin/books", "/book/*", "/books/latestrelease", "/books/latest", "/admin/bookRegistration",
 		"/admin/bookUpdate/*", "/admin/bookDelete/*" })
 /**
  * Servlet implementation class BookServlet
@@ -71,13 +71,13 @@ public class BookServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 
 		HttpSession session = request.getSession();
 		Authentication auth = new Authentication();
 
 		ArrayList<Author> authorList = new ArrayList<Author>();
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Book> bookList = new ArrayList<Book>();
 
 		BookDatabase book_db = new BookDatabase();
 		AuthorDatabase author_db = new AuthorDatabase();
@@ -89,8 +89,89 @@ public class BookServlet extends HttpServlet {
 
 		String targetPage = "";
 		String requestURi = request.getRequestURI();
-		// forward the data to the jsp
-		if (requestURi.endsWith("admin/bookRegistration")) {
+		if(requestURi.contains("/book/")) {			
+			String status = "";
+			String[] parts = requestURi.split("/");
+			if (parts.length == 0) {
+				status = "invalid";
+			} else {
+				String id = parts[parts.length - 1];
+				if (TestReg.matchISBN(id)) {
+					if(book_db.getBookByISBN(id)) {
+						ResultSet rs = book_db.getBookResult();
+						try {
+							while(rs.next()) {
+								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
+										rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
+										rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
+										StringEscapeUtils.escapeHtml4(rs.getString("Description")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+							}
+						}
+						catch(Exception e) {
+							status = "serverError";
+						}
+						if(bookList.size() != 1) {
+							status = "invalid";
+						}
+						else {
+							book_db.clearBookResult();
+							if(book_db.getGenreByISBN(id)) {
+								rs = book_db.getBookResult();
+								try {
+									while(rs.next()) {
+										genreList.add(new Genre(rs.getInt("GenreID"), StringEscapeUtils.escapeHtml4(rs.getString("Genre"))));
+									}
+								}
+								catch(Exception e) {
+									status = "serverError";
+								}
+							}
+							if(genreList.size() == 0) {
+								status = "invalid";
+							}
+							else {
+								book_db.clearBookResult();
+								if(book_db.getAuthorByISBN(id)) {
+									rs = book_db.getBookResult();
+									try {
+										while(rs.next()) {
+											authorList.add(new Author(rs.getInt("AuthorID"), StringEscapeUtils.escapeHtml4(rs.getString("Name"))));
+										}
+									}
+									catch(Exception e) {
+										status = "serverError";
+									}
+									if(authorList.size() == 0) {
+										status = "invalid";
+									}
+									else {
+										status = "success";
+									}
+								}
+							}
+						}
+					}
+					else {
+						status = "serverError";
+					}
+				}
+				else {
+					status = "invalid";
+				}
+			}
+			
+			Gson gson = new Gson();
+			JSONObjects<Book> obj = new JSONObjects<>(bookList, authorList, genreList, status);
+			String json = gson.toJson(obj);
+			response.setContentType("application/json");
+			response.getWriter().write(json);
+			return;
+		}
+		else if (requestURi.endsWith("admin/bookRegistration")) {
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
 				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
@@ -252,7 +333,7 @@ public class BookServlet extends HttpServlet {
 					}
 				} else {
 					request.setAttribute("error", "invalid");
-					request.getRequestDispatcher("/admin/authors").forward(request, response);
+					request.getRequestDispatcher("/admin/books").forward(request, response);
 					return;
 				}
 			}
@@ -262,8 +343,6 @@ public class BookServlet extends HttpServlet {
 				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
 				return;
 			}
-
-			ArrayList<Book> bookList = new ArrayList<Book>();
 
 			boolean condition = book_db.getBook();
 			if (condition) {
@@ -622,7 +701,7 @@ public class BookServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/bookList.jsp").forward(request, response);
+			request.getRequestDispatcher("/admin/adminHomePage.jsp").forward(request, response);
 			return;
 		}
 

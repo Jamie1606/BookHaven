@@ -84,6 +84,7 @@ public class SigninServlet extends HttpServlet {
 			if(isValid) {
 				session.setAttribute("memberID", id + "");
 				session.setAttribute("role", "member");
+				session.setMaxInactiveInterval(60 * 60);		// 1 hour
 				response.sendRedirect("index.jsp");
 			}
 			else {
@@ -117,6 +118,7 @@ public class SigninServlet extends HttpServlet {
 				if(isValid) {
 					session.setAttribute("adminID", id + "");
 					session.setAttribute("role", "admin");
+					session.setMaxInactiveInterval(3* 60 * 60);		// 3 hours
 					response.sendRedirect("admin/adminHomePage.jsp");
 				}
 				else {

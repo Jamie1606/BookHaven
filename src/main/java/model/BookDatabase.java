@@ -221,6 +221,54 @@ public class BookDatabase {
 		// select book data from database by genreID (end)
 	}
 
+	// get bookgenre and genre data from database
+	public boolean getGenreByISBN(String isbn) {
+		// select genre and bookgenre data from database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT g.* FROM \"public\".\"BookGenre\" AS bg, \"public\".\"Genre\" AS g "
+					+ "WHERE bg.\"ISBNNo\" = ? " + "AND bg.\"GenreID\" = g.\"GenreID\"";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setString(1, isbn);
+
+			bookResultSet = st.executeQuery();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// select genre and bookgenre data from database (end)
+	}
+
+	// get bookgenre and author data from database
+	public boolean getAuthorByISBN(String isbn) {
+		// select author and bookauthor data from database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT a.* FROM \"public\".\"BookAuthor\" AS ba, \"public\".\"Author\" AS a "
+					+ "WHERE ba.\"ISBNNo\" = ? " + "AND ba.\"AuthorID\" = a.\"AuthorID\"";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setString(1, isbn);
+
+			bookResultSet = st.executeQuery();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// select author and bookauthor data from database (start)
+	}
+
 	// get bookgenre data from database
 	public boolean getBookGenreByISBN(String isbn) {
 		// select bookgenre data from database (start)

@@ -36,7 +36,8 @@ import model.GenreDatabase;
 /**
  * Servlet implementation class GenreServlet
  */
-@WebServlet(urlPatterns = { "/genres/all", "/genres/books/*", "/admin/genreRegistration", "/admin/genres", "/admin/genreUpdate/*", "/admin/genreDelete/*" })
+@WebServlet(urlPatterns = { "/genres/all", "/genres/books/*", "/admin/genreRegistration", "/admin/genres",
+		"/admin/genreUpdate/*", "/admin/genreDelete/*" })
 public class GenreServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -45,7 +46,6 @@ public class GenreServlet extends HttpServlet {
 	 */
 	public GenreServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -54,7 +54,6 @@ public class GenreServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 
 		// response.getWriter().append("Served at: ").append(request.getContextPath());
 
@@ -77,7 +76,6 @@ public class GenreServlet extends HttpServlet {
 								new Genre(rs.getInt("GenreID"), StringEscapeUtils.escapeHtml4(rs.getString("Genre"))));
 					}
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					request.setAttribute("errCode", "serverError");
 				}
 			} else {
@@ -126,7 +124,6 @@ public class GenreServlet extends HttpServlet {
 							}
 						} catch (Exception e) {
 							System.out.println(e);
-							// TODO Auto-generated catch block
 							request.setAttribute("errCode", "serverError");
 						}
 					} else {
@@ -154,7 +151,7 @@ public class GenreServlet extends HttpServlet {
 				return;
 			}
 			// [CKECK AUTHENTICATION-END]
-			
+
 			// [DEFINE] database and resultSet arrayList(Genre)
 			GenreDatabase genre_db = new GenreDatabase();
 			ArrayList<Genre> genreList = new ArrayList<Genre>();
@@ -195,7 +192,7 @@ public class GenreServlet extends HttpServlet {
 				return;
 			}
 			// [CKECK AUTHENTICATION-END]
-			
+
 			String[] parts = requestURi.split("/");
 			if (parts.length == 0) {
 				request.setAttribute("error", "invalid");
@@ -213,11 +210,12 @@ public class GenreServlet extends HttpServlet {
 						try {
 							while (rs.next()) {
 								// sanitizing output by escaping html special characters
-								genreData = new Genre(rs.getInt("GenreID"), StringEscapeUtils.escapeHtml4(rs.getString("Genre")));
+								genreData = new Genre(rs.getInt("GenreID"),
+										StringEscapeUtils.escapeHtml4(rs.getString("Genre")));
 								break;
 							}
-							
-							request.setAttribute("genre", genreData); //[SEND TO registration form]
+
+							request.setAttribute("genre", genreData); // [SEND TO registration form]
 							request.setAttribute("status", "update");
 							request.getRequestDispatcher("/admin/genreRegistration.jsp").forward(request, response);
 							return;
@@ -238,7 +236,7 @@ public class GenreServlet extends HttpServlet {
 				}
 			}
 		} else if (requestURi.contains("admin/genreDelete")) {
-			
+
 			// [CKECK AUTHENTICATION]
 			HttpSession session = request.getSession();
 			Authentication auth = new Authentication();
@@ -303,7 +301,7 @@ public class GenreServlet extends HttpServlet {
 			response.sendRedirect("genreRegistration.jsp?errCode=invalid");
 		}
 	}
-	
+
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
@@ -315,18 +313,19 @@ public class GenreServlet extends HttpServlet {
 			request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
 			return;
 		}
-		
+
 		// values passed from author registration form
 		String status = request.getParameter("status");
 		String genreID, genre;
 
-		System.out.println("status: "+status);
+		System.out.println("status: " + status);
 		if (status.equals("update")) {
 			genreID = request.getParameter("genreID");
 			genre = request.getParameter("genre");
 
-			System.out.println("genreID: "+genreID);
-			if (genreID != null && !genreID.isBlank() && TestReg.matchInteger(genreID) && genre != null && !genre.isBlank()) {
+			System.out.println("genreID: " + genreID);
+			if (genreID != null && !genreID.isBlank() && TestReg.matchInteger(genreID) && genre != null
+					&& !genre.isBlank()) {
 
 				GenreDatabase genre_db = new GenreDatabase();
 				genre_db.clearGenreResult();
@@ -342,10 +341,10 @@ public class GenreServlet extends HttpServlet {
 						response.sendRedirect("genreRegistration.jsp?errCode=serverError");
 					}
 
-					System.out.println("count: "+count);
+					System.out.println("count: " + count);
 					if (count == 1) {
-						if (genre_db
-								.updateGenre(new Genre(Integer.parseInt(genreID), StringEscapeUtils.escapeHtml4(genre)))) {
+						if (genre_db.updateGenre(
+								new Genre(Integer.parseInt(genreID), StringEscapeUtils.escapeHtml4(genre)))) {
 							response.sendRedirect("genreRegistration.jsp?success=update");
 						} else {
 							response.sendRedirect("genreRegistration.jsp?errCode=serverError");
@@ -365,7 +364,14 @@ public class GenreServlet extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		
+		Authentication auth = new Authentication();
+		HttpSession session = request.getSession();
+		if (!auth.testAdmin(session)) {
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
+			return;
+		}
+
 		GenreDatabase genre_db = new GenreDatabase();
 		BookDatabase book_db = new BookDatabase();
 		String requestURi = request.getRequestURI();
@@ -400,6 +406,5 @@ public class GenreServlet extends HttpServlet {
 			}
 		}
 	}
-	
-	
+
 }
