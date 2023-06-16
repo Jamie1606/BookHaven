@@ -51,7 +51,6 @@ public class SigninServlet extends HttpServlet {
  	    String db_password = "o9w2O25Afleif9CCVCEBDQZX4tT79MH7";
  	    
  	    int id = 0;
- 	    String role = "";
 		
 		if(TestReg.matchEmail(email) && TestReg.matchPassword(password)) {
 			try {

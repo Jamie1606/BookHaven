@@ -1,11 +1,12 @@
+
 <%
-//Author: Thu Htet San
-//Admin No: 2235022
-//Date: 12.6.2023
-//Description: genre list page
+//Author: Zay Yar Tun
+//Admin No: 2235035
+//Date: 8.6.2023
+//Description: author list page
 %>
 
-<%@ page import="java.util.ArrayList, java.util.Date, model.Genre"%>
+<%@ page import="java.util.ArrayList, java.util.Date, model.Member"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -15,7 +16,7 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>BookHaven | Genre List</title>
+<title>BookHaven | Member List</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
@@ -75,50 +76,53 @@
 	request.removeAttribute("success");
 	if (error != null) {
 		if (error.equals("invalid")) {
-			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath() + "/admin/genres';</script>");
-		}
-		else if (error.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/genres';</script>");
-		}
-		else if (error.equals("serverRetrieveError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/adminHomePage.jsp';</script>");
+			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath()
+			+ "/admin/members';</script>");
+		} else if (error.equals("serverError")) {
+			out.println(
+			"<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/members';</script>");
+		} else if (error.equals("serverRetrieveError")) {
+			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
+			+ "/admin/adminHomePage.jsp';</script>");
 			return;
-		}
-		else if (error.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+		} else if (error.equals("unauthorized")) {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
+			+ "/signin.jsp';</script>");
 			return;
-		}
-		else {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+		} else {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
+			+ "/signin.jsp';</script>");
 			return;
 		}
 	}
-	if(success != null) {
-		if(success.equals("delete")) {
-			out.println("<script>alert('The genre is successfully deleted!'); location='" + request.getContextPath() + "/admin/genres';</script>");
+	if (success != null) {
+		if (success.equals("delete")) {
+			out.println("<script>alert('The member is successfully deleted!'); location='" + request.getContextPath()
+			+ "/admin/members';</script>");
+			return;
 		}
 	}
-	
-	String servlet = (String)request.getAttribute("servlet");
-	 request.removeAttribute("servlet");
-	if(servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + "/admin/genres';</script>");
+
+	String servlet = (String) request.getAttribute("servlet");
+	request.removeAttribute("servlet");
+	if (servlet == null || !servlet.equals("true")) {
+		out.println("<script>location='" + request.getContextPath() + "/admin/members';</script>");
 		return;
 	}
 
-	ArrayList<Genre> genreList = (ArrayList<Genre>) request.getAttribute("genreList");
+	ArrayList<Member> memberList = (ArrayList<Member>) request.getAttribute("memberList");
 	%>
 
 	<main id="main" class="main">
 
 		<div class="pagetitle">
-			<h1>Author Table</h1>
+			<h1>Member Table</h1>
 			<nav>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item"><a
 						href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
 					<li class="breadcrumb-item">Tables</li>
-					<li class="breadcrumb-item active">Genre Data</li>
+					<li class="breadcrumb-item active">Member Data</li>
 				</ol>
 			</nav>
 		</div>
@@ -130,26 +134,48 @@
 
 					<div class="card">
 						<div class="card-body">
-							<h5 class="card-title">Genre Information</h5>
+							<h5 class="card-title">Member Information</h5>
 
 							<!-- Table with stripped rows -->
 							<table class="table datatable">
 								<thead>
 									<tr>
 										<th scope="col">No.</th>
-										<th scope="col">Genre</th>
+										<th scope="col">Name</th>
+										<th scope="col">Gender</th>
+										<th scope="col">BirthDate</th>
+										<th scope="col">Phone</th>
+										<th scope="col">Address</th>
+										<th scope="col">Email</th>
 										<th scope="col">Action</th>
 									</tr>
 								</thead>
 								<tbody>
 									<%
-									for (int i = 0; i < genreList.size(); i++) {
+									for (int i = 0; i < memberList.size(); i++) {
 										out.println("<tr>");
 										out.println("<td>" + (i + 1) + ".</td>");
-										out.println("<td>" + genreList.get(i).getGenre() + "</td>");
-										out.println("<td><a href='" + request.getContextPath() + "/admin/genreUpdate/"
-										+ genreList.get(i).getGenreID() + " '>Edit</a> | <a href='" + request.getContextPath()
-										+ "/admin/genreDelete/" + genreList.get(i).getGenreID()  + "'>Delete</a></td>");
+										out.println("<td>" + memberList.get(i).getName() + "</td>");
+										char gender = memberList.get(i).getGender();
+										if (gender == 'M') {
+											out.println("<td>Male</td>");
+										} else if (gender == 'F') {
+											out.println("<td>Female</td>");
+										} else {
+											out.println("<td>N/A</td>");
+										}
+										Date birthDate = memberList.get(i).getBirthDate();
+										if (birthDate == null) {
+											out.println("<td></td>");
+										} else {
+											out.println("<td>" + birthDate.toString() + "</td>");
+										}
+										out.println("<td>" + memberList.get(i).getPhone() + "</td>");
+										out.println("<td>" + memberList.get(i).getAddress() + "</td>");
+										out.println("<td>" + memberList.get(i).getEmail() + "</td>");
+										out.println("<td><a href='" + request.getContextPath() + "/admin/memberUpdate/" + memberList.get(i).getMemberID()
+										+ " '>Edit</a> | <a href='" + request.getContextPath() + "/admin/memberDelete/"
+										+ memberList.get(i).getMemberID() + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
 									%>

@@ -1,17 +1,15 @@
-
 <%
 //Author: Zay Yar Tun
 //Admin No: 2235035
-//Date: 3.6.2023
-//Description: home page
+//Date: 5.6.2023
+//Description: sign out and destroy session
+//cart layout design is referenced from https://cdn.dribbble.com/users/1569943/screenshots/6745363/cart.png
 %>
-
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ page import="controller.Authentication" %>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<%@ page import="controller.Authentication, model.Book, java.util.ArrayList" %>
 <!DOCTYPE html>
-<html lang="zxx" class="no-js">
-
+<html>
 <head>
 <!-- Mobile Specific Meta -->
 <meta name="viewport"
@@ -27,7 +25,7 @@
 <!-- meta character set -->
 <meta charset="UTF-8">
 <!-- Site Title -->
-<title>BookHaven | Home</title>
+<title>BookHaven | Cart</title>
 
 <link
 	href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700"
@@ -42,52 +40,57 @@
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/owl.carousel.css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/main.css">
 <link rel="icon" type="image/png" href="<%= request.getContextPath() %>/img/logo.png">
-
-<style>
-	.latest-release h4:hover {
-		color: red;
-	}
-	.latest-release p {
-		cursor: default;
-	}
-</style>
 </head>
-
 <body>
-	<%@ include file="header.jsp"%>
-
-	<!-- start banner Area -->
-	<section class="banner-area" id="home">
-		<div class="container">
-			<div
-				class="row fullscreen d-flex align-items-center justify-content-start">
-				<div class="banner-content col-lg-7" id="latest-book"></div>
-				<div class="col-lg-5 banner-right" id="latest-book-image">
-				</div>
-			</div>
+	<%@ include file="header.jsp" %>
+	
+	<%
+		if(!auth.testMember(session)) {
+			out.println("<script>alert('Please Log In First!'); location='signout.jsp';</script>");
+			return;
+		}
+		
+		ArrayList<Book> cart = (ArrayList<Book>)session.getAttribute("cart");
+		if(cart == null) {
+			cart = new ArrayList<Book>();
+		}
+	%>
+	
+	<div style="padding: 100px 0px; color: black; visibility: hidden;" id="cart-info">
+		<h1 style="text-align: center; margin-bottom: 25px;">Shopping Cart</h1>
+		<table border="1" cellspacing="0" cellpadding="0" style="text-align: center; margin: auto; width: 80%;">
+			<tr style="height: 35px;">
+				<th>No.</th>
+				<th>Title</th>
+				<th>Publisher</th>
+				<th>Quantity</th>
+				<th>Unit Price</th>
+				<th>Action</th>
+			</tr>
+			<%
+				for(int i = 0; i < cart.size(); i++) {
+					out.println("<tr>");
+					out.println("<td>" + (i + 1) + ".</td>");
+					out.println("<td id='title-"+ i + "'></td>");
+					out.println("<td id='publisher-"+ i + "'></td>");
+					out.println("<td id='qty-"+ i + "'>" + cart.get(i).getQty() + "</td>");
+					out.println("<td id='price-"+ i + "'></td>");
+					out.println("<td><button onclick=\"removeItem('" + cart.get(i).getISBNNo() + "')\">Remove</button></td>");
+					out.println("</tr>");
+				}
+			%>
+			<tr style="height: 35px; text-align: right;">
+				<td colspan="8" id="total-price" style="padding-right: 30px;">Total Price: </td>
+			</tr>
+		</table>
+		<div style="float: right; margin-top: 30px; margin-right: 170px;">
+			<a href="index.jsp">Continue Shopping</a>
+			<a href="#">Check Out</a>
 		</div>
-	</section>
-	<!-- End banner Area -->
-
-	<!-- Start course Area -->
-	<section class="course-area section-gap" id="course">
-		<div class="container">
-			<div class="row d-flex justify-content-center">
-				<div class="menu-content pb-60 col-lg-9">
-					<div class="title text-center">
-						<h1 class="mb-10">Latest Releases</h1>
-						<p>Who are in extremely love with books.</p>
-					</div>
-				</div>
-			</div>
-			<div class="row" style="margin-bottom: 0px;" id="latest-release">
-			</div>
-		</div>
-	</section>
-	<!-- End course Area -->
-
-	<%@ include file="footer.jsp"%>
-
+	</div>
+	
+	<%@ include file="footer.jsp" %>
+	
 	<script src="<%= request.getContextPath() %>/js/vendor/jquery-2.2.4.min.js"></script>
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
@@ -106,47 +109,48 @@
 	<script src="<%= request.getContextPath() %>/js/jquery.counterup.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/mail-script.js"></script>
 	<script src="<%= request.getContextPath() %>/js/main.js"></script>
-
+	
 	<script>
 		$(document).ready(function() {
-			fetch('<%= request.getContextPath() %>/books/latest',
-			{
+			fetch('<%= request.getContextPath() %>/cart/bookdetail', {
 				method: 'GET'
 			})
 			.then(response => response.json())
 			.then(data => {
-				var list = data.list;
-				var status = data.status;
+				let list = data.list;
+				let status = data.status;
 				if(status == "serverError") {
-					alert('Error in retrieving latest book!');
+					alert('Error in retrieving cart details!');
+					location = 'index.jsp';
 				}
 				else {
+					let sum = 0;
 					for(let i = 0; i < list.length; i++) {
-						$('#latest-book').html('<h5 class="text-white text-uppercase"></h5><h1 class="text-uppercase">' + list[i].title + '</h1><p class="text-white pt-20 pb-20">' + list[i].description + '</p><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + list[i].ISBNNo + '" class="primary-btn text-uppercase">View More</a>');
-						$('#latest-book-image').html('<img class="img-fluid" src="<%= request.getContextPath() %>' + list[i].image3D + '" alt="">');
+						$('#title-' + i).html(list[i].title);
+						$('#publisher-' + i).html(list[i].publisher);
+						$('#price-' + i).html("$" + list[i].price);
+						let qty = document.getElementById('qty-' + i).innerHTML;
+						sum += Number(list[i].price) * Number(qty);
 					}
-				}
-			});
-			fetch('<%= request.getContextPath() %>/books/latestrelease', {
-				method: 'GET'
-			})
-			.then(response => response.json())
-			.then(data => {
-				var list = data.list;
-				var status = data.status;
-				if(status == "serverError") {
-					alert('Error in retrieving latest releases!');
-				}
-				else {
-					var htmlStr = "";
-					for(let i = 0; i < list.length; i++) {
-							htmlStr += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + list[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + list[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + list[i].ISBNNo + '"><h4>' + list[i].title + '</h4></a><p></p></div></div>';
-					}
-					$('#latest-release').html(htmlStr);
+					$('#total-price').html("Total Price: $" + sum.toFixed(2));
+					$('#cart-info').css({"visibility": "visible"});
 				}
 			})
 		})
+		
+		function removeItem(isbn) {
+			fetch('<%= request.getContextPath() %>/cart/remove/' + isbn, {
+				method: 'GET'	
+			})
+			.then(response => response.json())
+			.then(data => {
+				let status = data.status;
+				if(status == "invalid") {
+					alert('Invalid Request!');
+				}
+				location = 'cart.jsp';
+			})
+		}
 	</script>
 </body>
-
 </html>

@@ -85,14 +85,24 @@ public class MemberServlet extends HttpServlet {
 				try {
 					while (rs.next()) {
 						// sanitizing output by escaping html special characters
-						memberList.add(
-								new Member(rs.getInt("MemberID"), StringEscapeUtils.escapeHtml4(rs.getString("Name")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Gender")).charAt(0),
-										rs.getDate("BirthDate"), StringEscapeUtils.escapeHtml4(rs.getString("Phone")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Address")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Email")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Password")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image"))));
+						char gender = 'N';
+						String genderStr = rs.getString("Gender");
+						if(genderStr != null) {
+							if(genderStr.equals("M")) {
+								gender = 'M';
+							}
+							else if(genderStr.equals("F")) {
+								gender = 'F';
+							}
+						}
+						memberList.add(new Member(rs.getInt("MemberID"),
+								StringEscapeUtils.escapeHtml4(rs.getString("Name")),
+								gender,
+								rs.getDate("BirthDate"), StringEscapeUtils.escapeHtml4(rs.getString("Phone")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Address")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Email")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Password")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Image"))));
 					}
 				} catch (Exception e) {
 					request.setAttribute("error", "serverRetrieveError");
@@ -553,6 +563,7 @@ public class MemberServlet extends HttpServlet {
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 
 		MemberDatabase member_db = new MemberDatabase();
 		String requestURi = request.getRequestURI();

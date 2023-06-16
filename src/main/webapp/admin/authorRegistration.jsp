@@ -245,7 +245,7 @@
 		$(document).ready(function() {							
 			$('#authorForm').submit(function(e) {
 				$('#btnSave').prop('disabled',true);
-				$('#btnSave').html('<div class="spinner-border text-dark" role="status"><span class="visually-hidden">Loading...</span></div>');
+				$('#btnSave').html('Loading...');
 				return true;
 			})
 		});

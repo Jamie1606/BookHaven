@@ -15,7 +15,6 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +27,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.jasper.tagplugins.jstl.core.If;
 import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
@@ -48,8 +47,8 @@ import model.GenreDatabase;
 /**
  * Servlet implementation class BookServlet
  */
-@WebServlet(urlPatterns = { "/admin/books", "/book/*", "/books/latestrelease", "/books/latest", "/admin/bookRegistration",
-		"/admin/bookUpdate/*", "/admin/bookDelete/*" })
+@WebServlet(urlPatterns = { "/admin/books", "/cart/remove/*", "/cart/bookdetail", "/book/qty/*", "/book/*", "/books/latestrelease",
+		"/books/latest", "/admin/bookRegistration", "/admin/bookUpdate/*", "/admin/bookDelete/*", "/book/genres/*" })
 /**
  * Servlet implementation class BookServlet
  */
@@ -89,18 +88,48 @@ public class BookServlet extends HttpServlet {
 
 		String targetPage = "";
 		String requestURi = request.getRequestURI();
-		if(requestURi.contains("/book/")) {			
+		if(requestURi.contains("/cart/remove/")) {
 			String status = "";
 			String[] parts = requestURi.split("/");
 			if (parts.length == 0) {
 				status = "invalid";
 			} else {
-				String id = parts[parts.length - 1];
-				if (TestReg.matchISBN(id)) {
-					if(book_db.getBookByISBN(id)) {
+				String isbn = parts[parts.length - 1].trim();
+				if(isbn != null && !isbn.isEmpty() && TestReg.matchISBN(isbn)) {
+					ArrayList<Book> cart = (ArrayList<Book>)session.getAttribute("cart");
+					if(cart != null) {
+						for(int i = 0; i < cart.size(); i++) {
+							if(cart.get(i).getISBNNo().equals(isbn)) {
+								cart.remove(i);
+								break;
+							}
+						}
+					}
+					else {
+						status = "invalid";
+					}
+				}
+				else {
+					status = "invalid";
+				}
+			}
+			Gson gson = new Gson();
+			JSONObjects<Book> obj = new JSONObjects<>(status);
+			String json = gson.toJson(obj);
+			response.setContentType("application/json");
+			response.getWriter().write(json);
+			return;
+		}
+		else if (requestURi.endsWith("/cart/bookdetail")) {
+			String status = "";
+			ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
+			if (cart != null) {
+				for (int i = 0; i < cart.size(); i++) {
+					book_db.clearBookResult();
+					if (book_db.getBookByISBN(cart.get(i).getISBNNo())) {
 						ResultSet rs = book_db.getBookResult();
 						try {
-							while(rs.next()) {
+							while (rs.next()) {
 								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
 										StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
 										rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
@@ -110,68 +139,203 @@ public class BookServlet extends HttpServlet {
 										StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
 										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
 							}
-						}
-						catch(Exception e) {
+						} catch (Exception e) {
 							status = "serverError";
+							break;
 						}
-						if(bookList.size() != 1) {
+					} else {
+						status = "serverError";
+						break;
+					}
+				}
+			}
+			Gson gson = new Gson();
+			JSONObjects<Book> obj = new JSONObjects<>(bookList, status);
+			String json = gson.toJson(obj);
+			response.setContentType("application/json");
+			response.getWriter().write(json);
+			return;
+		} else if (requestURi.contains("/book/qty/")) {
+			String status = "";
+			String[] parts = requestURi.split("/");
+			if (parts.length == 0 && parts.length != 5) {
+				status = "invalid";
+			} else {
+				String isbn = parts[parts.length - 2].trim();
+				if (isbn != null && !isbn.isEmpty() && TestReg.matchISBN(isbn)) {
+					String qty = parts[parts.length - 1].trim();
+					if (qty == null || !TestReg.matchInteger(qty)) {
+						status = "invalid";
+					} else {
+						int stockQty = book_db.getBookQtyByISBN(isbn);
+						if (stockQty == -1) {
+							status = "serverError";
+						} else if (stockQty >= Integer.parseInt(qty)) {
+							status = "ok";
+							ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
+							if (cart == null) {
+								cart = new ArrayList<Book>();
+							}
+							boolean isFound = false;
+							for(int i = 0; i < cart.size(); i++) {
+								if(cart.get(i).getISBNNo().equals(isbn)) {
+									isFound = true;
+									int preqty = cart.get(i).getQty();
+									cart.get(i).setQty(preqty + Integer.parseInt(qty));
+									if(cart.get(i).getQty() > stockQty) {
+										status = "full";
+										cart.get(i).setQty(preqty);
+									}
+									break;
+								}
+							}
+							if(!isFound) {
+								cart.add(new Book(isbn, Integer.parseInt(qty)));	
+							}
+							session.setAttribute("cart", cart);
+						} else {
 							status = "invalid";
 						}
-						else {
+					}
+				} else {
+					status = "invalid";
+				}
+			}
+			Gson gson = new Gson();
+			JSONObjects<Book> obj = new JSONObjects<>(status);
+			String json = gson.toJson(obj);
+			response.setContentType("application/json");
+			response.getWriter().write(json);
+			return;
+		} else if (requestURi.contains("/book/genres/")) {
+			String status = "";
+			String[] parts = requestURi.split("/");
+			if (parts.length == 0 && parts.length != 5) {
+				status = "invalid";
+			} else {
+				String isbn = parts[parts.length - 2].trim();
+				if (isbn != null && !isbn.isEmpty() && TestReg.matchISBN(isbn)) {
+					String[] genres = parts[parts.length - 1].split(",");
+					if (genres == null) {
+						status = "invalid";
+					} else {
+						for (int i = 0; i < genres.length; i++) {
+							if (bookList.size() == 2) {
+								break;
+							}
 							book_db.clearBookResult();
-							if(book_db.getGenreByISBN(id)) {
-								rs = book_db.getBookResult();
+							if (book_db.getBookByGenre(genres[i].trim())) {
+								ResultSet rs = book_db.getBookResult();
 								try {
-									while(rs.next()) {
-										genreList.add(new Genre(rs.getInt("GenreID"), StringEscapeUtils.escapeHtml4(rs.getString("Genre"))));
+									while (rs.next()) {
+										if (!StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")).equals(isbn)) {
+											bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
+													StringEscapeUtils.escapeHtml4(rs.getString("Title")),
+													rs.getInt("Page"), rs.getDouble("Price"),
+													StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
+													rs.getDate("PublicationDate"), rs.getInt("Qty"),
+													rs.getShort("Rating"),
+													StringEscapeUtils.escapeHtml4(rs.getString("Description")),
+													StringEscapeUtils.escapeHtml4(rs.getString("Image")),
+													StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
+													StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+										}
+										if (bookList.size() == 2) {
+											break;
+										}
 									}
-								}
-								catch(Exception e) {
+								} catch (Exception e) {
 									status = "serverError";
 								}
 							}
-							if(genreList.size() == 0) {
-								status = "invalid";
+						}
+					}
+				} else {
+					status = "invalid";
+				}
+			}
+			Gson gson = new Gson();
+			JSONObjects<Book> obj = new JSONObjects<>(bookList, status);
+			String json = gson.toJson(obj);
+			response.setContentType("application/json");
+			response.getWriter().write(json);
+			return;
+		} else if (requestURi.contains("/book/")) {
+			String status = "";
+			String[] parts = requestURi.split("/");
+			if (parts.length == 0) {
+				status = "invalid";
+			} else {
+				String id = parts[parts.length - 1];
+				if (TestReg.matchISBN(id)) {
+					if (book_db.getBookByISBN(id)) {
+						ResultSet rs = book_db.getBookResult();
+						try {
+							while (rs.next()) {
+								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
+										rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
+										rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
+										StringEscapeUtils.escapeHtml4(rs.getString("Description")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
 							}
-							else {
+						} catch (Exception e) {
+							status = "serverError";
+						}
+						if (bookList.size() != 1) {
+							status = "invalid";
+						} else {
+							book_db.clearBookResult();
+							if (book_db.getGenreByISBN(id)) {
+								rs = book_db.getBookResult();
+								try {
+									while (rs.next()) {
+										genreList.add(new Genre(rs.getInt("GenreID"),
+												StringEscapeUtils.escapeHtml4(rs.getString("Genre"))));
+									}
+								} catch (Exception e) {
+									status = "serverError";
+								}
+							}
+							if (genreList.size() == 0) {
+								status = "invalid";
+							} else {
 								book_db.clearBookResult();
-								if(book_db.getAuthorByISBN(id)) {
+								if (book_db.getAuthorByISBN(id)) {
 									rs = book_db.getBookResult();
 									try {
-										while(rs.next()) {
-											authorList.add(new Author(rs.getInt("AuthorID"), StringEscapeUtils.escapeHtml4(rs.getString("Name"))));
+										while (rs.next()) {
+											authorList.add(new Author(rs.getInt("AuthorID"),
+													StringEscapeUtils.escapeHtml4(rs.getString("Name"))));
 										}
-									}
-									catch(Exception e) {
+									} catch (Exception e) {
 										status = "serverError";
 									}
-									if(authorList.size() == 0) {
+									if (authorList.size() == 0) {
 										status = "invalid";
-									}
-									else {
+									} else {
 										status = "success";
 									}
 								}
 							}
 						}
-					}
-					else {
+					} else {
 						status = "serverError";
 					}
-				}
-				else {
+				} else {
 					status = "invalid";
 				}
 			}
-			
+
 			Gson gson = new Gson();
 			JSONObjects<Book> obj = new JSONObjects<>(bookList, authorList, genreList, status);
 			String json = gson.toJson(obj);
 			response.setContentType("application/json");
 			response.getWriter().write(json);
 			return;
-		}
-		else if (requestURi.endsWith("admin/bookRegistration")) {
+		} else if (requestURi.endsWith("admin/bookRegistration")) {
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
 				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
@@ -382,7 +546,7 @@ public class BookServlet extends HttpServlet {
 		} else if (requestURi.endsWith("/books/latestrelease")) {
 			ArrayList<Book> book = new ArrayList<Book>();
 			String error = "";
-			if (book_db.getLatestBook(9)) {
+			if (book_db.getLatestBook(6)) {
 				ResultSet rs = book_db.getBookResult();
 
 				try {
@@ -476,7 +640,7 @@ public class BookServlet extends HttpServlet {
 			request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
 			return;
 		}
-		
+
 		ArrayList<String> authors = new ArrayList<String>();
 		ArrayList<String> genres = new ArrayList<String>();
 
@@ -490,6 +654,8 @@ public class BookServlet extends HttpServlet {
 				List<FileItem> items = upload.parseRequest(new ServletRequestContext(request));
 
 				Map<String, String> fields = new HashMap<>();
+				String defaultimage = storedImagePath + "normal/defaultbook.png";
+				String defaultimage3d = storedImagePath + "3d/defaultbook_3d.png";
 				String image = null;
 				String image3d = null;
 
@@ -593,6 +759,12 @@ public class BookServlet extends HttpServlet {
 								request.setAttribute("error", "duplicate");
 								request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
 								return;
+							}
+							if(image == null) {
+								image = defaultimage;
+							}
+							if(image3d == null) {
+								image3d = defaultimage3d;
 							}
 							if (book_db.registerBook(new Book(isbn, title, Integer.parseInt(page),
 									Double.parseDouble(price), publisher, publicationDate, Integer.parseInt(qty),

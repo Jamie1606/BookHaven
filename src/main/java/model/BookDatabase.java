@@ -62,6 +62,34 @@ public class BookDatabase {
 		}
 		// insert data into database (end)
 	}
+	
+	// get book qty by isbn
+	public int getBookQtyByISBN(String isbn) {
+		// select book qty from database (start)
+		int qty = 0;
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT \"Qty\" FROM \"public\".\"Book\" WHERE \"ISBNNo\" = ?";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setString(1, isbn);
+
+			bookResultSet = st.executeQuery();
+			while(bookResultSet.next()) {
+				qty = bookResultSet.getInt("Qty");
+			}
+			clearBookResult();
+			db.close();
+			return qty;
+		} catch (Exception e) {
+			return -1;
+		}
+		// select book qty from database (end)
+	}
 
 	// select latest book from database
 	public boolean getLatestBook(int limit) {
@@ -196,6 +224,35 @@ public class BookDatabase {
 			return false;
 		}
 		// select bookauthor data from database (end)
+	}
+
+	// get book data from database by genre
+	public boolean getBookByGenre(String genre) {
+		// select book data from database by genre (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT b.* "
+					+ "FROM \"public\".\"BookGenre\" AS bg, "
+					+ "\"public\".\"Book\" AS b, "
+					+ "\"public\".\"Genre\" AS g "
+					+ "WHERE bg.\"ISBNNo\" = b.\"ISBNNo\" "
+					+ "AND bg.\"GenreID\" = g.\"GenreID\" "
+					+ "AND g.\"Genre\" = ?";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setString(1, genre);
+
+			bookResultSet = st.executeQuery();
+			db.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		// select book data from database by genre (end)
 	}
 
 	// get book data from database by genreid
