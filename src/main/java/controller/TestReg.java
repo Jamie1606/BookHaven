@@ -21,25 +21,43 @@ public class TestReg {
 
 
 	public static boolean matchEmail(String test) {
+		if(test == null) {
+			return false;
+		}
 		return Pattern.matches(emailPattern, test);
 	}
 
 	public static boolean matchPassword(String test) {
+		if(test == null) {
+			return false;
+		}
 		return Pattern.matches(passwordPattern, test);
 	}
 	public static boolean matchISBN(String test) {
+		if(test == null) {
+			return false;
+		}
 		return Pattern.matches(isbnPattern, test);
 	}
 	
 	public static boolean matchInteger(String test) {
+		if(test == null) {
+			return false;
+		}
 		return Pattern.matches(integerPattern, test);
 	}
 	
 	public static boolean matchDecimal(String test) {
+		if(test == null) {
+			return false;
+		}
 		return Pattern.matches(decimalPattern, test);
 	}
 	
 	public static boolean matchDate(String test) {
+		if(test == null) {
+			return false;
+		}
 		return Pattern.matches(datePattern, test);
 	}
 	
@@ -53,14 +71,23 @@ public class TestReg {
 	}
 
 	public static boolean matchPhone(String test) {
+		if(test == null) {
+			return false;
+		}
 		return Pattern.matches(phonePattern, test);
 	}
 
 	public static boolean matchPostalCode(String test) {
+		if(test == null) {
+			return false;
+		}
 		return Pattern.matches(postalCodePattern, test);
 	}
 	
     public static boolean matchGender(String test) {
+    	if(test == null) {
+			return false;
+		}
         return Pattern.matches(genderPattern, test);
     }
 }

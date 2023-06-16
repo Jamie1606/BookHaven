@@ -15,6 +15,17 @@ public class Member {
 	private Date birthDate;
 	private String phone;
 	private String address;
+	public Member(String name, char gender, Date birthDate, String phone, String address, String email, String image) {
+		super();
+		this.name = name;
+		this.gender = gender;
+		this.birthDate = birthDate;
+		this.phone = phone;
+		this.address = address;
+		this.email = email;
+		this.image = image;
+	}
+
 	private String email;
 	private String password;
 	private String image;
