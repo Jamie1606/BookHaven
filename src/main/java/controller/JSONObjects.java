@@ -24,6 +24,12 @@ public class JSONObjects<T> {
 		this.status = status;
 	}
 	
+	public JSONObjects(ArrayList<T> list, ArrayList<Author> authorList, String status) {
+		this.list = list;
+		this.authorList = authorList;
+		this.status = status;
+	}
+	
 	public JSONObjects(ArrayList<T> list, ArrayList<Author> authorList, ArrayList<Genre> genreList, String status) {
 		this.list = list;
 		this.authorList = authorList;

@@ -62,6 +62,7 @@ public class GenreServlet extends HttpServlet {
 			// [DEFINE] database and resultSet arrayList(Genre)
 			GenreDatabase genre_db = new GenreDatabase();
 			ArrayList<Genre> genreList = new ArrayList<Genre>();
+			String status="";
 			// [TRUE-database execution successful]
 			// [FALSE-fail]
 			boolean condition = genre_db.getGenre();
@@ -75,24 +76,27 @@ public class GenreServlet extends HttpServlet {
 						genreList.add(
 								new Genre(rs.getInt("GenreID"), StringEscapeUtils.escapeHtml4(rs.getString("Genre"))));
 					}
+					status="success";
 				} catch (SQLException e) {
-					request.setAttribute("errCode", "serverError");
+					status="serverError";
 				}
 			} else {
-				request.setAttribute("errCode", "serverError");
+				status="serverError";
 			}
 
 			Gson gson = new Gson();
-			JSONObjects<Genre> obj = new JSONObjects<>(genreList, "true");
+			JSONObjects<Genre> obj = new JSONObjects<>(genreList, status);
 			String json = gson.toJson(obj);
 			response.setContentType("application/json");
 			response.getWriter().write(json);
 			return;
 		} else if (requestURi.contains("/genres/books/")) {
 
+			ArrayList<Book> bookList = new ArrayList<Book>();
+			String status = "";
 			String[] parts = requestURi.split("/");
 			if (parts.length == 0) {
-				// invalid do something
+				status = "invalid";
 				return;
 			} else {
 				String id = parts[parts.length - 1];
@@ -103,7 +107,6 @@ public class GenreServlet extends HttpServlet {
 
 				if (TestReg.matchInteger(id)) {
 					int genreID = Integer.parseInt(id);
-					ArrayList<Book> bookList = new ArrayList<Book>();
 					// [TRUE-database execution successful]
 					// [FALSE-fail]
 
@@ -122,24 +125,26 @@ public class GenreServlet extends HttpServlet {
 										StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
 										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
 							}
+							status = "success";
 						} catch (Exception e) {
 							System.out.println(e);
-							request.setAttribute("errCode", "serverError");
+							status = "serverError";
 						}
 					} else {
-						request.setAttribute("errCode", "serverError");
+						status = "serverError";
 					}
 
-					Gson gson = new Gson();
-					JSONObjects<Book> obj = new JSONObjects<>(bookList, "true");
-					String json = gson.toJson(obj);
-					response.setContentType("application/json");
-					response.getWriter().write(json);
-					return;
 				} else {
 					// invalid id
+					status = "invalid";
 				}
 			}
+			Gson gson = new Gson();
+			JSONObjects<Book> obj = new JSONObjects<>(bookList, status);
+			String json = gson.toJson(obj);
+			response.setContentType("application/json");
+			response.getWriter().write(json);
+			return;
 		} else if (requestURi.contains("admin/genres")) {
 
 			// [CKECK AUTHENTICATION]
@@ -179,10 +184,8 @@ public class GenreServlet extends HttpServlet {
 			// forward the data to the jsp
 			request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
 			return;
-		} 
-		else if (requestURi.contains("admin/genreUpdate")) {
-			
-			
+		} else if (requestURi.contains("admin/genreUpdate")) {
+
 			// [CKECK AUTHENTICATION]
 			HttpSession session = request.getSession();
 			Authentication auth = new Authentication();
@@ -247,8 +250,7 @@ public class GenreServlet extends HttpServlet {
 			}
 			// [CKECK AUTHENTICATION-END]
 			doDelete(request, response);
-		}
-		else {
+		} else {
 			request.setAttribute("error", "unauthorized");
 			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;

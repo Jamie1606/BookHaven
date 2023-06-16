@@ -381,7 +381,9 @@ public class MemberServlet extends HttpServlet {
 												response);
 									}
 								} else {
-
+									request.setAttribute("errorCode", "invalid");
+									request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
+											response);
 								}
 
 							} else if (status.equals("update")) {
@@ -389,7 +391,7 @@ public class MemberServlet extends HttpServlet {
 								Authentication auth = new Authentication();
 								HttpSession session = request.getSession();
 								if (!auth.testAdmin(session)) {
-									request.setAttribute("error", "unauthorized");
+									request.setAttribute("errorCode", "unauthorized");
 									request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
 											response);
 									return;
@@ -418,12 +420,12 @@ public class MemberServlet extends HttpServlet {
 											
 
 										} catch (Exception e) {
-											request.setAttribute("error", "serverError");
+											request.setAttribute("errorCode", "serverError");
 											request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request, response);
 											return;
 										}
 									} else {
-										request.setAttribute("error", "invalid");
+										request.setAttribute("errorCode", "invalid");
 										request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request, response);
 										return;
 									}

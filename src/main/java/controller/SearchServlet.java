@@ -1,3 +1,9 @@
+//Author 	  : Thu Htet San
+//Admin No    : 2235022
+//Class       : DIT/FT/2A/02
+//Date		  : 15.6.2023
+//Description : Search Books/Authors
+
 package controller;
 
 import java.io.IOException;
@@ -10,9 +16,12 @@ import java.util.ArrayList;
 import java.sql.ResultSet;
 import org.apache.commons.text.StringEscapeUtils;
 
+import com.google.gson.Gson;
+
 import model.SearchDatabase;
 import model.Author;
 import model.Book;
+import model.Genre;
 
 /**
  * Servlet implementation class SearchServlet
@@ -39,14 +48,14 @@ public class SearchServlet extends HttpServlet {
 		SearchDatabase search_db = new SearchDatabase();
 		String requestURi = request.getRequestURI();
 		if (requestURi.contains("/search/book")) {
+			String status = "";
 			ArrayList<Book> bookList = new ArrayList<Book>();
 			String[] parts = requestURi.split("/");
 			if (parts.length == 0) {
-				request.setAttribute("errCode", "invalid");
-				request.getRequestDispatcher("/search.jsp").forward(request, response);
-			} else {
+				status = "invalid";
+			} else {		
 				String searchValue = parts[parts.length - 1];
-				searchValue.trim();
+				searchValue = searchValue.trim();
 				if (searchValue != null && !searchValue.isBlank()) {
 					boolean condition = search_db.searchBook(searchValue);
 					if (condition) {
@@ -54,52 +63,68 @@ public class SearchServlet extends HttpServlet {
 						try {
 							while (rs.next()) {
 								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getDouble("Price"),
-										StringEscapeUtils.escapeHtml4(rs.getString("Description")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image"))));
+										StringEscapeUtils.escapeHtml4(rs.getString("Title")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
 							}
+							status = "success";
 						} catch (Exception e) {
-							request.setAttribute("errCode", "serverError");
-							request.getRequestDispatcher("/search.jsp").forward(request, response);
+							status = "serverError";
 						}
+					} else {
+						status = "serverError";
 					}
+				} else {
+					status = "invalid";
 				}
 			}
-
-			request.setAttribute("bookList", bookList);
-			request.getRequestDispatcher("/search.jsp").forward(request, response);
+			Gson gson = new Gson();
+			JSONObjects<Book> obj = new JSONObjects<>(bookList, status);
+			String json = gson.toJson(obj);
+			response.setContentType("application/json");
+			response.getWriter().write(json);
+			return;
 		} else if (requestURi.contains("/search/author")) {
+			String status = "";
+			ArrayList<Book> bookList = new ArrayList<Book>();
 			ArrayList<Author> authorList = new ArrayList<Author>();
 			String[] parts = requestURi.split("/");
 			if (parts.length == 0) {
-				request.setAttribute("errCode", "invalid");
-				request.getRequestDispatcher("/search.jsp").forward(request, response);
+				status = "invalid";
 			} else {
 				String searchValue = parts[parts.length - 1];
 				searchValue.trim();
 				if (searchValue != null && !searchValue.isBlank()) {
-					boolean condition = search_db.searchAuthor(searchValue);
+					boolean condition = search_db.searchBookByAuthor(searchValue);
 					if (condition) {
 						ResultSet rs = search_db.getSearchResultSet();
 						try {
 							while (rs.next()) {
 								authorList.add(new Author(rs.getInt("AuthorID"),
-										StringEscapeUtils.escapeHtml4(rs.getString("Name")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Nationality")),
-										rs.getDate("BirthDate"),
-										StringEscapeUtils.escapeHtml4(rs.getString("Biography")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Link"))));
+										StringEscapeUtils.escapeHtml4(rs.getString("Name"))));
+								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Title")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
 							}
+							status = "success";
 						} catch (Exception e) {
-							request.setAttribute("errCode", "serverError");
-							request.getRequestDispatcher("/search.jsp").forward(request, response);
+							status = "serverError";
 						}
+					} else {
+						status = "serverError";
 					}
+				} else {
+					status = "invalid";
 				}
 			}
 
-			request.setAttribute("authorList", authorList);
-			request.getRequestDispatcher("/search.jsp").forward(request, response);
+			Gson gson = new Gson();
+			JSONObjects<Book> obj = new JSONObjects<>(bookList, authorList, status);
+			String json = gson.toJson(obj);
+			response.setContentType("application/json");
+			response.getWriter().write(json);
+			return;
 		} else {
 			request.setAttribute("errCode", "invalid");
 			request.getRequestDispatcher("/search.jsp").forward(request, response);

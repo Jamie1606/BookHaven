@@ -355,10 +355,10 @@
 					let authors = "";
 					for(let i = 0; i < authorList.length; i++) {
 						if(i == authorList.length - 1) {
-							authors += "<a href='#' style='color: #555;'>" + authorList[i].name + "</a>";
+							authors += "<a href='<%= request.getContextPath() %>/authorDetail.jsp?id=/"+ authorList[i].authorID +"' style='color: #555;'>" + authorList[i].name + "</a>";
 						}
 						else {
-							authors += "<a href='#' style='color: #555;'>" + authorList[i].name + "</a>, "; 
+							authors += "<a href='<%= request.getContextPath() %>/authorDetail.jsp?id=/"+ authorList[i].authorID +"' style='color: #555;'>" + authorList[i].name + "</a>, "; 
 						}
 					}
 					let genres = "";

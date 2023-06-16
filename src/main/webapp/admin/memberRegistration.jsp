@@ -1,3 +1,4 @@
+
 <%
 //Author 	  : Thu Htet San
 //Admin No    : 2235022
@@ -8,8 +9,7 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page
-	import="java.util.*, java.text.*, model.Member"%>
+<%@ page import="java.util.*, java.text.*, model.Member"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -91,13 +91,12 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-
 	String status = "register";
-	Member member=null;
-	String postalCode="";
-	String address="";
+	Member member = null;
+	String postalCode = "";
+	String address = "";
 	// show error and success for registration
-	String errCode = (String)request.getAttribute("errCode");
+	String errCode = (String) request.getAttribute("error");
 	if (errCode != null) {
 		if (errCode.equals("serverError")) {
 			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
@@ -105,19 +104,19 @@
 		} else if (errCode.equals("invalid")) {
 			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
 			+ "/admin/memberRegistration.jsp';</script>");
-		}else if (errCode.equals("invalidEmail")) {
+		} else if (errCode.equals("invalidEmail")) {
 			out.println("<script>alert('Invalid Email!'); location='" + request.getContextPath()
 			+ "/admin/memberRegistration.jsp';</script>");
-		}else if (errCode.equals("upload")) {
+		} else if (errCode.equals("upload")) {
 			out.println("<script>alert('Error in uploading data!'); location='" + request.getContextPath()
 			+ "/admin/memberRegistration';</script>");
 			return;
-		}   else {
+		} else {
 			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
 			+ "/admin/memberRegistration.jsp';</script>");
 		}
 	} else {
-		String success = (String)request.getAttribute("success");
+		String success = (String) request.getAttribute("success");
 		if (success != null) {
 			if (success.equals("register")) {
 		out.println("<script>alert('Member data is successfully added!'); location='" + request.getContextPath()
@@ -129,7 +128,6 @@
 			}
 		}
 	}
-	
 
 	// check whether it is to update author data
 	status = (String) request.getAttribute("status");
@@ -137,27 +135,24 @@
 	if (status == null) {
 		status = "register";
 	} else {
-		if(status.equals("update")) {
+		if (status.equals("update")) {
 			member = (Member) request.getAttribute("member");
 			request.removeAttribute("member");
-			String completeAdderss=member.getAddress();
-			postalCode=completeAdderss.substring(completeAdderss.length() - 6);//get last 6 char
-			address= completeAdderss.substring(0, completeAdderss.length() - 7);//delete last 7 char
+			String completeAdderss = member.getAddress();
+			postalCode = completeAdderss.substring(completeAdderss.length() - 6);//get last 6 char
+			address = completeAdderss.substring(0, completeAdderss.length() - 7);//delete last 7 char
+		} else {
+
 		}
-		else {
-			
-		}
-		
+
 	}
-	
+
 	Calendar calendar = Calendar.getInstance();
 	calendar.setTime(new Date());
 	calendar.add(Calendar.YEAR, -5);
 	Date date = calendar.getTime();
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	String date_str = formatter.format(date);
-	
-
 	%>
 
 	<main id="main" class="main">
@@ -182,19 +177,19 @@
 
 							<!-- Member Registration Form -->
 							<form id="memberRegistrationForm" class="row g-3"
-								action="<%= request.getContextPath() %>/admin/members"
+								action="<%=request.getContextPath()%>/admin/members"
 								method="post" enctype="multipart/form-data">
 
 								<!-- formName -->
 								<input type="hidden" name="formName"
 									value="memberRegistrationForm" /> <input type="hidden"
-									name="status" value="<%= status %>" />
+									name="status" value="<%=status%>" />
 
 								<!-- Name input -->
 								<div class="col-12">
 									<label for="nameID" class="form-label">Name</label> <input
 										type="text" class="form-control" name="name" id="nameID"
-										value="<%=(status.equals("update")) ? member.getName() : "" %>"
+										value="<%=(status.equals("update")) ? member.getName() : ""%>"
 										required>
 								</div>
 
@@ -202,7 +197,7 @@
 								<div class="col-12">
 									<label for="emailID" class="form-label">Email</label> <input
 										type="email" class="form-control" name="email" id="emailID"
-										value="<%=(status.equals("update")) ? member.getEmail() : "" %>"
+										value="<%=(status.equals("update")) ? member.getEmail() : ""%>"
 										required>
 								</div>
 
@@ -211,7 +206,7 @@
 									<label for="passwordID" class="form-label">Password</label> <input
 										type="password" class="form-control" name="password"
 										id="passwordID"
-										value="<%=(status.equals("update")) ? member.getPassword() : "" %>"
+										value="<%=(status.equals("update")) ? member.getPassword() : ""%>"
 										required>
 								</div>
 
@@ -219,7 +214,7 @@
 								<div class="col-8">
 									<label for="addressID" class="form-label">Address</label> <input
 										type="text" class="form-control" name="address" id="addressID"
-										value="<%=(status.equals("update")) ? address : "" %>"
+										value="<%=(status.equals("update")) ? address : ""%>"
 										required>
 								</div>
 
@@ -228,7 +223,7 @@
 									<label for="postalCodeID" class="form-label">Postal
 										Code</label> <input type="number" class="form-control"
 										name="postalCode" id="postalCodeID"
-										value="<%=(status.equals("update")) ? postalCode : "" %>"
+										value="<%=(status.equals("update")) ? postalCode : ""%>"
 										required>
 								</div>
 
@@ -236,7 +231,7 @@
 								<div class="col-md-4">
 									<label for="phoneID" class="form-label">Phone</label> <input
 										type="number" class="form-control" name="phone" id="phoneID"
-										value="<%=(status.equals("update")) ? member.getPhone() : "" %>"
+										value="<%=(status.equals("update")) ? member.getPhone() : ""%>"
 										required>
 								</div>
 
@@ -245,14 +240,14 @@
 									<label for="birthDateID" class="form-label">Birth Date</label>
 									<input type="date" class="form-control" name="birthDate"
 										id="birthDateID"
-										value="<%=(status.equals("update")) ? member.getBirthDate() : ""%>"
-										required>
+										value="<%=(status.equals("update")) ? member.getBirthDate() : ""%>">
 								</div>
 
 								<!-- Gender input -->
 								<div class="col-md-4">
 									<label for="genderID" class="form-label">Gender</label> <select
-										name="gender" id="genderID" required>
+										name="gender" id="genderID">
+										<option value="N"></option>
 										<option
 											<%=(status.equals("update") && member.getGender() == 'F') ? "selected" : ""%>
 											value="F">F</option>
@@ -313,7 +308,7 @@
 
 	<!-- Template Main JS File -->
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
-	
+
 	<script>
 		$(document).ready(function() {
 			$('#memberRegistrationForm').submit(function(e) {
