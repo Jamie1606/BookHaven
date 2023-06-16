@@ -8,6 +8,7 @@
 			<nav id="nav-menu-container">
 				<ul class="nav-menu">
 					<li><a href="<%= request.getContextPath() %>/index.jsp">Home</a></li>
+					<li><a href="<%= request.getContextPath() %>/search.jsp">Search</a></li>
 					<li><a href="<%= request.getContextPath() %>/bookGenre.jsp">Genre</a></li>
 					<%
 						Authentication auth = new Authentication();

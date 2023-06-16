@@ -86,7 +86,7 @@
 			+ "/admin/authorRegistration.jsp';</script>");
 		} else if (errCode.equals("unauthorized")) {
 			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signin.jsp';</script>");
+			+ "/signout.jsp';</script>");
 			return;
 		} 
 		else {
@@ -100,10 +100,12 @@
 			if (success.equals("register")) {
 		out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
 				+ "/admin/authorRegistration.jsp';</script>");
+				return;
 			}
 			if (success.equals("update")) {
 		out.println("<script>alert('Author data is successfully updated!'); location='" + request.getContextPath()
 				+ "/admin/authors';</script>");
+				return;
 			}
 		}
 	}
@@ -120,7 +122,7 @@
 		}
 		else {
 			out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
-			+ "/signin.jsp';</script>");
+			+ "/signout.jsp';</script>");
 			return;
 		}
 		

@@ -87,11 +87,11 @@
 			return;
 		} else if (error.equals("unauthorized")) {
 			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signin.jsp';</script>");
+			+ "/signout.jsp';</script>");
 			return;
 		} else {
 			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signin.jsp';</script>");
+			+ "/signout.jsp';</script>");
 			return;
 		}
 	}

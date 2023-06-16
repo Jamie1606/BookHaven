@@ -123,7 +123,6 @@ public class GenreServlet extends HttpServlet {
 										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
 							}
 						} catch (Exception e) {
-							System.out.println(e);
 							request.setAttribute("errCode", "serverError");
 						}
 					} else {
@@ -147,7 +146,7 @@ public class GenreServlet extends HttpServlet {
 			Authentication auth = new Authentication();
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 			// [CKECK AUTHENTICATION-END]
@@ -188,7 +187,7 @@ public class GenreServlet extends HttpServlet {
 			Authentication auth = new Authentication();
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 			// [CKECK AUTHENTICATION-END]
@@ -242,7 +241,7 @@ public class GenreServlet extends HttpServlet {
 			Authentication auth = new Authentication();
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 			// [CKECK AUTHENTICATION-END]
@@ -269,7 +268,7 @@ public class GenreServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
 		}
 		// [CHECK AUTHENTICATION-END]
@@ -285,7 +284,7 @@ public class GenreServlet extends HttpServlet {
 
 				GenreDatabase genre_db = new GenreDatabase();
 
-				if (genre_db.addGenre(new Genre(StringEscapeUtils.escapeHtml4(genre)))) {
+				if (genre_db.addGenre(new Genre(genre.trim()))) {
 					response.sendRedirect("genreRegistration.jsp?success=register");
 				} else {
 					response.sendRedirect("genreRegistration.jsp?errCode=serverError");
@@ -310,7 +309,7 @@ public class GenreServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
 		}
 
@@ -318,12 +317,10 @@ public class GenreServlet extends HttpServlet {
 		String status = request.getParameter("status");
 		String genreID, genre;
 
-		System.out.println("status: " + status);
 		if (status.equals("update")) {
 			genreID = request.getParameter("genreID");
 			genre = request.getParameter("genre");
 
-			System.out.println("genreID: " + genreID);
 			if (genreID != null && !genreID.isBlank() && TestReg.matchInteger(genreID) && genre != null
 					&& !genre.isBlank()) {
 
@@ -341,10 +338,9 @@ public class GenreServlet extends HttpServlet {
 						response.sendRedirect("genreRegistration.jsp?errCode=serverError");
 					}
 
-					System.out.println("count: " + count);
 					if (count == 1) {
 						if (genre_db.updateGenre(
-								new Genre(Integer.parseInt(genreID), StringEscapeUtils.escapeHtml4(genre)))) {
+								new Genre(Integer.parseInt(genreID), genre.trim()))) {
 							response.sendRedirect("genreRegistration.jsp?success=update");
 						} else {
 							response.sendRedirect("genreRegistration.jsp?errCode=serverError");
@@ -368,7 +364,7 @@ public class GenreServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/genreList.jsp").forward(request, response);
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
 		}
 

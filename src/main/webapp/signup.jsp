@@ -97,19 +97,24 @@
 	<%@ include file="header.jsp"%>
 
 	<%
+	String success = request.getParameter("success");
+	if(success != null && success.equals("true")) {
+		out.println("<script>alert('Your new account is created!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+		return;
+	}
 	String errCode = request.getParameter("errCode");
 
 	if (errCode != null) {
 		if (errCode.equals("invalidEmail")) {
-			out.println("<script>alert('Email Already Exists!'); location='signup.jsp';</script>");
+			out.println("<script>alert('Email Already Exists!'); location='" + request.getContextPath() + "/signup.jsp';</script>");
 			return;
 		}
 		if (errCode.equals("invalid")) {
-			out.println("<script>alert('Invalid Data!!'); location='signup.jsp';</script>");
+			out.println("<script>alert('Invalid Data!!'); location='" + request.getContextPath() + "/signup.jsp';</script>");
 			return;
 		}
 		if (errCode.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='signup.jsp';</script>");
+			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/signup.jsp';</script>");
 			return;
 		}
 	}

@@ -1,7 +1,7 @@
 // Author: Zay Yar Tun
 // Admin No: 2235035
 // Date: 8.6.2023
-// Description: To test string with regular expressions
+// Description: create json objects to send back to client side
 
 package controller;
 
@@ -21,6 +21,12 @@ public class JSONObjects<T> {
 	
 	public JSONObjects(ArrayList<T> list, String status) {
 		this.list = list;
+		this.status = status;
+	}
+	
+	public JSONObjects(ArrayList<T> list, ArrayList<Author> authorList, String status) {
+		this.list = list;
+		this.authorList = authorList;
 		this.status = status;
 	}
 	

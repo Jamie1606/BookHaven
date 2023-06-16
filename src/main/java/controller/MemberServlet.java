@@ -44,8 +44,7 @@ import model.MemberDatabase;
 /**
  * Servlet implementation class MemberServlet
  */
-@WebServlet(urlPatterns = { "/signup", "/profile", "/admin/members", "/admin/memberUpdate/*",
-		"/admin/memeberDelete/*" })
+@WebServlet(urlPatterns = { "/signup", "/profile", "/admin/members", "/admin/memberUpdate/*", "/admin/memberDelete/*" })
 public class MemberServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -74,7 +73,7 @@ public class MemberServlet extends HttpServlet {
 			Authentication auth = new Authentication();
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/memberList.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 			// [CKECK AUTHENTICATION-END]
@@ -87,18 +86,16 @@ public class MemberServlet extends HttpServlet {
 						// sanitizing output by escaping html special characters
 						char gender = 'N';
 						String genderStr = rs.getString("Gender");
-						if(genderStr != null) {
-							if(genderStr.equals("M")) {
+						if (genderStr != null) {
+							if (genderStr.equals("M")) {
 								gender = 'M';
-							}
-							else if(genderStr.equals("F")) {
+							} else if (genderStr.equals("F")) {
 								gender = 'F';
 							}
 						}
 						memberList.add(new Member(rs.getInt("MemberID"),
-								StringEscapeUtils.escapeHtml4(rs.getString("Name")),
-								gender,
-								rs.getDate("BirthDate"), StringEscapeUtils.escapeHtml4(rs.getString("Phone")),
+								StringEscapeUtils.escapeHtml4(rs.getString("Name")), gender, rs.getDate("BirthDate"),
+								StringEscapeUtils.escapeHtml4(rs.getString("Phone")),
 								StringEscapeUtils.escapeHtml4(rs.getString("Address")),
 								StringEscapeUtils.escapeHtml4(rs.getString("Email")),
 								StringEscapeUtils.escapeHtml4(rs.getString("Password")),
@@ -118,14 +115,14 @@ public class MemberServlet extends HttpServlet {
 			// forward the data to the jsp
 			request.getRequestDispatcher("/admin/memberList.jsp").forward(request, response);
 			return;
-		} else if (requestURi.contains("admin/memberUpdate")) {
+		} else if (requestURi.contains("/admin/memberUpdate/")) {
 
 			// [CKECK AUTHENTICATION]
 			HttpSession session = request.getSession();
 			Authentication auth = new Authentication();
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/memberList.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 			// [CKECK AUTHENTICATION-END]
@@ -144,9 +141,17 @@ public class MemberServlet extends HttpServlet {
 
 						try {
 							while (rs.next()) {
+								char gender = 'N';
+								String genderStr = rs.getString("Gender");
+								if (genderStr != null) {
+									if (genderStr.equals("M")) {
+										gender = 'M';
+									} else if (genderStr.equals("F")) {
+										gender = 'F';
+									}
+								}
 								// sanitizing output by escaping html special characters
-								memberData = new Member(StringEscapeUtils.escapeHtml4(rs.getString("Name")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Gender")).charAt(0),
+								memberData = new Member(rs.getInt("MemberID"), StringEscapeUtils.escapeHtml4(rs.getString("Name")), gender,
 										rs.getDate("BirthDate"), StringEscapeUtils.escapeHtml4(rs.getString("Phone")),
 										StringEscapeUtils.escapeHtml4(rs.getString("Address")),
 										StringEscapeUtils.escapeHtml4(rs.getString("Email")),
@@ -175,14 +180,14 @@ public class MemberServlet extends HttpServlet {
 				}
 
 			}
-		} else if (requestURi.contains("admin/memberDelete")) {
+		} else if (requestURi.contains("/admin/memberDelete/")) {
 
 			// [CKECK AUTHENTICATION]
 			HttpSession session = request.getSession();
 			Authentication auth = new Authentication();
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/memberList.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 			// [CKECK AUTHENTICATION-END]
@@ -205,9 +210,18 @@ public class MemberServlet extends HttpServlet {
 
 					try {
 						while (rs.next()) {
+							char gender = 'N';
+							String genderStr = rs.getString("Gender");
+							if (genderStr != null) {
+								if (genderStr.equals("M")) {
+									gender = 'M';
+								} else if (genderStr.equals("F")) {
+									gender = 'F';
+								}
+							}
 							// sanitizing output by escaping html special characters
 							memberData = new Member(StringEscapeUtils.escapeHtml4(rs.getString("Name")),
-									StringEscapeUtils.escapeHtml4(rs.getString("Gender")).charAt(0),
+									gender,
 									rs.getDate("BirthDate"), StringEscapeUtils.escapeHtml4(rs.getString("Phone")),
 									StringEscapeUtils.escapeHtml4(rs.getString("Address")),
 									StringEscapeUtils.escapeHtml4(rs.getString("Email")),
@@ -221,7 +235,7 @@ public class MemberServlet extends HttpServlet {
 						return;
 					} catch (Exception e) {
 						request.setAttribute("error", "serverError");
-						request.getRequestDispatcher("/profile.jsp").forward(request, response);
+						request.getRequestDispatcher("/index.jsp").forward(request, response);
 						return;
 					}
 				} else {
@@ -230,8 +244,8 @@ public class MemberServlet extends HttpServlet {
 					return;
 				}
 			} else {
-				request.setAttribute("error", "invalid");
-				request.getRequestDispatcher("/profile.jsp").forward(request, response);
+				request.setAttribute("error", "unauthorized");
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 
@@ -287,6 +301,7 @@ public class MemberServlet extends HttpServlet {
 					List<FileItem> items = upload.parseRequest(new ServletRequestContext(request));
 
 					Map<String, String> fields = new HashMap<>();
+					String defaultimage = storedImagePath + "defaultuser.png";
 					String image = null;
 
 					// process the form fields and file uploads
@@ -332,35 +347,44 @@ public class MemberServlet extends HttpServlet {
 
 					// checking null and empty values
 					if (name != null && !name.isEmpty() && phone != null && !phone.isEmpty() && address != null
-							&& !address.isEmpty() && postalCode != null && !postalCode.isEmpty() && email != null
-							&& !email.isEmpty()) {
+							&& !address.isEmpty() && postalCode != null && !postalCode.isEmpty()) {
+						address = address.trim();
+						name = name.trim();
 
 						// test with regular expressions
-						if (TestReg.matchEmail(email) && TestReg.matchPhone(phone)
-								&& TestReg.matchPostalCode(postalCode)) {
+						if (TestReg.matchPhone(phone) && TestReg.matchPostalCode(postalCode)) {
 
-							address += " S" + postalCode;
+							address += " |" + postalCode;
 							if (birthDate != null && !birthDate.isEmpty() && TestReg.matchDate(birthDate)) {
 								birth_date = Date.valueOf(LocalDate.parse(birthDate));
 							}
 
 							BookDatabase book_db = new BookDatabase();
 							book_db.clearBookResult();
-							int count = 0;
 							char genderChar = 'N';
-							if (gender != null && !gender.isEmpty() && TestReg.matchGender(gender) && !gender.equals("N")) {
+							if (gender != null && !gender.isEmpty() && TestReg.matchGender(gender)
+									&& !gender.equals("N")) {
 								genderChar = gender.charAt(0);
 							}
 
 							if (status.equals("register")) {
+								if(email == null || email.isEmpty() || TestReg.matchEmail(email)  ) {
+									request.setAttribute("error", "unauthorized");
+									request.getRequestDispatcher("/signout.jsp").forward(request,
+											response);
+									return;
+								}
 								// [CHECK AUTHENTICATION]
 								Authentication auth = new Authentication();
 								HttpSession session = request.getSession();
 								if (!auth.testAdmin(session)) {
 									request.setAttribute("error", "unauthorized");
-									request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
+									request.getRequestDispatcher("/signout.jsp").forward(request,
 											response);
 									return;
+								}
+								if (image == null) {
+									image = defaultimage;
 								}
 								// [CHECK AUTHENTICATION-END]
 								// call function from MemberDatabase
@@ -372,11 +396,11 @@ public class MemberServlet extends HttpServlet {
 										request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
 												response);
 									} else if (condition == -1) {
-										request.setAttribute("errorCode", "invalidEmail");
+										request.setAttribute("errCode", "invalidEmail");
 										request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
 												response);
 									} else {
-										request.setAttribute("errorCode", "serverError");
+										request.setAttribute("errCode", "serverError");
 										request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
 												response);
 									}
@@ -390,7 +414,7 @@ public class MemberServlet extends HttpServlet {
 								HttpSession session = request.getSession();
 								if (!auth.testAdmin(session)) {
 									request.setAttribute("error", "unauthorized");
-									request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
+									request.getRequestDispatcher("/signout.jsp").forward(request,
 											response);
 									return;
 								}
@@ -398,53 +422,33 @@ public class MemberServlet extends HttpServlet {
 								if (image == null) {
 									if (oldimage != null && !oldimage.isEmpty() && !oldimage.equals("null")) {
 										image = oldimage;
+									} else {
+										image = defaultimage;
 									}
 								}
-								
-								//[RETRIEVE PASSWORD]
+
 								String id = fields.get("MemberID");
 								if (TestReg.matchInteger(id)) {
 									member_db.clearMemberResult();
-									
-									if (member_db.getMemberByID(Integer.parseInt(id))) {
-										ResultSet rs = member_db.getMemberResult();
-										try {
-											while (rs.next()) {
-												// sanitizing output by escaping html special characters
-												password = StringEscapeUtils
-														.escapeHtml4(rs.getString("Password"));
-												break;
-											}
-											
-
-										} catch (Exception e) {
-											request.setAttribute("error", "serverError");
-											request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request, response);
-											return;
-										}
-									} else {
-										request.setAttribute("error", "invalid");
-										request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request, response);
+									if(member_db.updateMember(new Member(Integer.parseInt(id), name,
+											genderChar, birth_date, phone, address, image), 2)) {
+										request.setAttribute("success", "update");
+										request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
+												response);
 										return;
 									}
-								
-								// call function from MemberDatabase
-								
-							}
-								int condition = member_db.updateMember(new Member(Integer.parseInt(id), name, genderChar, birth_date, phone,
-								address, email, password, image));
-								if (condition == 1) {
-									request.setAttribute("success", "update");
+									else {
+										request.setAttribute("errCode", "serverError");
+										request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
+												response);
+										return;
+									}
+								}
+								else {
+									request.setAttribute("errCode", "invalid");
 									request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
 											response);
-								} else if (condition == -1) {
-									request.setAttribute("errorCode", "invalidEmail");
-									request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
-											response);
-								} else {
-									request.setAttribute("errorCode", "serverError");
-									request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
-											response);
+									return;
 								}
 
 							} // [PROFILE EDIT]
@@ -456,58 +460,56 @@ public class MemberServlet extends HttpServlet {
 								// [CHECK USER AUTHENTICATION-END]
 
 								String id = session.getAttribute("memberID").toString();
-								
+
 								// [CHECK NEW PASS EXISTS]
-									if (TestReg.matchInteger(id)) {
-										member_db.clearMemberResult();
-										boolean condition = member_db.getMemberByID(Integer.parseInt(id));
-										if (condition) {
-											ResultSet rs = member_db.getMemberResult();
-											try {
-												while (rs.next()) {
-													// sanitizing output by escaping html special characters
-													password = StringEscapeUtils
-															.escapeHtml4(rs.getString("Password"));
-													break;
-												}
-												if (currentPassword != null && !currentPassword.isEmpty() && newPassword != null
-														&& !newPassword.isEmpty()) {
-												if (password.equals(currentPassword) && TestReg.matchPassword(newPassword)) {
-													password=newPassword;
-												}
-												}
-											} catch (Exception e) {
-												request.setAttribute("errCode", "serverError");
-												request.getRequestDispatcher("/profile.jsp").forward(request, response);
-												return;
+								if (TestReg.matchInteger(id)) {
+									member_db.clearMemberResult();
+									boolean condition = member_db.getMemberByID(Integer.parseInt(id));
+									if (condition) {
+										ResultSet rs = member_db.getMemberResult();
+										try {
+											while (rs.next()) {
+												// sanitizing output by escaping html special characters
+												password = StringEscapeUtils.escapeHtml4(rs.getString("Password"));
+												break;
 											}
-										} else {
-											request.setAttribute("errCode", "invalid");
+											if (currentPassword != null && !currentPassword.isEmpty()
+													&& newPassword != null && !newPassword.isEmpty()) {
+												if (password.equals(currentPassword)
+														&& TestReg.matchPassword(newPassword)) {
+													password = newPassword;
+												}
+											}
+										} catch (Exception e) {
+											request.setAttribute("errCode", "serverError");
 											request.getRequestDispatcher("/profile.jsp").forward(request, response);
 											return;
 										}
+									} else {
+										request.setAttribute("errCode", "invalid");
+										request.getRequestDispatcher("/profile.jsp").forward(request, response);
+										return;
 									}
+								}
 								// [CHECK NEW PASS EXIST-END]
-								
+
 								if (image == null) {
 									if (oldimage != null && !oldimage.isEmpty() && !oldimage.equals("null")) {
 										image = oldimage;
 									}
 								}
-								// call function from MemberDatabase
-								int condition = member_db.updateMember(new Member(Integer.parseInt(id), name, genderChar, birth_date, phone,
-										address, email, password, image));
-								if (condition == 1) {
+								
+								if(member_db.updateMember(new Member(Integer.parseInt(id), name,
+										 birth_date, phone, address, password, genderChar, image), 1)) {
 									request.setAttribute("success", "update");
 									request.getRequestDispatcher("/profile.jsp").forward(request, response);
-								} else if (condition == -1) {
-									request.setAttribute("errCode", "invalidEmail");
-									request.getRequestDispatcher("/profile.jsp").forward(request, response);
-								} else {
+									return;
+								}
+								else {
 									request.setAttribute("errCode", "serverError");
 									request.getRequestDispatcher("/profile.jsp").forward(request, response);
+									return;
 								}
-
 							} else {
 								// [status loop]
 								request.setAttribute("error", "serverError");
@@ -525,8 +527,12 @@ public class MemberServlet extends HttpServlet {
 						}
 
 					}
+					else {
+						request.setAttribute("error", "unauthorized");
+						request.getRequestDispatcher("/signout.jsp").forward(request, response);
+						return;
+					}
 				} catch (Exception e) {
-					System.out.println(e);
 					request.setAttribute("error", "upload");
 					request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request, response);
 					return;
@@ -541,14 +547,18 @@ public class MemberServlet extends HttpServlet {
 				String address = request.getParameter("address");
 				String postalCode = request.getParameter("postalCode");
 				String phone = request.getParameter("phone"); // String ms_image = request.getParameter("image");
+				String defaultImage = "/img/members/defaultuser.png";
 				if (TestReg.matchEmail(email) && TestReg.matchPassword(password) && TestReg.matchPhone(phone)
 						&& TestReg.matchPostalCode(postalCode)) {
-					address += " S" + postalCode;
+					address = address.trim();
+					name = name.trim();
+					address += " |" + postalCode;
 
 					// call function from MemberDatabase
-					int condition = member_db.registerMember(new Member(name, phone, address, email, password));
+					int condition = member_db
+							.registerMember(new Member(name, phone, address, email, password, defaultImage));
 					if (condition == 1) {
-						response.sendRedirect("signin.jsp");
+						response.sendRedirect("signup.jsp?success=true");
 					} else if (condition == -1) {
 						response.sendRedirect("signup.jsp?errCode=invalidEmail");
 					} else {
@@ -563,7 +573,6 @@ public class MemberServlet extends HttpServlet {
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 
 		MemberDatabase member_db = new MemberDatabase();
 		String requestURi = request.getRequestURI();

@@ -11,10 +11,11 @@ import java.sql.Date;
 public class Member {
 	private int memberID;
 	private String name;
-	private char gender;
+	private char gender = 'N';
 	private Date birthDate;
 	private String phone;
 	private String address;
+
 	public Member(String name, char gender, Date birthDate, String phone, String address, String email, String image) {
 		super();
 		this.name = name;
@@ -30,10 +31,19 @@ public class Member {
 	private String password;
 	private String image;
 	private Date lastActive;
-	
+
 	public Member(String email, String password) {
 		this.email = email;
 		this.password = password;
+	}
+
+	public Member(String name, String phone, String address, String email, String password, String image) {
+		this.name = name;
+		this.phone = phone;
+		this.address = address;
+		this.email = email;
+		this.password = password;
+		this.image = image;
 	}
 
 	public Member(String name, String phone, String address, String email, String password) {
@@ -44,8 +54,42 @@ public class Member {
 		this.password = password;
 	}
 
-	public Member(int memberID, String name, char gender, Date birthDate, String phone, String address, String email,String password,
+	public Member(int memberID, String name, char gender, Date birthDate, String phone, String address, String image) {
+		this.memberID = memberID;
+		this.name = name;
+		this.gender = gender;
+		this.birthDate = birthDate;
+		this.phone = phone;
+		this.address = address;
+		this.image = image;
+	}
+
+	public Member(int memberID, String name, char gender, Date birthDate, String phone, String address, String email,
 			String image) {
+		this.memberID = memberID;
+		this.name = name;
+		this.gender = gender;
+		this.birthDate = birthDate;
+		this.phone = phone;
+		this.address = address;
+		this.email = email;
+		this.image = image;
+	}
+
+	public Member(int memberID, String name, Date birthDate, String phone, String address, String password, char gender,
+			String image) {
+		this.memberID = memberID;
+		this.name = name;
+		this.gender = gender;
+		this.birthDate = birthDate;
+		this.phone = phone;
+		this.address = address;
+		this.password = password;
+		this.image = image;
+	}
+
+	public Member(int memberID, String name, char gender, Date birthDate, String phone, String address, String email,
+			String password, String image) {
 		this.memberID = memberID;
 		this.name = name;
 		this.gender = gender;
@@ -57,8 +101,8 @@ public class Member {
 		this.image = image;
 	}
 
-	public Member(String name, char gender, Date birthDate, String phone, String address, String email,
-			String password, String image) {
+	public Member(String name, char gender, Date birthDate, String phone, String address, String email, String password,
+			String image) {
 		this.name = name;
 		this.gender = gender;
 		this.birthDate = birthDate;
