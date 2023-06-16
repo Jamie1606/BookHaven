@@ -1,7 +1,7 @@
 
 
 <!-- [IMPORT] -->
-<%@ page import="model.Member"%>
+<%@ page import="model.Member, controller.Authentication"%>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 

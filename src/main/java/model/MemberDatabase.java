@@ -28,7 +28,7 @@ public class MemberDatabase {
 	// -1 => invalid email
 	// 0 => server Error
 	// 1 => success
-	
+
 	// [REGISTER MEMBER] insert member into database
 	public int registerMember(Member member) {
 		// insert data into database (start)
@@ -95,9 +95,14 @@ public class MemberDatabase {
 		}
 
 	}
-	//[REGISTER MEMBER-END]
-	
-	//[RETIRIEVE ALL MEMBER]
+	// [REGISTER MEMBER-END]
+
+	// set resultset to null
+	public void clearMemberResult() {
+		this.memberResultSet = null;
+	}
+
+	// [RETIRIEVE ALL MEMBER]
 	public boolean getMember() {
 		try {
 			// loading postgresql driver
@@ -123,9 +128,9 @@ public class MemberDatabase {
 		}
 
 	}
-	//[RETIRIEVE ALL MEMBER-END]
-	
-	//[RETIRIEVE MEMBER BY ID] select member from database BY ID
+	// [RETIRIEVE ALL MEMBER-END]
+
+	// [RETIRIEVE MEMBER BY ID] select member from database BY ID
 	public boolean getMemberByID(int ID) {
 		try {
 			// loading postgresql driver
@@ -140,7 +145,7 @@ public class MemberDatabase {
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 			st.setInt(1, ID);
 			memberResultSet = st.executeQuery();
-			
+
 			db.close();
 			// successful
 			return true;
@@ -151,14 +156,14 @@ public class MemberDatabase {
 		}
 
 	}
-	//[RETIRIEVE MEMBER BY ID-END]
-	
+	// [RETIRIEVE MEMBER BY ID-END]
+
 	// [RETURN MEMBER RESULTSET]
 	public ResultSet getMemberResult() {
 		return memberResultSet;
 	}
 	// [RETURN MEMBER RESULTSET-END]
-	
+
 	// [UPDATE MEMBER] update member data to database
 	public int updateMember(Member member) {
 		try {
@@ -182,7 +187,7 @@ public class MemberDatabase {
 				return -1;
 			}
 			// [CHECK DUPLICATE EMAIL-END]
-			
+
 			// select all from "Genre" TABLE
 			sqlStatement = "UPDATE \"public\".\"Member\" SET \"Name\" = ?, \"Gender\" = ?, \"BirthDate\" = ?, \"Phone\" = ?, \"Address\" = ?, \"Email\" = ?, \"Password\" = ?, \"Image\" = ? WHERE \"MemberID\" = ?;";
 			st = db.prepareStatement(sqlStatement);
@@ -212,8 +217,8 @@ public class MemberDatabase {
 		}
 
 	}
-	//[UPDATE MEMBER-END]
-	
+	// [UPDATE MEMBER-END]
+
 	// [DELETE MEMBER] delete member from database
 	public boolean deleteMember(int id) {
 		try {
@@ -238,7 +243,7 @@ public class MemberDatabase {
 		} catch (Exception e) {
 			return false;
 		}
-		//[DELETE MEMBER-END]
+		// [DELETE MEMBER-END]
 	}
 
 // insert data into database (end)	

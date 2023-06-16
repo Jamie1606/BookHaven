@@ -1,173 +1,143 @@
+
 <%
 //Author: Zay Yar Tun
 //Admin No: 2235035
 //Date: 3.6.2023
-//Description: sign in page
+//Description: sgin in page
 %>
-
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="controller.Authentication" %>
 <!DOCTYPE html>
-<html>
+<html lang="zxx" class="no-js">
+
 <head>
+<!-- Mobile Specific Meta -->
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- Favicon-->
+<link rel="shortcut icon" href="<%= request.getContextPath() %>/img/fav.png">
+<!-- Author Meta -->
+<meta name="author" content="codepixer">
+<!-- Meta Description -->
+<meta name="description" content="">
+<!-- Meta Keyword -->
+<meta name="keywords" content="">
+<!-- meta character set -->
 <meta charset="UTF-8">
+<!-- Site Title -->
 <title>BookHaven | Sign In</title>
+
+<link
+	href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700"
+	rel="stylesheet">
+<!--CSS============================================= -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/linearicons.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/font-awesome.min.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/bootstrap.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/magnific-popup.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/nice-select.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/animate.min.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/owl.carousel.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/main.css">
+<link rel="icon" type="image/png" href="<%= request.getContextPath() %>/img/logo.png">
 <style>
-.divider:after, .divider:before {
+#btnSignIn {
+	user-select: none;
+	position: relative;
+	background-color: #6c5dd4;
+	border: none;
+	font-size: 28px;
+	color: #FFFFFF;
+	text-align: center;
+	-webkit-transition-duration: 0.4s; /* Safari */
+	transition-duration: 0.4s;
+	text-decoration: none;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+#btnSignIn:after {
 	content: "";
-	flex: 1;
-	height: 1px;
 	background: #eee;
-}
-/* Autofill styling for the input fields */
-input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 30px white inset !important;
+	display: block;
+	position: absolute;
+	padding-top: 300%;
+	padding-left: 370%;
+	left: 0;
+	margin-left: -20px !important;
+	margin-top: -120%;
+	opacity: 0;
+	transition: all 0.5s;
+	outline: none;
 }
 
-/* Add a margin to the input field when it has a value */
-.form-outline input:not(:placeholder-shown) {
-    margin-top: 20px;
-}
-
-/* Move the label up when the input is autofilled */
-.form-outline input:-webkit-autofill ~ label {
-    transform: translateY(-20px);
-    font-size: 12px;
-    color: gray;
+#btnSignIn:active:after {
+	padding: 0;
+	margin: 0;
+	opacity: 1;
+	transition: 0s;
+	outline: none;
 }
 </style>
-
-<!-- Font Awesome -->
-<link
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-	rel="stylesheet" />
-<!-- Google Fonts -->
-<link
-	href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-	rel="stylesheet" />
-<!-- MDB -->
-<link
-	href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.css"
-	rel="stylesheet" />
-<link rel="stylesheet" href="css/linearicons.css">
-<link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel="stylesheet" href="css/bootstrap.css">
-<link rel="stylesheet" href="css/magnific-popup.css">
-<link rel="stylesheet" href="css/nice-select.css">
-<link rel="stylesheet" href="css/animate.min.css">
-<link rel="stylesheet" href="css/owl.carousel.css">
-<link rel="stylesheet" href="css/main.css">
-<link rel="icon" type="image/png" href="img/logo.png">
-
-<script type="text/javascript"
-	src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.js"></script>
-
 </head>
 
 <body>
-	<%@ include file="header.jsp" %>
+	<%@ include file="header.jsp"%>
+	
 	<%
 		String errCode = request.getParameter("errCode");
+		
+		if(errCode != null) {
+			if(errCode.equals("invalid")) {
+				out.println("<script>alert('Please enter correct email and password!'); location='signin.jsp';</script>");
+				return;
+			}
+			if(errCode.equals("serverError")) {
+				out.println("<script>alert('Internal Server Error. Please try again later!'); location='signin.jsp';</script>");
+				return;
+			}
+		}
 	%>
-	<a style="position: fixed; top: 15%; left: 15%;" href="index.jsp"><span
-		style="font-size: 20px; font-weight: bold;">&#8592;</span>&ensp;<span>Go
-			Back</span></a>
-	<section class="vh-100">
-		<div class="container py-5 h-100">
-			<div
-				class="row d-flex align-items-center justify-content-center h-100">
-				<div class="col-md-8 col-lg-7 col-xl-6">
-					<img
-						src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
-						class="img-fluid" alt="Phone image">
-				</div>
-				<div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
-					<%
-						if(errCode != null) {
-							if(errCode.equals("invalid")) {
-								out.print("<div class='alert alert-danger' role='alert'>Please enter correct email and password!</div>");
-							}
-							if(errCode.equals("serverError")) {
-								out.print("<div class='alert alert-danger' role='alert'>Internal Server Error. Please try again later!</div>");
-							}
-						}
-					%>
-					<form id="signinForm" action="<%=request.getContextPath()%>/signin" method="post">
-						<!-- Email input -->
-						<div class="form-outline mb-4">
-							<input type="email" id="form1Example13" name="email"
-								class="form-control form-control-lg" /> <label
-								class="form-label" for="form1Example13">Email</label>
-						</div>
 
-						<!-- Password input -->
-						<div class="form-outline mb-4">
-							<input type="password" id="form1Example23" name="password"
-								class="form-control form-control-lg" /> <label
-								class="form-label" for="form1Example23">Password</label>
-						</div>
+	<form id="signinForm" action="<%=request.getContextPath()%>/signin" method="post" style="padding: 100px 0px; display: flex; flex-direction: column; align-items: center;">
+		<h2>SIGN IN FORM</h2>
+		<input style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" type="email" placeholder="&#x2709; Email" name="email" required />
+		<input style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" type="password" placeholder ="&#x1F511; Password" name="password" required />
+		<button id="btnSignIn" type="submit" style="font-size: 13px; margin-top: 40px; color: white; padding: 10px 30px; outline: none; border: 1px solid #6c5dd4; background-color: #6c5dd4; font-weight: bold; letter-spacing: 1.1px; border-radius: 10px; box-shadow: 2px 2px 5px 1px #777;">SIGN IN</button>
+	</form>
 
-						<div class="d-flex justify-content-around align-items-center mb-4">
-							<!-- Checkbox -->
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" value=""
-									id="form1Example3" checked /> <label class="form-check-label"
-									for="form1Example3"> Remember me </label>
-							</div>
-							<a href="#!">Forgot password?</a>
-						</div>
+	<%@ include file="footer.jsp"%>
 
-						<!-- Submit button -->
-						<button id="btnSignIn" type="submit" class="btn btn-primary btn-lg btn-block">Sign
-							in</button>
-
-						<div class="divider d-flex align-items-center my-4">
-							<p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
-						</div>
-
-						<a class="btn btn-primary btn-lg btn-block"
-							style="background-color: #3b5998" href="signup.jsp" role="button">NOT
-							A MEMBER? </a>
-					</form>
-				</div>
-			</div>
-		</div>
-	</section>
-	
-	<%@ include file="footer.jsp" %>
-
-
-	<script src="js/vendor/jquery-2.2.4.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/vendor/jquery-2.2.4.min.js"></script>
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
 		crossorigin="anonymous"></script>
-	<script src="js/vendor/bootstrap.min.js"></script>
-	<script type="text/javascript"
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
-	<script src="js/easing.min.js"></script>
-	<script src="js/hoverIntent.js"></script>
-	<script src="js/superfish.min.js"></script>
-	<script src="js/jquery.ajaxchimp.min.js"></script>
-	<script src="js/jquery.magnific-popup.min.js"></script>
-	<script src="js/owl.carousel.min.js"></script>
-	<script src="js/jquery.sticky.js"></script>
-	<script src="js/jquery.nice-select.min.js"></script>
-	<script src="js/parallax.min.js"></script>
-	<script src="js/waypoints.min.js"></script>
-	<script src="js/jquery.counterup.min.js"></script>
-	<script src="js/mail-script.js"></script>
-	<script src="js/main.js"></script>
+	<script src="<%= request.getContextPath() %>/js/easing.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/hoverIntent.js"></script>
+	<script src="<%= request.getContextPath() %>/js/superfish.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.ajaxchimp.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.magnific-popup.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/owl.carousel.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.sticky.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.nice-select.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/parallax.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/waypoints.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.counterup.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/mail-script.js"></script>
+	<script src="<%= request.getContextPath() %>/js/main.js"></script>
 	
 	<script>
 		$(document).ready(function() {
 			$('#signinForm').submit(function(e) {
 				$('#btnSignIn').prop('disabled', true);
-				$('#btnSignIn').html('<div class="spinner-border text-dark" role="status"><span class="visually-hidden">Loading...</span></div>');
+				$('#btnSignIn').html('Loading...');
 				return true;
 			})	
 		});
 	</script>
 </body>
+
 </html>

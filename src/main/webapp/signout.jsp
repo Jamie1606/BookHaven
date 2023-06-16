@@ -4,6 +4,7 @@
 //Date: 5.6.2023
 //Description: sign out and destroy session
 %>
+<%@ page import="javax.servlet.http.HttpSession" %>
 <%
 session.invalidate();
 String error = (String) request.getAttribute("error");

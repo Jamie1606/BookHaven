@@ -365,22 +365,15 @@
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
 
 	<script>
-		$(document)
-				.ready(
-						function() {
-							$('#author').selectpicker();
-							$('#genre').selectpicker();
-							$('#bookForm')
-									.submit(
-											function(e) {
-												$('#btnSave').prop('disabled',
-														true);
-												$('#btnSave')
-														.html(
-																'<div class="spinner-border text-dark" role="status"><span class="visually-hidden">Loading...</span></div>');
-												return true;
-											});
-						})
+		$(document).ready(function() {
+			$('#author').selectpicker();
+			$('#genre').selectpicker();
+			$('#bookForm').submit(function(e) {
+				$('#btnSave').prop('disabled', true);
+				$('#btnSave').html('Loading...');
+				return true;
+			});
+		})
 	</script>
 
 </body>
