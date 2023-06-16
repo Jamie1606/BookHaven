@@ -13,6 +13,7 @@
 					<li><a href="<%= request.getContextPath() %>/author.jsp">Author</a></li>
 					<li><a href="<%= request.getContextPath() %>/signin.jsp">Sign In</a></li>
 					<li><a href="<%= request.getContextPath() %>/signup.jsp">Sign Up</a></li>
+					<li><a href="<%= request.getContextPath() %>/profile">Profile</a></li>
 				</ul>
 			</nav>
 			<!-- #nav-menu-container -->

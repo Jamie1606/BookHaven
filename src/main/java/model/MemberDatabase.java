@@ -28,7 +28,7 @@ public class MemberDatabase {
 	// -1 => invalid email
 	// 0 => server Error
 	// 1 => success
-	
+
 	// [REGISTER MEMBER] insert member into database
 	public int registerMember(Member member) {
 		// insert data into database (start)
@@ -63,10 +63,10 @@ public class MemberDatabase {
 			st.setString(3, member.getPassword());
 			st.setString(4, member.getAddress());
 			st.setString(5, member.getPhone());
-			if (member.getGender() != '\0') {
+			if (member.getGender() != 'N') {
 				st.setString(6, String.valueOf(member.getGender()));
 			} else {
-				st.setString(6, "");
+				st.setNull(6, Types.CHAR);
 			}
 
 			if (member.getBirthDate() == null) {
@@ -95,9 +95,9 @@ public class MemberDatabase {
 		}
 
 	}
-	//[REGISTER MEMBER-END]
-	
-	//[RETIRIEVE ALL MEMBER]
+	// [REGISTER MEMBER-END]
+
+	// [RETIRIEVE ALL MEMBER]
 	public boolean getMember() {
 		try {
 			// loading postgresql driver
@@ -123,9 +123,9 @@ public class MemberDatabase {
 		}
 
 	}
-	//[RETIRIEVE ALL MEMBER-END]
-	
-	//[RETIRIEVE MEMBER BY ID] select member from database BY ID
+	// [RETIRIEVE ALL MEMBER-END]
+
+	// [RETIRIEVE MEMBER BY ID] select member from database BY ID
 	public boolean getMemberByID(int ID) {
 		try {
 			// loading postgresql driver
@@ -140,25 +140,30 @@ public class MemberDatabase {
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 			st.setInt(1, ID);
 			memberResultSet = st.executeQuery();
-			
+
 			db.close();
 			// successful
 			return true;
 		} catch (Exception e) {
 
-			System.out.println("db error:");
+			System.out.println(e);
 			return false;
 		}
 
 	}
-	//[RETIRIEVE MEMBER BY ID-END]
-	
+	// [RETIRIEVE MEMBER BY ID-END]
+
+	// set resultset to null
+	public void clearMemberResult() {
+		this.memberResultSet = null;
+	}
+
 	// [RETURN MEMBER RESULTSET]
 	public ResultSet getMemberResult() {
 		return memberResultSet;
 	}
 	// [RETURN MEMBER RESULTSET-END]
-	
+
 	// [UPDATE MEMBER] update member data to database
 	public int updateMember(Member member) {
 		try {
@@ -175,26 +180,43 @@ public class MemberDatabase {
 			int count = 0;
 
 			while (rs.next()) {
-				count++;
+				if(rs.getInt("MemberID")!=member.getMemberID()) {
+					System.out.println(rs.getInt("MemberID"));
+					System.out.println(member.getMemberID());
+					count++;
+				}
 			}
 			if (count > 0) {
 				// duplication exists
 				return -1;
 			}
 			// [CHECK DUPLICATE EMAIL-END]
-			
+
 			// select all from "Genre" TABLE
 			sqlStatement = "UPDATE \"public\".\"Member\" SET \"Name\" = ?, \"Gender\" = ?, \"BirthDate\" = ?, \"Phone\" = ?, \"Address\" = ?, \"Email\" = ?, \"Password\" = ?, \"Image\" = ? WHERE \"MemberID\" = ?;";
 			st = db.prepareStatement(sqlStatement);
 			st.setString(1, member.getName());
-			st.setString(2, String.valueOf(member.getGender()));
-			st.setDate(3, Date.valueOf(member.getBirthDate().toString()));
 			st.setString(4, member.getPhone());
 			st.setString(5, member.getAddress());
 			st.setString(6, member.getEmail());
 			st.setString(7, member.getPassword());
-			st.setString(8, member.getImage());
 			st.setInt(9, member.getMemberID());
+			if (member.getGender() != 'N') {
+				st.setString(2, String.valueOf(member.getGender()));
+			} else {
+				st.setString(2, "");
+			}
+
+			if (member.getBirthDate() == null) {
+				st.setNull(3, Types.DATE);
+			} else {
+				st.setDate(3, Date.valueOf(member.getBirthDate().toString()));
+			}
+			if (member.getImage() == null) {
+				st.setString(8, "");
+			} else {
+				st.setString(8, member.getImage());
+			}
 
 			int rowsAffected = st.executeUpdate();
 
@@ -207,13 +229,13 @@ public class MemberDatabase {
 			}
 		} catch (Exception e) {
 
-			System.out.println("db error:");
+			System.out.println(e);
 			return 0;
 		}
 
 	}
-	//[UPDATE MEMBER-END]
-	
+	// [UPDATE MEMBER-END]
+
 	// [DELETE MEMBER] delete member from database
 	public boolean deleteMember(int id) {
 		try {
@@ -238,7 +260,7 @@ public class MemberDatabase {
 		} catch (Exception e) {
 			return false;
 		}
-		//[DELETE MEMBER-END]
+		// [DELETE MEMBER-END]
 	}
 
 // insert data into database (end)	

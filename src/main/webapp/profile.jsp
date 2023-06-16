@@ -52,7 +52,35 @@
 <body>
 	<%
 	String errCode = (String) request.getAttribute("errCode");
-
+	if (errCode != null) {
+		if (errCode.equals("serverError")) {
+			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
+			+ "/profile.jsp';</script>");
+		} else if (errCode.equals("invalid")) {
+			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
+			+ "/profile.jsp';</script>");
+		}else if (errCode.equals("invalidEmail")) {
+			out.println("<script>alert('Invalid Email!'); location='" + request.getContextPath()
+			+ "/profile.jsp';</script>");
+		}else {
+			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
+			+ "profile.jsp';</script>");
+		}
+	} else {
+		String success = (String)request.getAttribute("success");
+		if (success != null) {
+			if (success.equals("update")) {
+		out.println("<script>alert('Member data is successfully updated!'); location='" + request.getContextPath()
+				+ "/profile.jsp';</script>");
+			}
+		}
+	}
+	String servlet = (String)request.getAttribute("servlet");
+	 request.removeAttribute("servlet");
+	if(servlet == null || !servlet.equals("true")) {
+		out.println("<script>location='" + request.getContextPath() + "/profile';</script>");
+		return;
+	}
 	Member member = (Member) request.getAttribute("member");
 	request.removeAttribute("member");
 	String completeAdderss = member.getAddress();
@@ -78,10 +106,10 @@
 					<div
 						class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-						<img src="assets/img/profile-img.jpg" alt="Profile"
+						<img src="<%=request.getContextPath() + member.getImage()%>"
 							class="rounded-circle">
-						<h2>Kevin Anderson</h2>
-						<h3>Web Designer</h3>
+						<h2><%=member.getName()%></h2>
+						<h3>Member</h3>
 						<div class="social-links mt-2">
 							<a href="#" class="twitter"><i class="bi bi-twitter"></i></a> <a
 								href="#" class="facebook"><i class="bi bi-facebook"></i></a> <a
@@ -128,12 +156,12 @@
 								id="profile-overview">
 
 								<h5 class="card-title">Profile Details</h5>
-								<div class="row mb-3">
-									<label for="profileImage"
-										class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
-									<div class="col-md-8 col-lg-9">
+								<div class="row">
+									<div class="col-lg-3 col-md-4 label ">Profile Image</div>
+									<div class="col-lg-9 col-md-8">
 										<img
-											src="<%=request.getContextPath()%>' + member.getImage() + '"
+										style="width: 100px; height: 100px;"
+											src="<%=request.getContextPath() + member.getImage()%>"
 											alt="Profile">
 
 									</div>
@@ -161,17 +189,17 @@
 
 								<div class="row">
 									<div class="col-lg-3 col-md-4 label">Phone</div>
-									<div class="col-lg-9 col-md-8">member.getPhone()</div>
+									<div class="col-lg-9 col-md-8"><%=member.getPhone()%></div>
 								</div>
 
 								<div class="row">
 									<div class="col-lg-3 col-md-4 label">Birth Date</div>
-									<div class="col-lg-9 col-md-8">member.getBirthDate()</div>
+									<div class="col-lg-9 col-md-8"><%=member.getBirthDate()%></div>
 								</div>
 
 								<div class="row">
 									<div class="col-lg-3 col-md-4 label">Gender</div>
-									<div class="col-lg-9 col-md-8">member.getGender()</div>
+									<div class="col-lg-9 col-md-8"><%=member.getGender()%></div>
 								</div>
 
 							</div>
@@ -179,14 +207,14 @@
 							<div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
 								<!-- Profile Edit Form -->
-								<form>
-
+								<form action="<%= request.getContextPath() %>/profile"  method="post" enctype="multipart/form-data">
+								<input type="hidden" name="status" value="profileEdit"/>
 									<!-- Name input -->
 									<div class="row mb-3">
 										<label for="fullName" class="col-md-4 col-lg-3 col-form-label">Name</label>
 										<div class="col-md-8 col-lg-9">
 											<input name="name" type="text" class="form-control"
-												id="nameID" value="<%=member.getName()%>">
+												id="nameID" value="<%=member.getName()%>" required>
 										</div>
 									</div>
 
@@ -250,7 +278,7 @@
 											class="col-md-4 col-lg-3 col-form-label">Birth Date</label>
 										<div class="col-md-8 col-lg-9">
 											<input type="date" class="form-control" name="birthDate"
-												id="birthDateID" value="<%=member.getBirthDate()%>" required>
+												id="birthDateID" value="<%=member.getBirthDate()%>">
 										</div>
 									</div>
 
@@ -258,7 +286,8 @@
 									<div class="row mb-3">
 										<label for="genderID" class="col-md-4 col-lg-3 col-form-label">Gender</label>
 										<div class="col-md-8 col-lg-9">
-											<select name="gender" id="genderID" required>
+											<select name="gender" id="genderID">
+												<option value="N"></option>
 												<option <%=member.getGender() == 'F' ? "selected" : ""%>
 													value="F">F</option>
 												<option <%=member.getGender() == 'M' ? "selected" : ""%>
@@ -370,7 +399,7 @@
 											Password</button>
 									</div>
 								</form>
-								<!-- End Change Password Form -->
+								<!-- End Ch ange Password Form -->
 
 							</div>
 
