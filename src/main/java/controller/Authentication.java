@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import javax.servlet.http.HttpSession;
 
 import model.AdminDatabase;
+import model.MemberDatabase;
 
 public class Authentication {
 	public Authentication() {
@@ -43,16 +44,16 @@ public class Authentication {
 		return false;
 	}
 	
-	// unfinished
+
 	public boolean testMember(HttpSession session) {
 		String memberID = (String)session.getAttribute("memberID");
 		String role = (String)session.getAttribute("role");
-		AdminDatabase admin_db = new AdminDatabase();
-		admin_db.clearAdminResult();
+		MemberDatabase member_db = new MemberDatabase();
+		member_db.clearMemberResult();
 		
 		if(role != null && role.equals("member") && memberID != null && TestReg.matchInteger(memberID)) {
-			if(admin_db.getAdminByID(Integer.parseInt(memberID))) {
-				ResultSet rs = admin_db.getAdminResult();
+			if(member_db.getMemberByID(Integer.parseInt(memberID))) {
+				ResultSet rs = member_db.getMemberResult();
 				int count = 0;
 				try {
 					while(rs.next()) {

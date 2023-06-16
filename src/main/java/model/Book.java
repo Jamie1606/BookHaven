@@ -22,6 +22,11 @@ public class Book {
 	private String status;
 	private Author[] authors;
 	private Genre[] genres;
+	
+	public Book(String iSBNNo, int qty) {
+		ISBNNo = iSBNNo;
+		this.qty = qty;
+	}
 
 	public Book(String iSBNNo, String title, int page, double price, String publisher, Date publicationDate, int qty,
 			String description, String image, String image3d, String status) {

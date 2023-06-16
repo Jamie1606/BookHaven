@@ -46,7 +46,7 @@
 				<li><a href="<%= request.getContextPath() %>/admin/genres"> <i class="bi bi-circle"></i><span>Genre
 							List</span>
 				</a></li>
-				<li><a href=""> <i class="bi bi-circle"></i><span>Member
+				<li><a href="<%= request.getContextPath() %>/admin/members"> <i class="bi bi-circle"></i><span>Member
 							List</span>
 				</a></li>
 				<li><a href="<%= request.getContextPath() %>/admin/reviews"> <i class="bi bi-circle"></i><span>Review

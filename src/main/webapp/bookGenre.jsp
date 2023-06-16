@@ -7,7 +7,7 @@
 %>
 
 <!-- [IMPORT] -->
-<%@ page import="java.util.ArrayList, model.Genre, model.Book"%>
+<%@ page import="java.util.ArrayList, model.Genre, model.Book, controller.Authentication"%>
 
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
@@ -41,25 +41,32 @@
 <link rel="stylesheet" href="css/magnific-popup.css">
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/main.css">
+<style>
+	#bookResultList h4:hover {
+		color: red;
+	}
+	#bookResultList p {
+		cursor: default;
+	}
+</style>
 </head>
 <body>
 
 	<%@ include file="header.jsp"%><!-- #header -->
 	<!-- Start Category Area -->
 	<section class="generic-banner">
-		<div class="container">
-			<div class="row height align-items-center justify-content-center">
+		<div class="row height align-items-center justify-content-center">
+			<div>
 				<div>
-					<div>
-						<h2 class="text-white">Genre/Category</h2>
-						<div id="genreList" class="button-group-area mt-10"></div>
-					</div>
+					<h2 class="text-white">Genre</h2>
+					<div id="genreList" class="button-group-area mt-10"></div>
 				</div>
 			</div>
+		</div>
 	</section>
 	<!-- End Category Area -->
 	<!-- Start Result Area -->
-	<section class="course-area section-gap">
+	<section class="course-area section-gap" id="course">
 		<div class="container">
 			<div class="row d-flex justify-content-center">
 				<div class="menu-content pb-60 col-lg-9">
@@ -68,7 +75,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row" style="margin-bottom: 0px;" id="bookResultList">
+			<div class="row justify-content-center" style="margin-bottom: 0px;" id="bookResultList">
 			</div>
 		</div>
 	</section>
@@ -134,15 +141,10 @@
 				if(data.status == "true") {
 					var htmlString = "";
 					for(let i = 0; i < bookList.length; i++) {
-						if(i >= 3) {
-							htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 115px; left: 80px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a><p></p></div></div>';
-						}
-						else {
-							htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 95px; left: 80px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a><p></p></div></div>';
-						}
+						htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a><p></p></div></div>';
 					}
 					if(bookList.length==0){
-						htmlString+="<p>No Items Found</p>";
+						htmlString+="<h5 style='font-size: 20px; color: red;'>No Items Found</h5>";
 					}
 					$('#bookResultList').html(htmlString);
 					document.getElementById('search-text').innerHTML = name + " Books";
