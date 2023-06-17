@@ -5,7 +5,7 @@
 Authentication auth = new Authentication();
 if (!auth.testAdmin(session)) {
 	out.println(
-	"<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+	"<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
 	return;
 }
 %>
@@ -37,22 +37,6 @@ if (!auth.testAdmin(session)) {
 					<li class="dropdown-header">
 						<h6>System Admin</h6>
 					</li>
-					<li>
-						<hr class="dropdown-divider">
-					</li>
-
-					<li><a class="dropdown-item d-flex align-items-center"
-						href=""> <i class="bi bi-person"></i> <span>My
-								Profile</span>
-					</a></li>
-					<li>
-						<hr class="dropdown-divider">
-					</li>
-
-					<li><a class="dropdown-item d-flex align-items-center"
-						href=""> <i class="bi bi-gear"></i> <span>Account
-								Settings</span>
-					</a></li>
 					<li>
 						<hr class="dropdown-divider">
 					</li>

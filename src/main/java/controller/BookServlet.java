@@ -130,14 +130,30 @@ public class BookServlet extends HttpServlet {
 						ResultSet rs = book_db.getBookResult();
 						try {
 							while (rs.next()) {
+								book_db.clearBookResult();
+								authorList.clear();
+								if(book_db.getAuthorByISBN(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")))) {
+									ResultSet rs2 = book_db.getBookResult();
+									while(rs2.next()) {
+										authorList.add(new Author(rs2.getInt("AuthorID"), 											StringEscapeUtils.escapeHtml4(rs2.getString("Name"))));
+									}
+								}
+								else {
+									status = "serverError";
+									break;
+								}
+								Author[] authors = new Author[authorList.size()];
+								for(int j = 0; j < authorList.size(); j++) {
+									authors[j] = new Author(authorList.get(j).getAuthorID(), authorList.get(j).getName());
+								}
 								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
 										StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
 										rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
-										rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
+										rs.getDate("PublicationDate"), cart.get(i).getQty(), rs.getShort("Rating"),
 										StringEscapeUtils.escapeHtml4(rs.getString("Description")),
 										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
 										StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+										StringEscapeUtils.escapeHtml4(rs.getString("Status")), authors));
 							}
 						} catch (Exception e) {
 							status = "serverError";
@@ -164,7 +180,7 @@ public class BookServlet extends HttpServlet {
 				String isbn = parts[parts.length - 2].trim();
 				if (isbn != null && !isbn.isEmpty() && TestReg.matchISBN(isbn)) {
 					String qty = parts[parts.length - 1].trim();
-					if (qty == null || !TestReg.matchInteger(qty)) {
+					if (qty == null || !TestReg.matchNegInteger(qty)) {
 						status = "invalid";
 					} else {
 						int stockQty = book_db.getBookQtyByISBN(isbn);
@@ -185,6 +201,9 @@ public class BookServlet extends HttpServlet {
 									if(cart.get(i).getQty() > stockQty) {
 										status = "full";
 										cart.get(i).setQty(preqty);
+									}
+									if(cart.get(i).getQty() <= 0) {
+										cart.remove(i);
 									}
 									break;
 								}
@@ -338,7 +357,7 @@ public class BookServlet extends HttpServlet {
 		} else if (requestURi.endsWith("admin/bookRegistration")) {
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 
@@ -384,7 +403,7 @@ public class BookServlet extends HttpServlet {
 		} else if (requestURi.contains("admin/bookUpdate")) {
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 
@@ -504,7 +523,7 @@ public class BookServlet extends HttpServlet {
 		} else if (requestURi.endsWith("admin/books")) {
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 
@@ -538,7 +557,7 @@ public class BookServlet extends HttpServlet {
 		} else if (requestURi.contains("/admin/bookDelete/")) {
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 
@@ -637,7 +656,7 @@ public class BookServlet extends HttpServlet {
 
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
 		}
 
@@ -710,6 +729,9 @@ public class BookServlet extends HttpServlet {
 				String publicationdate = fields.get("publicationdate");
 				String bookstatus = "available";
 				String description = fields.get("description");
+				if(description != null) {
+					description = description.trim();
+				}
 				String status = fields.get("status");
 				String oldimage = fields.get("oldimage");
 				String oldimage3d = fields.get("oldimage3d");
@@ -766,8 +788,8 @@ public class BookServlet extends HttpServlet {
 							if(image3d == null) {
 								image3d = defaultimage3d;
 							}
-							if (book_db.registerBook(new Book(isbn, title, Integer.parseInt(page),
-									Double.parseDouble(price), publisher, publicationDate, Integer.parseInt(qty),
+							if (book_db.registerBook(new Book(isbn, title.trim(), Integer.parseInt(page),
+									Double.parseDouble(price), publisher.trim(), publicationDate, Integer.parseInt(qty),
 									description, image, image3d, bookstatus))) {
 								if (book_db.registerBookAuthor(authors, isbn)) {
 									if (book_db.registerBookGenre(genres, isbn)) {
@@ -778,6 +800,7 @@ public class BookServlet extends HttpServlet {
 									} else {
 										book_db.deleteBookGenre(0, isbn);
 										book_db.deleteBookAuthor(0, isbn);
+										book_db.deleteBook(isbn);
 										request.setAttribute("error", "genreError");
 										request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request,
 												response);
@@ -785,6 +808,7 @@ public class BookServlet extends HttpServlet {
 									}
 								} else {
 									book_db.deleteBookAuthor(0, isbn);
+									book_db.deleteBook(isbn);
 									request.setAttribute("error", "authorError");
 									request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request,
 											response);
@@ -811,8 +835,8 @@ public class BookServlet extends HttpServlet {
 								request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
 								return;
 							}
-							if (book_db.updateBook(new Book(isbn, title, Integer.parseInt(page),
-									Double.parseDouble(price), publisher, publicationDate, Integer.parseInt(qty),
+							if (book_db.updateBook(new Book(isbn, title.trim(), Integer.parseInt(page),
+									Double.parseDouble(price), publisher.trim(), publicationDate, Integer.parseInt(qty),
 									description, image, image3d, bookstatus))) {
 								book_db.deleteBookAuthor(0, isbn);
 								if (book_db.registerBookAuthor(authors, isbn)) {
@@ -844,7 +868,7 @@ public class BookServlet extends HttpServlet {
 							}
 						} else {
 							request.setAttribute("error", "unauthorized");
-							request.getRequestDispatcher("/admin/bookList.jsp").forward(request, response);
+							request.getRequestDispatcher("/signout.jsp").forward(request, response);
 							return;
 						}
 					} else {
@@ -858,7 +882,6 @@ public class BookServlet extends HttpServlet {
 					return;
 				}
 			} catch (Exception e) {
-				System.out.println(e);
 				request.setAttribute("error", "upload");
 				request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
 				return;
@@ -873,7 +896,7 @@ public class BookServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/adminHomePage.jsp").forward(request, response);
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
 		}
 

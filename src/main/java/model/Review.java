@@ -1,7 +1,7 @@
 // Author: Zay Yar Tun
 // Admin No: 2235035
-// Date: 4.6.2023
-// Description: to store author data from database 
+// Date: 15.6.2023
+// Description: to store review data from database 
 
 package model;
 

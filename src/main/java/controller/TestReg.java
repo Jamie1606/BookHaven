@@ -13,6 +13,7 @@ public class TestReg {
 	private static final String passwordPattern = "^.{8,16}$";
 	private static final String isbnPattern = "^[\\d]{3}-[\\d]{10}$";
 	private static final String integerPattern = "^[\\d]+$";
+	private static final String negIntegerPattern = "^[-]{0,1}[\\d]+$";
 	private static final String decimalPattern = "^[\\d]+[.]{0,1}[\\d]*$";
 	private static final String datePattern = "^[\\d]{4}-[\\d]{2}-[\\d]{2}$";
 	private static final String phonePattern = "^[0-9]{8}$";
@@ -25,6 +26,13 @@ public class TestReg {
 			return false;
 		}
 		return Pattern.matches(emailPattern, test);
+	}
+	
+	public static boolean matchNegInteger(String test) {
+		if(test == null) {
+			return false;
+		}
+		return Pattern.matches(negIntegerPattern, test);
 	}
 
 	public static boolean matchPassword(String test) {

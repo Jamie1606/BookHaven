@@ -78,20 +78,22 @@
 		if (error.equals("invalid")) {
 			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath()
 			+ "/admin/members';</script>");
+			return;
 		} else if (error.equals("serverError")) {
 			out.println(
 			"<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/members';</script>");
+			return;
 		} else if (error.equals("serverRetrieveError")) {
 			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
 			+ "/admin/adminHomePage.jsp';</script>");
 			return;
 		} else if (error.equals("unauthorized")) {
 			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signin.jsp';</script>");
+			+ "/signout.jsp';</script>");
 			return;
 		} else {
 			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signin.jsp';</script>");
+			+ "/signout.jsp';</script>");
 			return;
 		}
 	}
@@ -171,10 +173,16 @@
 											out.println("<td>" + birthDate.toString() + "</td>");
 										}
 										out.println("<td>" + memberList.get(i).getPhone() + "</td>");
-										out.println("<td>" + memberList.get(i).getAddress() + "</td>");
+										String address = memberList.get(i).getAddress();
+										String[] addressArr = address.split("\\|");
+										address = addressArr[0];
+										if(addressArr.length == 2) {
+											address += " S" + addressArr[1];
+										}
+										out.println("<td>" + address + "</td>");
 										out.println("<td>" + memberList.get(i).getEmail() + "</td>");
 										out.println("<td><a href='" + request.getContextPath() + "/admin/memberUpdate/" + memberList.get(i).getMemberID()
-										+ " '>Edit</a> | <a href='" + request.getContextPath() + "/admin/memberDelete/"
+										+ "'>Edit</a> | <a href='" + request.getContextPath() + "/admin/memberDelete/"
 										+ memberList.get(i).getMemberID() + "'>Delete</a></td>");
 										out.println("</tr>");
 									}

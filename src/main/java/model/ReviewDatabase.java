@@ -1,3 +1,8 @@
+// Author: Zay Yar Tun
+// Admin No: 2235035
+// Date: 15.6.2023
+// Description: database functions related to review
+
 package model;
 
 import java.sql.Connection;
