@@ -260,7 +260,7 @@
 								<div class="col-md-4">
 									<label for="genderID" class="form-label">Gender</label> <select
 										name="gender" id="genderID" class="form-control" required>
-										<option <%= (status.equals("update") && member.geGender() == 'N') ? "selected" : "" %>>Not Selected</option>
+										<option <%= (status.equals("update") && member.getGender() == 'N') ? "selected" : "" %>>Not Selected</option>
 										<option
 											<%=(status.equals("update") && member.getGender() == 'F') ? "selected" : ""%>
 											value="F">Female</option>
