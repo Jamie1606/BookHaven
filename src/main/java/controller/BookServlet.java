@@ -89,6 +89,12 @@ public class BookServlet extends HttpServlet {
 		String targetPage = "";
 		String requestURi = request.getRequestURI();
 		if(requestURi.contains("/cart/remove/")) {
+			if (!auth.testMember(session)) {
+				request.setAttribute("error", "unauthorized");
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
+				return;
+			}
+			
 			String status = "";
 			String[] parts = requestURi.split("/");
 			if (parts.length == 0) {
@@ -121,6 +127,12 @@ public class BookServlet extends HttpServlet {
 			return;
 		}
 		else if (requestURi.endsWith("/cart/bookdetail")) {
+			if (!auth.testMember(session)) {
+				request.setAttribute("error", "unauthorized");
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
+				return;
+			}
+			
 			String status = "";
 			ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
 			if (cart != null) {
@@ -172,6 +184,12 @@ public class BookServlet extends HttpServlet {
 			response.getWriter().write(json);
 			return;
 		} else if (requestURi.contains("/book/qty/")) {
+			if (!auth.testMember(session)) {
+				request.setAttribute("error", "unauthorized");
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
+				return;
+			}
+			
 			String status = "";
 			String[] parts = requestURi.split("/");
 			if (parts.length == 0 && parts.length != 5) {

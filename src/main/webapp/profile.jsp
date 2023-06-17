@@ -48,6 +48,11 @@
 	<%@ include file="header.jsp"%>
 	
 	<%
+	if (!auth.testMember(session)) {
+		out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
+		return;
+	}
+	
 	String errCode = (String) request.getAttribute("errCode");
 	if (errCode != null) {
 		if (errCode.equals("serverError")) {

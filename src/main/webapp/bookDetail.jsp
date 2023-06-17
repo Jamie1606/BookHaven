@@ -10,7 +10,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page
-	import="controller.Authentication, javax.servlet.http.HttpSession"%>
+	import="controller.Authentication, javax.servlet.http.HttpSession, controller.TestReg"%>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -116,8 +116,14 @@
 	<%
 	String id = request.getParameter("id");
 	if (id == null) {
-		out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + "/index.jsp';</script>");
+		out.println("<script>alert('Invalid book id!'); location='" + request.getContextPath() + "/index.jsp';</script>");
 		return;
+	}
+	else {
+		if(!TestReg.matchISBN(id)) {
+			out.println("<script>alert('Invalid book id!'); location='" + request.getContextPath() + "/index.jsp';</script>");
+			return;
+		}
 	}
 	%>
 	<%@ include file="header.jsp"%>
@@ -355,7 +361,7 @@
 					let authors = "";
 					for(let i = 0; i < authorList.length; i++) {
 						if(i == authorList.length - 1) {
-							authors += "<a href='<%= request.getContextPath() %>/authorDetail.jsp?id=/"+ authorList[i].authorID +"' style='color: #555;'>" + authorList[i].name + "</a>";
+							authors += "<a href='<%= request.getContextPath() %>/authorDetail.jsp?id="+ authorList[i].authorID +"' style='color: #555;'>" + authorList[i].name + "</a>";
 						}
 						else {
 							authors += "<a href='<%= request.getContextPath() %>/authorDetail.jsp?id=/"+ authorList[i].authorID +"' style='color: #555;'>" + authorList[i].name + "</a>, "; 

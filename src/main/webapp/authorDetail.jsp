@@ -8,7 +8,7 @@
 
 <!-- [IMPORT] -->
 <%@ page
-	import="java.util.ArrayList, model.Genre, model.Book, controller.Authentication"%>
+	import="java.util.ArrayList, model.Genre, model.Book, controller.Authentication, controller.TestReg"%>
 
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
@@ -45,8 +45,18 @@
 </head>
 <body>
 	<%
-String id=request.getParameter("id");
-%>
+	String id = request.getParameter("id");
+	if (id == null) {
+		out.println("<script>alert('Invalid author id!'); location='" + request.getContextPath() + "/index.jsp';</script>");
+		return;
+	}
+	else {
+		if(!TestReg.matchInteger(id)) {
+			out.println("<script>alert('Invalid author id!'); location='" + request.getContextPath() + "/index.jsp';</script>");
+			return;
+		}
+	}
+	%>
 
 	<%@ include file="header.jsp"%><!-- #header -->
 

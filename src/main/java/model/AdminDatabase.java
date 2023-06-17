@@ -41,6 +41,38 @@ public class AdminDatabase {
 		}
 		// select admin data from database (end)
 	}
+	
+	// check whether email exists in admin database
+	public boolean checkAdminEmailExists(String email) {
+		// select admin data from database (start)
+		try {
+			// loading postgresql driver
+			Class.forName("org.postgresql.Driver");
+
+			// get database connection
+			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+
+			String sqlStatement = "SELECT * FROM \"public\".\"Admin\" WHERE \"Email\" = ?";
+			PreparedStatement st = db.prepareStatement(sqlStatement);
+			st.setString(1, email);
+
+			adminResultSet = st.executeQuery();
+			db.close();
+			int count = 0;
+			while(adminResultSet.next()) {
+				count++;
+			}
+			if(count > 0) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		} catch (Exception e) {
+			return true;
+		}
+		// select admin data from database (end)
+	}
 
 	// get admin resultset
 	public ResultSet getAdminResult() {
