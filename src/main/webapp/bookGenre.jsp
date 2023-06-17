@@ -71,7 +71,7 @@
 			<div class="row d-flex justify-content-center">
 				<div class="menu-content pb-60 col-lg-9">
 					<div class="title text-center">
-						<h1 class="mb-10" id="search-text"></h1>
+						<h2 class="mb-10" id="search-text"></h2>
 					</div>
 				</div>
 			</div>
@@ -125,7 +125,11 @@
 						htmlString += "<button onclick='submitGenre(" + genreList[i].genreID + ", \""+ genreList[i].genre +"\")' class='btn btn-light mt-10 ml-10'>"+ genreList[i].genre + "</button>";
 					}
 					$('#genreList').html(htmlString);
-				}
+				}else if(status == "serverError"){
+		    		alert('Server Error!');
+		    	}else if(status == "invalid"){
+		    		alert('Invalid Request or Data!');
+		    	}
 			})
 		});
 		
@@ -147,7 +151,9 @@
 					}
 					$('#bookResultList').html(htmlString);
 					document.getElementById('search-text').innerHTML = name + " Books";
-				}
+				}else if(status == "serverError"){
+		    		alert('Server Error!');
+		    	}
 			})
 		}
 	</script>

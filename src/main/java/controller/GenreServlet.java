@@ -2,7 +2,7 @@
 //Admin No    : 2235022
 //Class       : DIT/FT/2A/02
 //Date		  : 8.6.2023
-//Description : Genre Servlet
+//Description : middleware for Genre
 
 package controller;
 
@@ -127,7 +127,7 @@ public class GenreServlet extends HttpServlet {
 							}
 							status = "success";
 						} catch (Exception e) {
-							request.setAttribute("errCode", "serverError");
+							status="success";
 						}
 					} else {
 						status = "serverError";
@@ -227,7 +227,7 @@ public class GenreServlet extends HttpServlet {
 							return;
 						}
 					} else {
-						request.setAttribute("error", "invalid");
+						request.setAttribute("error", "serverError");
 						request.getRequestDispatcher("/admin/genres").forward(request, response);
 						return;
 					}
@@ -350,6 +350,8 @@ public class GenreServlet extends HttpServlet {
 					} else {
 						response.sendRedirect("genreRegistration.jsp?errCode=invalid");
 					}
+				}else {
+					response.sendRedirect("genreRegistration.jsp?errCode=serverError");
 				}
 			} else {
 				response.sendRedirect("genreRegistration.jsp?errCode=invalid");

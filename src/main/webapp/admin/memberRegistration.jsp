@@ -1,4 +1,3 @@
-
 <%
 //Author 	  : Thu Htet San
 //Admin No    : 2235022
@@ -194,8 +193,10 @@
 
 								<!-- formName -->
 								<input type="hidden" name="formName"
-									value="memberRegistrationForm" /> <input type="hidden"
-									name="status" value="<%=status%>" />  <input
+									value="memberRegistrationForm" />
+								<input type="hidden"
+									name="status" value="<%=status%>" />
+								<input
 									type="hidden" name="MemberID"
 									value="<%=(status.equals("update")) ? member.getMemberID() : ""%>" />
 
@@ -243,8 +244,7 @@
 								<div class="col-md-4">
 									<label for="phoneID" class="form-label">Phone</label> <input
 										type="number" class="form-control" name="phone" id="phoneID"
-										value="<%=(status.equals("update")) ? member.getPhone() : ""%>"
-										required>
+										value="<%=(status.equals("update")) ? member.getPhone() : ""%>">
 								</div>
 
 								<!-- Birth Date input -->
@@ -252,8 +252,7 @@
 									<label for="birthDateID" class="form-label">Birth Date</label>
 									<input type="date" class="form-control" name="birthDate"
 										id="birthDateID" max="<%=LocalDate.now()%>"
-										value="<%=(status.equals("update")) ? member.getBirthDate() : ""%>"
-										required>
+										value="<%=(status.equals("update")) ? member.getBirthDate() : ""%>">
 								</div>
 
 								<!-- Gender input -->

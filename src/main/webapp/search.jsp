@@ -43,6 +43,16 @@
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/main.css">
 </head>
 <body>
+<%
+	String errCode = request.getParameter("errCode");
+
+	if (errCode != null) {
+		if (errCode.equals("invalid")) {
+			out.println("<script>alert('Invalid Data!!'); location='" + request.getContextPath() + "/search.jsp';</script>");
+			return;
+		}
+	}
+	%>
 
 	<%@ include file="header.jsp"%><!-- #header -->
 	<!-- Start Search Area -->
@@ -71,17 +81,17 @@
 
 	<!-- End Search Area -->
 	<!-- Start Result Area -->
-	<section class="course-area section-gap">
+	<section class="course-area section-gap" id="course">
 		<div class="container">
 			<div class="row d-flex justify-content-center">
-			<div class="menu-content pb-60 col-lg-9">
-				<div class="title text-center">
-					<h3 class="mb-10" id="search-text"></h3>
+				<div class="menu-content pb-60 col-lg-9">
+					<div class="title text-center">
+						<h2 class="mb-10" id="search-text"></h2>
+					</div>
 				</div>
 			</div>
-			<div class="row" style="margin-bottom: 0px;" id="bookResultList">
+			<div class="row justify-content-center" style="margin-bottom: 0px;" id="bookResultList">
 			</div>
-		</div>
 		</div>
 	</section>
 	<!-- End Result Area -->
@@ -141,7 +151,7 @@
 			    			htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a><a href="<%= request.getContextPath() %>/authorDetail.jsp?id=/' + authorList[i].authorID + '"><h6 style="color: blue;">' + authorList[i].name + '</h6></a></div></div>';
 			    		}
 						if(bookList.length==0){
-							htmlString+="<p>No Items Found</p>";
+							htmlString+="<h5 style='font-size: 20px; color: red;'>No Items Found</h5>";
 						}
 						$('#bookResultList').html(htmlString);
 						document.getElementById('search-text').innerHTML = "Search Result For Book By Author \""+searchValue+"\"";
@@ -167,7 +177,7 @@
 		    			htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a></div></div>';
 		    		}
 					if(bookList.length==0){
-						htmlString+="<p>No Items Found</p>";
+						htmlString+="<h5 style='font-size: 20px; color: red;'>No Items Found</h5>";
 					}
 					$('#bookResultList').html(htmlString);
 					document.getElementById('search-text').innerHTML = "Search Result For Book \""+searchValue+"\"";
@@ -175,32 +185,6 @@
 		    })
 		  }
 		
-		
-		function submitGenre(id, name) {
-			fetch('<%=request.getContextPath()%>/genres/books/' + id, {
-				method: 'GET'
-			})
-			.then(response => response.json())
-			.then(data => {
-				var status = data.status;
-				var bookList = data.list;
-				if(status == "true") {
-					var htmlString = "";
-					for(let i = 0; i < bookList.length; i++) {
-		    			htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a><p></p></div></div>';
-		    		}
-					if(bookList.length==0){
-						htmlString+="<p>No Items Found</p>";
-					}
-					$('#bookResultList').html(htmlString);
-					document.getElementById('search-text').innerHTML = name + " Books";
-				}else if(status == "serverError"){
-		    		alert('Server Error!');
-		    	}else if(status == "invalid"){
-		    		alert('Invalid Request or Data!');
-		    	}
-			})
-		}
 	</script>
 </body>
 </html>
