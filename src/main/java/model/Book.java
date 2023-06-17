@@ -68,6 +68,14 @@ public class Book {
 		this.image = image;
 	}
 
+	public Book(String iSBNNo, String title, String image, String status) {
+		super();
+		ISBNNo = iSBNNo;
+		this.title = title;
+		this.image = image;
+		this.status = status;
+	}
+
 	public Book(String iSBNNo, String title, int page, double price, String publisher, Date publicationDate, int qty,
 			short rating, String description, String image, String image3d, String status) {
 		ISBNNo = iSBNNo;

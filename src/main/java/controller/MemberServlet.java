@@ -405,7 +405,9 @@ public class MemberServlet extends HttpServlet {
 												response);
 									}
 								} else {
-
+									request.setAttribute("errorCode", "invalid");
+									request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
+											response);
 								}
 
 							} else if (status.equals("update")) {

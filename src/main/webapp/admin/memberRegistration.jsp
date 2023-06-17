@@ -195,8 +195,7 @@
 								<!-- formName -->
 								<input type="hidden" name="formName"
 									value="memberRegistrationForm" /> <input type="hidden"
-									name="status" value="<%=status%>" /> <input type="hidden"
-									name="formName" value="memberRegistrationForm" /> <input
+									name="status" value="<%=status%>" />  <input
 									type="hidden" name="MemberID"
 									value="<%=(status.equals("update")) ? member.getMemberID() : ""%>" />
 
@@ -261,13 +260,7 @@
 								<div class="col-md-4">
 									<label for="genderID" class="form-label">Gender</label> <select
 										name="gender" id="genderID" class="form-control" required>
-										<%
-										if (status.equals("update")) {
-											if (member.getGender() == 'N') {
-												out.println("<option value='N' selected>Not Selected</option>");
-											}
-										}
-										%>
+										<option <%= (status.equals("update") && member.geGender() == 'N') ? "selected" : "" %>>Not Selected</option>
 										<option
 											<%=(status.equals("update") && member.getGender() == 'F') ? "selected" : ""%>
 											value="F">Female</option>

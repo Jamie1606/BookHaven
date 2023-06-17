@@ -119,7 +119,7 @@
 			.then(data => {
 				var status = data.status;
 				var genreList = data.list;
-				if(data.status == "true") {
+				if(data.status == "success") {
 					var htmlString = "";
 					for(let i = 0; i < genreList.length; i++) {
 						htmlString += "<button onclick='submitGenre(" + genreList[i].genreID + ", \""+ genreList[i].genre +"\")' class='btn btn-light mt-10 ml-10'>"+ genreList[i].genre + "</button>";
@@ -137,7 +137,7 @@
 			.then(data => {
 				var status = data.status;
 				var bookList = data.list;
-				if(data.status == "true") {
+				if(data.status == "success") {
 					var htmlString = "";
 					for(let i = 0; i < bookList.length; i++) {
 						htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a><p></p></div></div>';
