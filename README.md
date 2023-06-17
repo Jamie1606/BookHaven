@@ -24,7 +24,11 @@ This project uses MVC (Model, View, Controller) framework. Servlets are used as 
 
 # Installation
 - Create a new empty java web project.
-- 
+- Clone this git into a new directory somewhere.
+- Copy the folders inside the git clone into the empty project.
+- Build, clean and refresh your project.
+- Run your project.
+Note: This project is developed using eclipse, so for netbeans and others, you need to manually copy the folders to the corresponding folders.
 
 # Development
 This project is developed from 5 June 2023 to 17 June 2023 (2 weeks).
