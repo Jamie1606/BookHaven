@@ -17,6 +17,9 @@ public class Authentication {
 	}
 	
 	public boolean testAdmin(HttpSession session) {
+		if(session == null || session.isNew()) {
+			return false;
+		}
 		String adminID = (String)session.getAttribute("adminID");
 		String role = (String)session.getAttribute("role");
 		AdminDatabase admin_db = new AdminDatabase();
@@ -46,6 +49,9 @@ public class Authentication {
 	
 
 	public boolean testMember(HttpSession session) {
+		if(session == null || session.isNew()) {
+			return false;
+		}
 		String memberID = (String)session.getAttribute("memberID");
 		String role = (String)session.getAttribute("role");
 		MemberDatabase member_db = new MemberDatabase();

@@ -3,7 +3,7 @@
 //Author: Zay Yar Tun
 //Admin No: 2235035
 //Date: 8.6.2023
-//Description: author list page
+//Description: member list page
 %>
 
 <%@ page import="java.util.ArrayList, java.util.Date, model.Member"%>

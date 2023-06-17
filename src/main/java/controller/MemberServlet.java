@@ -34,6 +34,7 @@ import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletRequestContext;
 
+import model.AdminDatabase;
 import model.Book;
 import model.BookDatabase;
 import model.Genre;
@@ -197,6 +198,12 @@ public class MemberServlet extends HttpServlet {
 			// [CHECK USER AUTHENTICATION]
 
 			HttpSession session = request.getSession();
+			Authentication auth = new Authentication();
+			if (!auth.testMember(session)) {
+				request.setAttribute("error", "unauthorized");
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
+				return;
+			}
 			// [CHECK USER AUTHENTICATION-END]
 
 			// [GET MEMBERID] from session
@@ -388,8 +395,9 @@ public class MemberServlet extends HttpServlet {
 								}
 								// [CHECK AUTHENTICATION-END]
 								// call function from MemberDatabase
+								AdminDatabase admin_db = new AdminDatabase();
 								if (TestReg.matchPassword(password)) {
-									if(email.equals("admin@gmail.com")) {
+									if(admin_db.checkAdminEmailExists(email)) {
 										request.setAttribute("errCode", "invalidEmail");
 										request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
 												response);
@@ -465,6 +473,12 @@ public class MemberServlet extends HttpServlet {
 								// [CHECK USER AUTHENTICATION]
 								Authentication auth = new Authentication();
 								HttpSession session = request.getSession();
+								if (!auth.testMember(session)) {
+									request.setAttribute("error", "unauthorized");
+									request.getRequestDispatcher("/signout.jsp").forward(request,
+											response);
+									return;
+								}
 
 								// [CHECK USER AUTHENTICATION-END]
 
@@ -563,7 +577,8 @@ public class MemberServlet extends HttpServlet {
 					address = address.trim();
 					name = name.trim();
 					address += " |" + postalCode;
-					if(email.equals("admin@gmail.com")) {
+					AdminDatabase admin_db = new AdminDatabase();
+					if(admin_db.checkAdminEmailExists(email)) {
 						response.sendRedirect("signup.jsp?errCode=invalidEmail");
 					}
 					else {
@@ -587,6 +602,15 @@ public class MemberServlet extends HttpServlet {
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		Authentication auth = new Authentication();
+		HttpSession session = request.getSession();
+		if (!auth.testAdmin(session)) {
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/signout.jsp").forward(request,
+					response);
+			return;
+		}
 
 		MemberDatabase member_db = new MemberDatabase();
 		String requestURi = request.getRequestURI();
