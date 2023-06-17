@@ -552,19 +552,24 @@ public class MemberServlet extends HttpServlet {
 				String defaultImage = "/img/members/defaultuser.png";
 				if (TestReg.matchEmail(email) && TestReg.matchPassword(password) && TestReg.matchPhone(phone)
 						&& TestReg.matchPostalCode(postalCode)) {
+					email = email.trim();
 					address = address.trim();
 					name = name.trim();
 					address += " |" + postalCode;
-
-					// call function from MemberDatabase
-					int condition = member_db
-							.registerMember(new Member(name, phone, address, email, password, defaultImage));
-					if (condition == 1) {
-						response.sendRedirect("signup.jsp?success=true");
-					} else if (condition == -1) {
+					if(email.equals("admin@gmail.com")) {
 						response.sendRedirect("signup.jsp?errCode=invalidEmail");
-					} else {
-						response.sendRedirect("signup.jsp?errCode=serverError");
+					}
+					else {
+						// call function from MemberDatabase
+						int condition = member_db
+								.registerMember(new Member(name, phone, address, email, password, defaultImage));
+						if (condition == 1) {
+							response.sendRedirect("signup.jsp?success=true");
+						} else if (condition == -1) {
+							response.sendRedirect("signup.jsp?errCode=invalidEmail");
+						} else {
+							response.sendRedirect("signup.jsp?errCode=serverError");
+						}
 					}
 				} else {
 					response.sendRedirect("signup.jsp?errCode=invalid");
