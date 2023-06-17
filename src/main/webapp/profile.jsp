@@ -97,7 +97,7 @@
 	String address = addressArr[0];
 	%>
 
-	<section class="section profile" style="padding: 100px 0px;">
+	<section class="section profile" style="padding: 100px 20px 20px 20px;">
 		<div class="row">
 			<div class="col-xl-4">
 
@@ -183,7 +183,7 @@
 
 								<div class="row">
 									<div class="col-lg-3 col-md-4 label">Birth Date</div>
-									<div class="col-lg-9 col-md-8"><%=member.getBirthDate()%></div>
+									<div class="col-lg-9 col-md-8"><%=member.getBirthDate()==null? "N/A" : member.getBirthDate()%></div>
 								</div>
 
 								<div class="row">
@@ -240,7 +240,7 @@
 											class="col-md-4 col-lg-3 col-form-label">Address</label>
 										<div class="col-md-8 col-lg-9">
 											<input type="text" class="form-control" name="address"
-												id="addressID" value="<%=address%>" required>
+												id="addressID" value="<%=address%>" required readonly>
 										</div>
 									</div>
 
@@ -277,7 +277,7 @@
 									<div class="row mb-3">
 										<label for="genderID" class="col-md-4 col-lg-3 col-form-label">Gender</label>
 										<div class="col-md-8 col-lg-9">
-											<select name="gender" id="genderID">
+											<select name="gender" id="genderID"  class="form-control" >
 												<option value="N" <%= member.getGender() == 'N'? "selected" :"" %>>N/A</option>
 												<option <%=member.getGender() == 'F' ? "selected" : ""%>
 													value="F">Female</option>

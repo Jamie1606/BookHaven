@@ -57,12 +57,12 @@ String id=request.getParameter("id");
 			<h3 id="name"></h3>
 			<div
 				style="display: flex; flex-direction: row; margin-top: 15px; justify-content: flex-start;">
-				<label id="book-count" style="font-weight: bold;">Books</label> <label
+				<label id="book-count" style="font-weight: bold;"></label> <label
 					style="margin-left: 25px; font-weight: bold;" id="nationality"></label>
 				<label style="margin-left: 25px; font-weight: bold;" id="birthdate"></label>
 			</div>
 			<p style="text-align: justify;" id="description"></p>
-			<a id="link" target="_blank">More about me &#x2192;</a>
+			<a id="link" target="_blank"></a>
 		</div>
 	</div>
 
@@ -131,6 +131,9 @@ String id=request.getParameter("id");
 				document.getElementById('nationality').innerHTML = authorList[0].nationality;
 				document.getElementById('birthdate').innerHTML = (authorList[0].birthDate==null)? "":authorList[0].birthDate + " &#128198 ";
 				document.getElementById('description').innerHTML = authorList[0].biography;
+				if(authorList[0].link!=null && authorList!=""){
+				document.getElementById('link').innerHTML="More about me &#x2192;";
+				}
 				document.getElementById('link').href=authorList[0].link;
 	    		var htmlString="";
 	    		for(let i = 0; i < bookList.length; i++) {

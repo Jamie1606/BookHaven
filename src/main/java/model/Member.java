@@ -2,7 +2,7 @@
 //Admin No    : 2235022
 //Class       : DIT/FT/2A/02
 //Date        : 7.6.2023
-//Description : member class
+//Description : to store member data from database
 
 package model;
 
