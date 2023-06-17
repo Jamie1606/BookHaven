@@ -22,29 +22,7 @@ public class SearchDatabase {
 
 	}
 
-	//[SEARCH AUTHOR]
-	public boolean searchAuthor(String searchValue) {
-		try {
-			// loading postgresql driver
-			Class.forName("org.postgresql.Driver");
 
-			// get database connection
-			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
-			
-			String sqlStatement="SELECT * FROM \"public\".\"Author\" WHERE Lower(\"Name\") LIKE ?";
-			PreparedStatement st=db.prepareStatement(sqlStatement);
-			String search_value="%"+searchValue+"%";
-			st.setString(1,search_value);
-			searchResultSet=st.executeQuery();
-			
-			db.close();
-			return true;
-		} catch (Exception e) {
-			System.out.println(e);
-			return false;
-		}
-	}
-	//[SEARCH AUTHOR-END]
 	
 	//[SEARCH BOOK BY AUTHOR]
 	public boolean searchBookByAuthor(String searchValue) {
@@ -57,7 +35,7 @@ public class SearchDatabase {
 			
 			String sqlStatement="SELECT b.\"ISBNNo\", b.\"Title\",b.\"Image\",b.\"Status\", a.\"AuthorID\", a.\"Name\"  FROM \"public\".\"Book\" AS b JOIN \"public\".\"BookAuthor\" AS ba ON b.\"ISBNNo\"=ba.\"ISBNNo\" JOIN \"public\".\"Author\" AS a ON ba.\"AuthorID\"=a.\"AuthorID\" WHERE Lower(a.\"Name\") LIKE ?";
 			PreparedStatement st=db.prepareStatement(sqlStatement);
-			String search_value="%"+searchValue+"%";
+			String search_value="%"+searchValue.toLowerCase()+"%";
 			st.setString(1,search_value);
 			searchResultSet=st.executeQuery();
 			
@@ -81,7 +59,7 @@ public class SearchDatabase {
 			
 			String sqlStatement="SELECT * FROM \"public\".\"Book\" WHERE Lower(\"Title\") LIKE ?";
 			PreparedStatement st=db.prepareStatement(sqlStatement);
-			String search_value="%"+searchValue+"%";
+			String search_value="%"+searchValue.toLowerCase()+"%";
 			st.setString(1,search_value);
 			searchResultSet=st.executeQuery();
 			
