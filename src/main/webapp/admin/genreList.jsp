@@ -76,16 +76,18 @@
 	if (error != null) {
 		if (error.equals("invalid")) {
 			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath() + "/admin/genres';</script>");
+			return;
 		}
 		else if (error.equals("serverError")) {
 			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/genres';</script>");
+			return;
 		}
 		else if (error.equals("serverRetrieveError")) {
 			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/adminHomePage.jsp';</script>");
 			return;
 		}
 		else if (error.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
 			return;
 		}
 		else {
@@ -96,6 +98,7 @@
 	if(success != null) {
 		if(success.equals("delete")) {
 			out.println("<script>alert('The genre is successfully deleted!'); location='" + request.getContextPath() + "/admin/genres';</script>");
+			return;
 		}
 	}
 	

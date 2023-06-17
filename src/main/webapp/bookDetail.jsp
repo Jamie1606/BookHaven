@@ -2,7 +2,7 @@
 <%
 //Author: Zay Yar Tun
 //Admin No: 2235035
-//Date: 3.6.2023
+//Date: 16.6.2023
 //Description: book detail page
 // book detail layout design is referenced from https://s3.envato.com/files/311567532/Image%20Preview%20Set%20Figma/05_BookDetail-Description.jpg
 %>
@@ -32,7 +32,7 @@
 <!-- meta character set -->
 <meta charset="UTF-8">
 <!-- Site Title -->
-<title>BookHaven | BookDetail</title>
+<title>BookHaven | Book Detail</title>
 
 <link
 	href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700"
@@ -116,7 +116,7 @@
 	<%
 	String id = request.getParameter("id");
 	if (id == null) {
-		out.println("<script>alert('Invalid request!'); location='index.jsp';</script>");
+		out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + "/index.jsp';</script>");
 		return;
 	}
 	%>

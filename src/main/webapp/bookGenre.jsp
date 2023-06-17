@@ -26,7 +26,7 @@
 <!-- meta character set -->
 <meta charset="UTF-8">
 <!-- Site Title -->
-<title>BookHaven | Book</title>
+<title>BookHaven | Genre</title>
 
 <link
 	href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700"
@@ -34,13 +34,13 @@
 <!--
 			CSS
 			============================================= -->
-<link rel="stylesheet" href="css/linearicons.css">
-<link rel="stylesheet" href="css/owl.carousel.css">
-<link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel="stylesheet" href="css/nice-select.css">
-<link rel="stylesheet" href="css/magnific-popup.css">
-<link rel="stylesheet" href="css/bootstrap.css">
-<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/linearicons.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/owl.carousel.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/font-awesome.min.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/nice-select.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/magnific-popup.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/bootstrap.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/main.css">
 <style>
 	#bookResultList h4:hover {
 		color: red;
@@ -91,22 +91,22 @@
 		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
 		crossorigin="anonymous"></script>
-	<script src="js/vendor/bootstrap.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/vendor/bootstrap.min.js"></script>
 	<script type="text/javascript"
 		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
-	<script src="js/easing.min.js"></script>
-	<script src="js/hoverIntent.js"></script>
-	<script src="js/superfish.min.js"></script>
-	<script src="js/jquery.ajaxchimp.min.js"></script>
-	<script src="js/jquery.magnific-popup.min.js"></script>
-	<script src="js/owl.carousel.min.js"></script>
-	<script src="js/jquery.sticky.js"></script>
-	<script src="js/jquery.nice-select.min.js"></script>
-	<script src="js/parallax.min.js"></script>
-	<script src="js/waypoints.min.js"></script>
-	<script src="js/jquery.counterup.min.js"></script>
-	<script src="js/mail-script.js"></script>
-	<script src="js/main.js"></script>
+	<script src="<%= request.getContextPath() %>/js/easing.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/hoverIntent.js"></script>
+	<script src="<%= request.getContextPath() %>/js/superfish.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.ajaxchimp.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.magnific-popup.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/owl.carousel.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.sticky.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.nice-select.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/parallax.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/waypoints.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.counterup.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/mail-script.js"></script>
+	<script src="<%= request.getContextPath() %>/js/main.js"></script>
 
 	<script>
 	//[INSERT] to "Category" area
@@ -137,7 +137,6 @@
 			.then(data => {
 				var status = data.status;
 				var bookList = data.list;
-				console.log(bookList);
 				if(data.status == "success") {
 					var htmlString = "";
 					for(let i = 0; i < bookList.length; i++) {

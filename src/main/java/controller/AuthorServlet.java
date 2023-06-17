@@ -60,7 +60,7 @@ public class AuthorServlet extends HttpServlet {
 		if (requestURi.contains("admin/authorUpdate")) {
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 
@@ -110,7 +110,7 @@ public class AuthorServlet extends HttpServlet {
 		} else if (requestURi.contains("admin/authorDelete")) {
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 
@@ -118,7 +118,7 @@ public class AuthorServlet extends HttpServlet {
 		} else if (requestURi.endsWith("admin/authors")) {
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
-				request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 
@@ -233,7 +233,7 @@ public class AuthorServlet extends HttpServlet {
 
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
 		}
 
@@ -248,9 +248,18 @@ public class AuthorServlet extends HttpServlet {
 			name = request.getParameter("name");
 			if (name != null && !name.isBlank()) {
 				nationality = request.getParameter("nationality");
+				if(nationality != null) {
+					nationality = nationality.trim();
+				}
 				birthdate = request.getParameter("birthdate");
 				biography = request.getParameter("biography");
+				if(biography != null) {
+					biography = biography.trim();
+				}
 				link = request.getParameter("link");
+				if(link != null) {
+					link = link.trim();
+				}
 				Date birth_Date = null;
 
 				if (birthdate != null && !birthdate.isEmpty() && TestReg.matchDate(birthdate)) {
@@ -290,7 +299,7 @@ public class AuthorServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
 		}
 
@@ -304,9 +313,18 @@ public class AuthorServlet extends HttpServlet {
 
 			if (id != null && !id.isBlank() && TestReg.matchInteger(id) && name != null && !name.isBlank()) {
 				nationality = request.getParameter("nationality");
+				if(nationality != null) {
+					nationality = nationality.trim();
+				}
 				birthdate = request.getParameter("birthdate");
 				biography = request.getParameter("biography");
+				if(biography != null) {
+					biography = biography.trim();
+				}
 				link = request.getParameter("link");
+				if(link != null) {
+					link = link.trim();
+				}
 				Date birth_Date = null;
 				int authorID = Integer.parseInt(id);
 
@@ -353,7 +371,7 @@ public class AuthorServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
 		}
 

@@ -91,11 +91,11 @@
 		
 		if(errCode != null) {
 			if(errCode.equals("invalid")) {
-				out.println("<script>alert('Please enter correct email and password!'); location='signin.jsp';</script>");
+				out.println("<script>alert('Please enter correct email and password!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
 				return;
 			}
 			if(errCode.equals("serverError")) {
-				out.println("<script>alert('Internal Server Error. Please try again later!'); location='signin.jsp';</script>");
+				out.println("<script>alert('Internal Server Error. Please try again later!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
 				return;
 			}
 		}

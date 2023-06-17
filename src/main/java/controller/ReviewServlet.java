@@ -1,3 +1,8 @@
+// Author: Zay Yar Tun
+// Admin No: 2235035
+// Date: 15.6.2023
+// Description: middleware for review
+
 package controller;
 
 import java.io.IOException;
@@ -46,7 +51,7 @@ public class ReviewServlet extends HttpServlet {
 
 		if (!auth.testAdmin(session)) {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/adminHomePage.jsp").forward(request, response);
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
 		}
 
@@ -82,7 +87,7 @@ public class ReviewServlet extends HttpServlet {
 			return;
 		} else {
 			request.setAttribute("error", "unauthorized");
-			request.getRequestDispatcher("/admin/adminHomePage.jsp").forward(request, response);
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
 		}
 	}

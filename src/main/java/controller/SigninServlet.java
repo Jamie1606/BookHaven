@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 
 /**
  * Servlet implementation class signinServlet
@@ -81,6 +82,21 @@ public class SigninServlet extends HttpServlet {
 		 			response.sendRedirect("sigin.jsp?errCode=serverError");
 		 	}
 			if(isValid) {
+				try {
+			 		Class.forName("org.postgresql.Driver");
+			 		
+			 		Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+			 		
+			 		String sqlStatement = "UPDATE  \"public\".\"Member\" SET \"LastActive\" = ? WHERE \"MemberID\" = ?";
+			        PreparedStatement st = db.prepareStatement(sqlStatement);
+			        st.setObject(1, LocalDateTime.now());
+			        st.setInt(2, id);
+			     	
+			        int count = st.executeUpdate();
+
+			 		db.close();
+			 		} catch (Exception e) {
+			 	}
 				session.setAttribute("memberID", id + "");
 				session.setAttribute("role", "member");
 				session.setMaxInactiveInterval(60 * 60);		// 1 hour
@@ -115,6 +131,21 @@ public class SigninServlet extends HttpServlet {
 			 			response.sendRedirect("sigin.jsp?errCode=serverError");
 			 	}
 				if(isValid) {
+					try {
+				 		Class.forName("org.postgresql.Driver");
+				 		
+				 		Connection db = DriverManager.getConnection(connURL, db_username, db_password);
+				 		
+				 		String sqlStatement = "UPDATE  \"public\".\"Admin\" SET \"LastActive\" = ? WHERE \"AdminID\" = ?";
+				        PreparedStatement st = db.prepareStatement(sqlStatement);
+				        st.setObject(1, LocalDateTime.now());
+				        st.setInt(2, id);
+				     	
+				        int count = st.executeUpdate();
+
+				 		db.close();
+				 		} catch (Exception e) {
+				 	}
 					session.setAttribute("adminID", id + "");
 					session.setAttribute("role", "admin");
 					session.setMaxInactiveInterval(3* 60 * 60);		// 3 hours

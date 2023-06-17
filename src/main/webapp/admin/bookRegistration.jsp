@@ -108,7 +108,7 @@
 			return;
 		} else if (error.equals("unauthorized")) {
 			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signin.jsp';</script>");
+			+ "/signout.jsp';</script>");
 			return;
 		} else if (error.equals("authorError")) {
 			out.println(
@@ -134,10 +134,12 @@
 		if (success.equals("register")) {
 			out.println("<script>alert('Book data is successfully added!'); location='" + request.getContextPath()
 			+ "/admin/bookRegistration';</script>");
+			return;
 		}
 		if (success.equals("update")) {
 			out.println("<script>alert('Book data is successfully updated!'); location='" + request.getContextPath()
 			+ "/admin/books';</script>");
+			return;
 		}
 	}
 
@@ -167,7 +169,7 @@
 			request.removeAttribute("bookGenreList");
 		} else {
 			out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
-			+ "/signin.jsp';</script>");
+			+ "/signout.jsp';</script>");
 			return;
 		}
 	}
@@ -191,7 +193,7 @@
 			<h1>Book Registration</h1>
 			<nav>
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="adminHomePage.jsp">Home</a></li>
+					<li class="breadcrumb-item"><a href="<%= request.getContextPath() %>/admin/adminHomePage.jsp">Home</a></li>
 					<li class="breadcrumb-item">Registration Forms</li>
 					<li class="breadcrumb-item active">Book Registration</li>
 				</ol>

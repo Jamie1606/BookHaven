@@ -9,9 +9,11 @@
 session.invalidate();
 String error = (String) request.getAttribute("error");
 if(error != null && error.equals("unauthorized")) {
-	out.println("<script>alert('Unauthorized'); location = 'index.jsp';</script>");
+	out.println("<script>alert('Unauthorized'); location = '" + request.getContextPath() +  "/index.jsp';</script>");
+	return;
 }
 else {
-	out.println("<script>location='index.jsp';</script>");
+	out.println("<script>location='" + request.getContextPath() +  "/index.jsp';</script>");
+	return;
 }
 %>

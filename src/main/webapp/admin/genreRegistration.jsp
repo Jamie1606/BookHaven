@@ -102,12 +102,20 @@
 		if (errCode.equals("serverError")) {
 			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
 			+ "/admin/genreRegistration.jsp';</script>");
+			return;
 		} else if (errCode.equals("invalid")) {
 			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
 			+ "/admin/genreRegistration.jsp';</script>");
+			return;
+		} 
+		else if (errCode.equals("unauthorized")) {
+			out.println("<script>alert('Unauthorized!'); location='" + request.getContextPath()
+			+ "/signout.jsp';</script>");
+			return;
 		} else {
 			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
 			+ "/admin/genreRegistration.jsp';</script>");
+			return;
 		}
 	} else {
 		String success = request.getParameter("success");
@@ -115,10 +123,12 @@
 			if (success.equals("register")) {
 		out.println("<script>alert('Genre data is successfully added!'); location='" + request.getContextPath()
 				+ "/admin/genreRegistration.jsp';</script>");
+		return;
 			}
 			if (success.equals("update")) {
 		out.println("<script>alert('Genre data is successfully updated!'); location='" + request.getContextPath()
 				+ "/admin/genres';</script>");
+		return;
 			}
 		}
 	}
@@ -149,7 +159,7 @@
 			<h1>Genre Registration</h1>
 			<nav>
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="adminHomePage.jsp">Home</a></li>
+					<li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
 					<li class="breadcrumb-item">Registration Forms</li>
 					<li class="breadcrumb-item active">Genre Registration</li>
 				</ol>

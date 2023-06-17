@@ -1,6 +1,6 @@
-
-
-<!-- [IMPORT] -->
+<%@page import="java.time.LocalDate"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ page import="model.Member, controller.Authentication"%>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
@@ -10,9 +10,9 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- Favicon-->
-<link rel="shortcut icon" href="img/elements/fav.png">
+<link rel="shortcut icon" href="<%= request.getContextPath() %>/img/fav.png">
 <!-- Author Meta -->
-<meta name="author" content="colorlib">
+<meta name="author" content="codepixer">
 <!-- Meta Description -->
 <meta name="description" content="">
 <!-- Meta Keyword -->
@@ -20,51 +20,56 @@
 <!-- meta character set -->
 <meta charset="UTF-8">
 <!-- Site Title -->
-<title>Book</title>
+<title>BookHaven | Profile</title>
 
 <link
 	href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700"
 	rel="stylesheet">
-<!--
-			CSS
-			============================================= -->
-<link rel="stylesheet" href="css/linearicons.css">
-<link rel="stylesheet" href="css/owl.carousel.css">
-<link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel="stylesheet" href="css/nice-select.css">
-<link rel="stylesheet" href="css/magnific-popup.css">
-<link rel="stylesheet" href="css/bootstrap.css">
-<link rel="stylesheet" href="css/main.css">
+<!--CSS============================================= -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/linearicons.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/font-awesome.min.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/bootstrap.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/magnific-popup.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/nice-select.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/animate.min.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/owl.carousel.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/main.css">
+<link rel="icon" type="image/png" href="<%= request.getContextPath() %>/img/logo.png">
 
-
-<!--[ADMIN]-->
-<!-- Vendor CSS Files -->
-<link href="assets/vendor/bootstrap/css/bootstrap.min.css"
-	rel="stylesheet">
-<link href="assets/vendor/bootstrap-icons/bootstrap-icons.css"
+<link href="<%= request.getContextPath() %>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
 	rel="stylesheet">
 
 <!-- Template Main CSS File -->
-<link href="assets/css/style.css" rel="stylesheet">
-<!--[ADMIN END]-->
+<link href="<%= request.getContextPath() %>/assets/css/style.css" rel="stylesheet">
+
 </head>
 
 <body>
+	<%@ include file="header.jsp"%>
+	
 	<%
 	String errCode = (String) request.getAttribute("errCode");
 	if (errCode != null) {
 		if (errCode.equals("serverError")) {
 			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-			+ "/profile.jsp';</script>");
+			+ "/index.jsp';</script>");
+			return;
 		} else if (errCode.equals("invalid")) {
 			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
 			+ "/profile.jsp';</script>");
+			return;
 		}else if (errCode.equals("invalidEmail")) {
 			out.println("<script>alert('Invalid Email!'); location='" + request.getContextPath()
 			+ "/profile.jsp';</script>");
+			return;
+		}else if (errCode.equals("unauthorized")) {
+			out.println("<script>alert('Unauthorized!'); location='" + request.getContextPath()
+			+ "/signout.jsp';</script>");
+			return;
 		}else {
 			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
-			+ "profile.jsp';</script>");
+			+ "/index.jsp';</script>");
+			return;
 		}
 	} else {
 		String success = (String)request.getAttribute("success");
@@ -72,33 +77,27 @@
 			if (success.equals("update")) {
 		out.println("<script>alert('Member data is successfully updated!'); location='" + request.getContextPath()
 				+ "/profile.jsp';</script>");
+		return;
 			}
 		}
 	}
 	String servlet = (String)request.getAttribute("servlet");
-	 request.removeAttribute("servlet");
+	request.removeAttribute("servlet");
 	if(servlet == null || !servlet.equals("true")) {
 		out.println("<script>location='" + request.getContextPath() + "/profile';</script>");
 		return;
 	}
 	Member member = (Member) request.getAttribute("member");
 	request.removeAttribute("member");
-	String completeAdderss = member.getAddress();
-	String postalCode = completeAdderss.substring(completeAdderss.length() - 6);//get last 6 char
-	String address = completeAdderss.substring(0, completeAdderss.length() - 7);//delete last 7 char
+	String[] addressArr = member.getAddress().split("\\|");
+	String postalCode = "";
+	if(addressArr.length == 2) {
+		postalCode = addressArr[1];
+	}
+	String address = addressArr[0];
 	%>
 
-	<%@ include file="header.jsp"%><!-- #header -->
-	<section class="generic-banner relative">
-		<div class="container">
-			<div class="row height align-items-center justify-content-center">
-				<div class="col-lg-10">
-					<div class="generic-banner-content"></div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<section class="section profile p-4">
+	<section class="section profile" style="padding: 100px 0px;">
 		<div class="row">
 			<div class="col-xl-4">
 
@@ -130,12 +129,12 @@
 
 							<li class="nav-item">
 								<button class="nav-link active" data-bs-toggle="tab"
-									data-bs-target="#profile-overview">Overview</button>
+									data-bs-target="#profile-overview" style="outline: none;">Overview</button>
 							</li>
 
 							<li class="nav-item">
 								<button class="nav-link" data-bs-toggle="tab"
-									data-bs-target="#profile-edit">Edit Profile</button>
+									data-bs-target="#profile-edit" style="outline: none;">Edit Profile</button>
 							</li>
 
 
@@ -189,7 +188,18 @@
 
 								<div class="row">
 									<div class="col-lg-3 col-md-4 label">Gender</div>
-									<div class="col-lg-9 col-md-8"><%=member.getGender()%></div>
+									<%
+										if(member.getGender() == 'M') {
+											out.println("<div class='col-lg-9 col-md-8'>Male</div>");
+										}
+										else if(member.getGender() == 'F') {
+											out.println("<div class='col-lg-9 col-md-8'>Female</div>");
+										}
+										else {
+											out.println("<div class='col-lg-9 col-md-8'>N/A</div>");
+										}
+									%>
+									
 								</div>
 
 							</div>
@@ -205,15 +215,6 @@
 										<div class="col-md-8 col-lg-9">
 											<input name="name" type="text" class="form-control"
 												id="nameID" value="<%=member.getName()%>" required>
-										</div>
-									</div>
-
-									<!-- Email input -->
-									<div class="row mb-3">
-										<label for="emailID" class="col-md-4 col-lg-3 col-form-label">Email</label>
-										<div class="col-md-8 col-lg-9">
-											<input type="email"  class="form-control" name="email"
-												id="emailID" value="<%=member.getEmail()%>" readonly>
 										</div>
 									</div>
 									
@@ -268,7 +269,7 @@
 											class="col-md-4 col-lg-3 col-form-label">Birth Date</label>
 										<div class="col-md-8 col-lg-9">
 											<input type="date" class="form-control" name="birthDate"
-												id="birthDateID" value="<%=member.getBirthDate()%>">
+												id="birthDateID" max="<%= LocalDate.now() %>" value="<%=member.getBirthDate()%>">
 										</div>
 									</div>
 
@@ -277,11 +278,11 @@
 										<label for="genderID" class="col-md-4 col-lg-3 col-form-label">Gender</label>
 										<div class="col-md-8 col-lg-9">
 											<select name="gender" id="genderID">
-												<option value="N"></option>
+												<option value="N" <%= member.getGender() == 'N'? "selected" :"" %>>N/A</option>
 												<option <%=member.getGender() == 'F' ? "selected" : ""%>
-													value="F">F</option>
+													value="F">Female</option>
 												<option <%=member.getGender() == 'M' ? "selected" : ""%>
-													value="M">M</option>
+													value="M">Male</option>
 											</select>
 										</div>
 									</div>
@@ -318,36 +319,30 @@
 
 			</div>
 	</section>
-	<!-- End banner Area -->
 
-	<!--[ADMIN]-->
+	<%@ include file="footer.jsp"%>
 
-	<!-- Vendor JS Files -->
-	<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<!-- Template Main JS File -->
-	<!--[ADMIN END]-->
-
-	<script src="js/vendor/jquery-2.2.4.min.js"></script>
+	<script src="<%= request.getContextPath() %>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/vendor/jquery-2.2.4.min.js"></script>
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
 		crossorigin="anonymous"></script>
-	<script src="js/vendor/bootstrap.min.js"></script>
-	<script type="text/javascript"
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
-	<script src="js/easing.min.js"></script>
-	<script src="js/hoverIntent.js"></script>
-	<script src="js/superfish.min.js"></script>
-	<script src="js/jquery.ajaxchimp.min.js"></script>
-	<script src="js/jquery.magnific-popup.min.js"></script>
-	<script src="js/owl.carousel.min.js"></script>
-	<script src="js/jquery.sticky.js"></script>
-	<script src="js/jquery.nice-select.min.js"></script>
-	<script src="js/parallax.min.js"></script>
-	<script src="js/waypoints.min.js"></script>
-	<script src="js/jquery.counterup.min.js"></script>
-	<script src="js/mail-script.js"></script>
-	<script src="js/main.js"></script>
+	<script src="<%= request.getContextPath() %>/js/easing.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/hoverIntent.js"></script>
+	<script src="<%= request.getContextPath() %>/js/superfish.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.ajaxchimp.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.magnific-popup.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/owl.carousel.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.sticky.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.nice-select.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/parallax.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/waypoints.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery.counterup.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/mail-script.js"></script>
+	<script src="<%= request.getContextPath() %>/js/main.js"></script>
+	
+	
 </body>
 
 </html>

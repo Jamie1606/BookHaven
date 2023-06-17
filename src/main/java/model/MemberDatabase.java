@@ -169,73 +169,75 @@ public class MemberDatabase {
 
 
 	// [UPDATE MEMBER] update member data to database
-	public int updateMember(Member member) {
+	// type 1 => with password
+	// type 2 => without password
+	public boolean updateMember(Member member, int type) {
 		try {
 			// loading postgresql driver
 			Class.forName("org.postgresql.Driver");
 
 			// get database connection
 			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
-			// [CHECK DUPLICATE EMAIL]
-			String sqlStatement = "SELECT * FROM \"public\".\"Member\" WHERE \"Email\"=?";
-			PreparedStatement st = db.prepareStatement(sqlStatement);
-			st.setString(1, member.getEmail());
-			ResultSet rs = st.executeQuery();
-			int count = 0;
+			String sqlStatement;
+			PreparedStatement st;
 
-			while (rs.next()) {
-				if(rs.getInt("MemberID")!=member.getMemberID()) {
-					System.out.println(rs.getInt("MemberID"));
-					System.out.println(member.getMemberID());
-					count++;
+			if(type == 1) {
+				sqlStatement = "UPDATE \"public\".\"Member\" SET \"Name\" = ?, \"Gender\" = ?, \"BirthDate\" = ?, \"Phone\" = ?, \"Address\" = ?, \"Password\" = ?, \"Image\" = ? WHERE \"MemberID\" = ?;";
+				st = db.prepareStatement(sqlStatement);
+				st.setString(1, member.getName());
+				
+				if (member.getGender() != 'N') {
+					st.setString(2, String.valueOf(member.getGender()));
+				} else {
+					st.setNull(2, Types.CHAR);
 				}
+				
+				if (member.getBirthDate() == null) {
+					st.setNull(3, Types.DATE);
+				} else {
+					st.setDate(3, Date.valueOf(member.getBirthDate().toString()));
+				}
+				
+				st.setString(4, member.getPhone());
+				st.setString(5, member.getAddress());
+				st.setString(6, member.getPassword());
+				st.setString(7, member.getImage());	
+				st.setInt(8, member.getMemberID());
 			}
-			if (count > 0) {
-				// duplication exists
-				return -1;
+			else {
+				sqlStatement = "UPDATE \"public\".\"Member\" SET \"Name\" = ?, \"Gender\" = ?, \"BirthDate\" = ?, \"Phone\" = ?, \"Address\" = ?, \"Image\" = ? WHERE \"MemberID\" = ?;";
+				st = db.prepareStatement(sqlStatement);
+				st.setString(1, member.getName());
+				
+				if (member.getGender() != 'N') {
+					st.setString(2, String.valueOf(member.getGender()));
+				} else {
+					st.setNull(2, Types.CHAR);
+				}
+				
+				if (member.getBirthDate() == null) {
+					st.setNull(3, Types.DATE);
+				} else {
+					st.setDate(3, Date.valueOf(member.getBirthDate().toString()));
+				}
+				
+				st.setString(4, member.getPhone());
+				st.setString(5, member.getAddress());
+				st.setString(6, member.getImage());	
+				st.setInt(7, member.getMemberID());
 			}
-			// [CHECK DUPLICATE EMAIL-END]
-
-
-			// select all from "Genre" TABLE
-			sqlStatement = "UPDATE \"public\".\"Member\" SET \"Name\" = ?, \"Gender\" = ?, \"BirthDate\" = ?, \"Phone\" = ?, \"Address\" = ?, \"Email\" = ?, \"Password\" = ?, \"Image\" = ? WHERE \"MemberID\" = ?;";
-			st = db.prepareStatement(sqlStatement);
-			st.setString(1, member.getName());
-			st.setString(4, member.getPhone());
-			st.setString(5, member.getAddress());
-			st.setString(6, member.getEmail());
-			st.setString(7, member.getPassword());
-			st.setInt(9, member.getMemberID());
-			if (member.getGender() != 'N') {
-				st.setString(2, String.valueOf(member.getGender()));
-			} else {
-				st.setString(2, "");
-			}
-
-			if (member.getBirthDate() == null) {
-				st.setNull(3, Types.DATE);
-			} else {
-				st.setDate(3, Date.valueOf(member.getBirthDate().toString()));
-			}
-			if (member.getImage() == null) {
-				st.setString(8, "");
-			} else {
-				st.setString(8, member.getImage());
-			}
+				
 
 			int rowsAffected = st.executeUpdate();
-
 			db.close();
-			if (rowsAffected == 1) {
-				// successful
-				return 1;
-			} else {
-				return 0;
+			if(rowsAffected == 1) {
+				return true;
+			}
+			else {
+				return false;
 			}
 		} catch (Exception e) {
-
-			System.out.println(e);
-			return 0;
+			return false;
 		}
 
 	}
