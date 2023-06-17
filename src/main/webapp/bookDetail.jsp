@@ -377,7 +377,7 @@
 					else {
 						$('#book-status').css({"color": "red", "backgroundColor": "rgba(220, 0, 0, 0.2)"});
 					}
-					$('#book-price').html("$" + list[0].price);
+					$('#book-price').html("$" + list[0].price.toFixed(2));
 					$('#book-rating').html(list[0].rating.toFixed(1));
 					$('#book-author').html(authors);
 					$('#book-title').html(list[0].title);
@@ -391,7 +391,7 @@
 					if(list[0].qty <= 0) {
 						$('#cart').css({"visibility": "hidden"});
 					}
-					$('#book-detail-price').html("$" + list[0].price);
+					$('#book-detail-price').html("$" + list[0].price.toFixed(2));
 					$('#book-description').html(list[0].description);
 					$('#book-publisher').html(list[0].publisher);
 					let pubdate = new Date(list[0].publicationDate);

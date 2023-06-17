@@ -368,7 +368,7 @@ public class MemberServlet extends HttpServlet {
 							}
 
 							if (status.equals("register")) {
-								if(email == null || email.isEmpty() || TestReg.matchEmail(email)  ) {
+								if(email == null || email.isEmpty() || !TestReg.matchEmail(email)  ) {
 									request.setAttribute("error", "unauthorized");
 									request.getRequestDispatcher("/signout.jsp").forward(request,
 											response);
@@ -389,20 +389,27 @@ public class MemberServlet extends HttpServlet {
 								// [CHECK AUTHENTICATION-END]
 								// call function from MemberDatabase
 								if (TestReg.matchPassword(password)) {
-									int condition = member_db.registerMember(new Member(name, genderChar, birth_date,
-											phone, address, email, password, image));
-									if (condition == 1) {
-										request.setAttribute("success", "register");
-										request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
-												response);
-									} else if (condition == -1) {
+									if(email.equals("admin@gmail.com")) {
 										request.setAttribute("errCode", "invalidEmail");
 										request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
 												response);
-									} else {
-										request.setAttribute("errCode", "serverError");
-										request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
-												response);
+									}
+									else {
+										int condition = member_db.registerMember(new Member(name, genderChar, birth_date,
+												phone, address, email, password, image));
+										if (condition == 1) {
+											request.setAttribute("success", "register");
+											request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
+													response);
+										} else if (condition == -1) {
+											request.setAttribute("errCode", "invalidEmail");
+											request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
+													response);
+										} else {
+											request.setAttribute("errCode", "serverError");
+											request.getRequestDispatcher("/admin/memberRegistration.jsp").forward(request,
+													response);
+										}
 									}
 								} else {
 									request.setAttribute("errorCode", "invalid");
