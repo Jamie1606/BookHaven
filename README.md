@@ -43,7 +43,7 @@ Authentication.java, AuthorServlet.java, BookServlet.java, JSONObjects.java, Rev
 #### (Thu Htet San)
 GenreServlet.java, MemberServlet.java, SearchServlet.java, Genre.java, GenreDatabase.java, Member.java, MemberDatabase.java, SearchDatabase.java, genreList.jsp, genreRegistration.jsp, memberRegistration.jsp, authorDetail.jsp, bookGenre.jsp, profile.jsp, search.jsp, signup.jsp
 
-## Credits
+# Credits
 ### Templates
 - https://themewagon.com/theme_tag/free/
 - https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
