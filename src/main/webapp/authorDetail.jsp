@@ -62,7 +62,7 @@ String id=request.getParameter("id");
 				<label style="margin-left: 25px; font-weight: bold;" id="birthdate"></label>
 			</div>
 			<p style="text-align: justify;" id="description"></p>
-			<a id="link">More about me &#x2192;</a>
+			<a id="link" target="_blank">More about me &#x2192;</a>
 		</div>
 	</div>
 
