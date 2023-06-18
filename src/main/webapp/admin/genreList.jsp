@@ -115,7 +115,7 @@
 	<main id="main" class="main">
 
 		<div class="pagetitle">
-			<h1>Author Table</h1>
+			<h1>Genre Table</h1>
 			<nav>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item"><a
