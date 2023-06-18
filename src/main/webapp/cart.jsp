@@ -202,16 +202,16 @@
 						let authors = "";
 						for(let j = 0; j < list[i].authors.length; j++) {
 							if(j == list[i].authors.length - 1) {
-								authors += list[i].authors[j].name;
+								authors += "<a style='color: #777;' href='<%= request.getContextPath() %>/authorDetail.jsp?id=" + list[i].authors[j].authorID + "'>" + list[i].authors[j].name + "</a>";
 							}
 							else {
-								authors += list[i].authors[j].name + ", ";
+								authors += "<a style='color: #777;' href='<%= request.getContextPath() %>/authorDetail.jsp?id=" + list[i].authors[j].authorID + "'>" + list[i].authors[j].name + "</a>, ";
 							}
 						}
 						htmlStr += '<div style="display: flex; flex-direction: row; margin-top: 35px; justify-content: space-evenly;">';
 						htmlStr += '<div style="margin-right: 25px;"><img style="width: 150px; height: 220px; border-radius: 7px;" src="<%= request.getContextPath() %>'+list[i].image+' " /></div>';
 						
-						htmlStr += '<div style="display: flex; flex-direction: column; margin-top: 15px; width: 30%;"><h4>' + list[i].title + '</h4><label style="margin-top: 10px;">By ' + authors + '</label><div><span style="color: gold; font-size: 20px; vertical-align: middle;">';
+						htmlStr += '<div style="display: flex; flex-direction: column; margin-top: 15px; width: 30%;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + list[i].ISBNNo + '"><h4>' + list[i].title + '</h4></a><label style="margin-top: 10px;">By ' + authors + '</label><div><span style="color: gold; font-size: 20px; vertical-align: middle;">';
 						if(list[i].rating > 0) {
 							htmlStr += '&#9733;';						
 						}
