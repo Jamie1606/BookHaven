@@ -3,6 +3,8 @@
 //Author: Zay Yar Tun
 //Admin No: 2235035
 //Date: 16.6.2023
+// Class: DIT/FT/2A/02
+// Group: 10
 //Description: book detail page
 // book detail layout design is referenced from https://s3.envato.com/files/311567532/Image%20Preview%20Set%20Figma/05_BookDetail-Description.jpg
 %>

@@ -2,6 +2,8 @@
 <%
 //Author: Zay Yar Tun
 //Admin No: 2235035
+// Class: DIT/FT/2A/02
+// Group: 10
 //Date: 7.6.2023
 //Description: book registration page
 %>
@@ -74,6 +76,13 @@
 	rel="stylesheet">
 <link rel="icon" type="image/png"
 	href="<%=request.getContextPath()%>/img/logo.png">
+
+<style>
+input::placeholder {
+	color: #999 !important;
+	font-size: 15px;
+}
+</style>
 
 <!-- =======================================================
   * Template Name: NiceAdmin
@@ -193,7 +202,8 @@
 			<h1>Book Registration</h1>
 			<nav>
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="<%= request.getContextPath() %>/admin/adminHomePage.jsp">Home</a></li>
+					<li class="breadcrumb-item"><a
+						href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
 					<li class="breadcrumb-item">Registration Forms</li>
 					<li class="breadcrumb-item active">Book Registration</li>
 				</ol>
@@ -208,38 +218,45 @@
 							<h5 class="card-title">Book Information</h5>
 
 							<!-- Multi Columns Form -->
-							<form id="bookForm" class="row g-3" action="books" method="post"
-								enctype="multipart/form-data">
+							<form id="bookForm" class="row g-3"
+								action="<%=request.getContextPath()%>/admin/books"
+								method="post" enctype="multipart/form-data">
 								<input type="hidden" value="<%=status%>" name="status">
 								<div class="col-md-12">
-									<label for="isbn" class="form-label">ISBN No.</label> <input
-										type="text" name="isbn" class="form-control" id="isbn"
+									<label for="isbn" id="label-isbn" class="form-label">ISBN
+										No <span id="check-isbn"></span>
+									</label> <input type="text" name="isbn" class="form-control" id="isbn"
 										value="<%=status.equals("update") ? book.getISBNNo() : ""%>"
-										required <%=status.equals("update") ? "readonly" : ""%>>
+										placeholder="111-1234567890" required
+										<%=status.equals("update") ? "readonly" : ""%>>
 								</div>
 								<div class="col-md-12">
-									<label for="title" class="form-label">Title</label> <input
-										type="text" name="title" class="form-control" id="title"
-										value="<%=status.equals("update") ? book.getTitle() : ""%>"
-										required>
+									<label for="title" class="form-label" id="label-title">Title
+										<span style="color: red; font-weight: bold;"></span>
+									</label> <input type="text" name="title" class="form-control"
+										id="title"
+										value="<%=status.equals("update") ? book.getTitle() : ""%>" placeholder="Book Title ..."
+										required> <span
+										style="float: right; color: red; font-weight: bold;"
+										id="charCount-title">0 / 100</span>
 								</div>
 
 								<div class="col-md-4">
 									<label for="page" class="form-label">Page</label> <input
 										type="number" name="page" class="form-control" id="page"
-										min="1"
+										min="1" placeholder="Total Page ..."
 										value="<%=status.equals("update") ? book.getPage() : ""%>"
 										required>
 								</div>
 								<div class="col-md-4">
 									<label for="price" class="form-label">Price</label> <input
-										type="number" name="price" step=".01" min="5"
+										type="number" name="price" step=".01" min="5" placeholder="Unit Price ..."
 										value="<%=status.equals("update") ? book.getPrice() : ""%>"
 										class="form-control" id="price" required>
 								</div>
 								<div class="col-md-4">
 									<label for="qty" class="form-label">Qty</label> <input
-										type="number" name="qty" class="form-control" id="qty"
+										type="number" name="qty" class="form-control" id="qty" placeholder="Qty ..."
 										value="<%=status.equals("update") ? book.getQty() : ""%>"
 										min="0" required>
 								</div>
@@ -251,16 +268,15 @@
 										<%
 										for (Author author : authorList) {
 											boolean isSelected = false;
-											for(Author bookAuthor: bookAuthorList) {
-												if(author.getAuthorID() == bookAuthor.getAuthorID()) {
-													isSelected = true;
-													break;
+											for (Author bookAuthor : bookAuthorList) {
+												if (author.getAuthorID() == bookAuthor.getAuthorID()) {
+											isSelected = true;
+											break;
 												}
 											}
-											if(isSelected) {
+											if (isSelected) {
 												out.println("<option value='" + author.getAuthorID() + "' selected>" + author.getName() + "</option>");
-											}
-											else {
+											} else {
 												out.println("<option value='" + author.getAuthorID() + "'>" + author.getName() + "</option>");
 											}
 										}
@@ -274,16 +290,15 @@
 										<%
 										for (Genre genre : genreList) {
 											boolean isSelected = false;
-											for(Genre bookGenre: bookGenreList) {
-												if(genre.getGenreID() == bookGenre.getGenreID()) {
-													isSelected = true;
-													break;
+											for (Genre bookGenre : bookGenreList) {
+												if (genre.getGenreID() == bookGenre.getGenreID()) {
+											isSelected = true;
+											break;
 												}
 											}
-											if(isSelected) {
+											if (isSelected) {
 												out.println("<option value='" + genre.getGenreID() + "' selected>" + genre.getGenre() + "</option>");
-											}
-											else {
+											} else {
 												out.println("<option value='" + genre.getGenreID() + "'>" + genre.getGenre() + "</option>");
 											}
 										}
@@ -306,20 +321,27 @@
 								</div>
 
 								<div class="col-12">
-									<label for="description" class="form-label">Description</label>
+									<label for="description" class="form-label"
+										id="label-description" style="">Description <small
+										style="color: grey; font-weight: normal;">(Optional)</small> <span
+										id="check-description"></span></label>
 									<textarea rows="10" cols="10" class="form-control"
 										name="description" id="description"><%=status.equals("update") ? book.getDescription() : ""%></textarea>
+									<span style="float: right; color: green; font-weight: bold;"
+										id="charCount-description">0 / 1000</span>
 								</div>
 								<div class="col-12">
-									<label for="image" class="form-label">Image</label> <input
-										type="file" class="form-control" name="image" id="image"
-										accept="image/*"> <input type="hidden"
+									<label for="image" class="form-label">Image <small
+										style="color: grey;">(Optional)</small></label> <input type="file"
+										class="form-control" name="image" id="image" accept="image/*">
+									<input type="hidden"
 										value="<%=status.equals("update") ? book.getImage() : ""%>"
 										name="oldimage">
 								</div>
 								<div class="col-md-12">
-									<label for="image3d" class="form-label">3D Image</label> <input
-										type="file" class="form-control" name="image3d" id="image3d"
+									<label for="image3d" class="form-label">3D Image <small
+										style="color: grey;">(Optional)</small></label> <input type="file"
+										class="form-control" name="image3d" id="image3d"
 										accept="image/*"> <input type="hidden"
 										value="<%=status.equals("update") ? book.getImage3D() : ""%>"
 										name="oldimage3d">
@@ -367,15 +389,113 @@
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
 
 	<script>
-		$(document).ready(function() {
-			$('#author').selectpicker();
-			$('#genre').selectpicker();
-			$('#bookForm').submit(function(e) {
-				$('#btnSave').prop('disabled', true);
-				$('#btnSave').html('Loading...');
-				return true;
-			});
-		})
+		$(document)
+				.ready(
+						function() {
+							$('#author').selectpicker();
+							$('#genre').selectpicker();
+							$('#bookForm')
+									.submit(
+											function(e) {
+												if ($('#description').val().length > 1000) {
+													alert("The description cannot be more than 1000 characters!");
+													$('html, body')
+															.animate(
+																	{
+																		scrollTop : $(
+																				'#description')
+																				.offset().top
+																	}, 1500);
+													return false;
+												} else {
+													$('#btnSave').prop(
+															'disabled', true);
+													$('#btnSave').html(
+															'Loading...');
+													return true;
+												}
+											});
+							$('#description').on("input", checkDescription);
+							$('#isbn').on("input", checkISBN);
+						})
+
+		function checkISBN() {
+			let value = $('#isbn').val();
+			if (value.length == 14) {
+				let condition = true;
+				for (let i = 0; i < value.length; i++) {
+					if (i == 3) {
+						if (value[i] !== "-") {
+							condition = false;
+							break;
+						}
+					} else {
+						if (isNaN(value[i])) {
+							condition = false;
+							break;
+						}
+					}
+				}
+				if (condition) {
+					$('#check-isbn').html("&#x2713;");
+					$('#label-isbn').css({
+						"color" : "green",
+						"fontWeight" : "bold"
+					});
+				} else {
+					$('#check-isbn').html("&#x2717;");
+					$('#label-isbn').css({
+						"color" : "red",
+						"fontWeight" : "bold"
+					});
+				}
+			} else if (value.length == 0) {
+				$('#check-isbn').html("");
+				$('#label-isbn').css({
+					"color" : "black",
+					"fontWeight" : "normal"
+				});
+			} else {
+				$('#check-isbn').html("&#x2717;");
+				$('#label-isbn').css({
+					"color" : "red",
+					"fontWeight" : "bold"
+				});
+			}
+		}
+
+		function checkDescription() {
+			let count = $('#description').val().length;
+			$('#charCount-description').html(count + " / 1000");
+			if (count > 1000) {
+				$('#charCount').css({
+					"color" : "red"
+				});
+				$('#check-description').html("&#x2717;");
+				$('#label-description').css({
+					"color" : "red",
+					"fontWeight" : "bold"
+				});
+			} else if (count == 0) {
+				$('#charCount').css({
+					"color" : "green"
+				});
+				$('#check-description').html("");
+				$('#label-description').css({
+					"color" : "black",
+					"fontWeight" : "normal"
+				});
+			} else {
+				$('#charCount').css({
+					"color" : "green"
+				});
+				$('#check-description').html("&#x2713;");
+				$('#label-description').css({
+					"color" : "green",
+					"fontWeight" : "bold"
+				});
+			}
+		}
 	</script>
 
 </body>

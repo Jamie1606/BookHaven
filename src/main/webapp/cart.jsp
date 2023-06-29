@@ -2,6 +2,8 @@
 <%
 //Author: Zay Yar Tun
 //Admin No: 2235035
+// Class: DIT/FT/2A/02
+// Group: 10
 //Date: 17.6.2023
 //Description: shopping cart
 //cart layout design is referenced from https://cdn.dribbble.com/users/1569943/screenshots/6745363/cart.png

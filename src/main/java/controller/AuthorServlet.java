@@ -1,5 +1,7 @@
 // Author: Zay Yar Tun
 // Admin No: 2235035
+// Class: DIT/FT/2A/02
+// Group: 10
 // Date: 8.6.2023
 // Description: middleware for author
 
@@ -123,22 +125,12 @@ public class AuthorServlet extends HttpServlet {
 			}
 
 			ArrayList<Author> authorList = new ArrayList<Author>();
-
-			if (author_db.getAuthor()) {
-				ResultSet rs = author_db.getAuthorResult();
-				try {
-					while (rs.next()) {
-						// sanitizing output by escaping html special characters
-						authorList.add(new Author(rs.getInt("AuthorID"),
-								StringEscapeUtils.escapeHtml4(rs.getString("Name")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Nationality")), rs.getDate("BirthDate"),
-								StringEscapeUtils.escapeHtml4(rs.getString("Biography")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Link"))));
-					}
-				} catch (Exception e) {
-					request.setAttribute("error", "serverRetrieveError");
-				}
-			} else {
+			
+			try {
+				authorList = author_db.getAuthor();
+			}
+			catch(Exception e) {
+				e.printStackTrace();
 				request.setAttribute("error", "serverRetrieveError");
 			}
 

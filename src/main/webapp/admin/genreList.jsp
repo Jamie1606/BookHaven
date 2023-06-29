@@ -1,6 +1,8 @@
 <%
 //Author: Thu Htet San
 //Admin No: 2235022
+// Class: DIT/FT/2A/02
+// Group: 10
 //Date: 12.6.2023
 //Description: genre list page
 %>
