@@ -1,11 +1,15 @@
 // Author: Zay Yar Tun
 // Admin No: 2235035
+// Class: DIT/FT/2A/02
+// Group: 10
 // Date: 8.6.2023
 // Description: database functions related to author
 
 package model;
 
 import java.sql.*;
+import java.util.ArrayList;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class AuthorDatabase {
 	private final String connURL = "jdbc:postgresql://satao.db.elephantsql.com/mhekoapk";
@@ -17,24 +21,32 @@ public class AuthorDatabase {
 	}
 
 	// select author from database
-	public boolean getAuthor() {
+	public ArrayList<Author> getAuthor() throws SQLException {
 		// select author data from database (start)
-		try {
-			// loading postgresql driver
-			Class.forName("org.postgresql.Driver");
-
-			// get database connection
-			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
-
+		Connection conn = null;
+		ArrayList<Author> authors = new ArrayList<Author>();
+		try {			
+			conn = DatabaseConnection.getConnection();
+			
 			String sqlStatement = "SELECT * FROM \"public\".\"Author\" ORDER BY \"Name\"";
-			PreparedStatement st = db.prepareStatement(sqlStatement);
+			PreparedStatement st = conn.prepareStatement(sqlStatement);
 
-			authorResultSet = st.executeQuery();
-			db.close();
-			return true;
+			ResultSet rs = st.executeQuery();
+			while(rs.next()) {
+				authors.add(new Author(rs.getInt("AuthorID"), StringEscapeUtils.escapeHtml4(rs.getString("Name")), 
+						StringEscapeUtils.escapeHtml4(rs.getString("Nationality")), rs.getDate("BirthDate"),
+						StringEscapeUtils.escapeHtml4(rs.getString("Biography")),
+						StringEscapeUtils.escapeHtml4(rs.getString("Link"))));
+			}
+			System.out.println("..... Success in getAuthor in AuthorDatabase .....");
 		} catch (Exception e) {
-			return false;
+			e.printStackTrace();
+			System.out.println("..... Error in getAuthor in AuthorDatabase .....");
 		}
+		finally {
+			conn.close();
+		}
+		return authors;
 		// select author data from database (end)
 	}
 
