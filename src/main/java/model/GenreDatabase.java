@@ -1,6 +1,7 @@
 //Author 	  : Thu Htet San
 //Admin No    : 2235022
 //Class       : DIT/FT/2A/02
+//Group       : 10
 //Date		  : 8.6.2023
 //Description : database functions related to "Genre" TABLE
 
@@ -200,7 +201,7 @@ public class GenreDatabase {
 			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
 
 			System.out.println("before dbStatement");
-			String sqlStatement = "SELECT * FROM \"public\".\"Book\" b JOIN \"public\".\"BookGenre\" g ON b.\"ISBNNo\" = g.\"ISBNNo\" WHERE g.\"GenreID\" = ? ;";
+			String sqlStatement = "SELECT * FROM \"public\".\"Book\" b JOIN \"public\".\"BookGenre\" g ON b.\"ISBNNo\" = g.\"ISBNNo\" WHERE g.\"GenreID\"ï¿½=ï¿½? ;";
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 			st.setInt(1, ID);
 			bookResultSet = st.executeQuery();

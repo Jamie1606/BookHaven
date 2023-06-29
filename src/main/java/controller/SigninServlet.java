@@ -1,5 +1,7 @@
 // Author: Zay Yar Tun
 // Admin No: 2235035
+// Class: DIT/FT/2A/02
+// Group: 10
 // Date: 3.6.2023
 // Description: To test whether the email and password are correct for sign in
 

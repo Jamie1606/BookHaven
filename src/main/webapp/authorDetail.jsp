@@ -2,6 +2,7 @@
 //Author 	  : Thu Htet San
 //Admin No    : 2235022
 //Class       : DIT/FT/2A/02
+// Group: 10
 //Date		  : 15.6.2023
 //Description : Search Books by Title/Authors
 %>
@@ -42,6 +43,8 @@
 <link rel="stylesheet" href="css/magnific-popup.css">
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/main.css">
+<link rel="icon" type="image/png"
+	href="<%=request.getContextPath()%>/img/logo.png">
 </head>
 <body>
 	<%
