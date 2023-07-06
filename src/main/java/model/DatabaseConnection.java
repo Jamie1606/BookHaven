@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 
 public class DatabaseConnection {
 	public static Connection getConnection() {
+		// database configuration
 		String connURL = "jdbc:postgresql://satao.db.elephantsql.com/mhekoapk";
 		String db_username = "mhekoapk";
 		String db_password = "o9w2O25Afleif9CCVCEBDQZX4tT79MH7";
@@ -17,6 +18,7 @@ public class DatabaseConnection {
 		}
 		catch(Exception e) {
 			e.printStackTrace();
+			System.out.println("..... Error in Database Connection .....");
 		}
 		return conn;
 	}

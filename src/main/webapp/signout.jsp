@@ -11,7 +11,7 @@
 session.invalidate();
 String error = (String) request.getAttribute("error");
 if(error != null && error.equals("unauthorized")) {
-	out.println("<script>alert('Unauthorized'); location = '" + request.getContextPath() +  "/index.jsp';</script>");
+	out.println("<script>alert('Please log in first!'); location = '" + request.getContextPath() +  "/signin.jsp';</script>");
 	return;
 }else if(error != null && error.equals("invalid")) {
 	out.println("<script>alert('Invalid Data'); location = '" + request.getContextPath() +  "/index.jsp';</script>");

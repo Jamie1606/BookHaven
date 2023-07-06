@@ -90,6 +90,10 @@
 			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
 			return;
 		}
+		else if(error.equals("noauthor")) {
+			out.println("<script>alert('There is no author with that id!'); location='" + request.getContextPath() + "/admin/authors';</script>");
+			return;
+		}
 		else {
 			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
 			return;
