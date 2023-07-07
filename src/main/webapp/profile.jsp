@@ -254,7 +254,7 @@
 											class="col-md-4 col-lg-3 col-form-label">Address</label>
 										<div class="col-md-8 col-lg-9">
 											<input type="text" class="form-control" name="address"
-												id="addressID" value="<%=address%>" required readonly>
+												id="addressID" value="<%=address%>" required>
 										</div>
 									</div>
 

@@ -56,7 +56,9 @@
 <!-- bootstrap-select -->
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+	integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+	crossorigin="anonymous"></script>
 <script
 	src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
 	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
@@ -230,7 +232,7 @@ input::placeholder {
 								</div>
 								<div class="col-md-12">
 									<label for="title" class="form-label" id="label-title">Title
-										<span id="check-title"></span>
+										<span style="color: red; font-weight: bold;"></span>
 									</label> <input type="text" name="title" class="form-control"
 										id="title"
 										value="<%=status.equals("update") ? book.getTitle() : ""%>" placeholder="Book Title ..."
@@ -240,27 +242,27 @@ input::placeholder {
 								</div>
 
 								<div class="col-md-4">
-									<label for="page" id="label-page" class="form-label">Page <span id="check-page"></span></label> 
-									<input type="number" name="page" class="form-control" id="page"
+									<label for="page" class="form-label">Page</label> <input
+										type="number" name="page" class="form-control" id="page"
 										min="1" placeholder="Total Page ..."
 										value="<%=status.equals("update") ? book.getPage() : ""%>"
 										required>
 								</div>
 								<div class="col-md-4">
-									<label for="price" id="label-price" class="form-label">Price <span id="check-price"></span></label> <input
+									<label for="price" class="form-label">Price</label> <input
 										type="number" name="price" step=".01" min="5" placeholder="Unit Price ..."
 										value="<%=status.equals("update") ? book.getPrice() : ""%>"
 										class="form-control" id="price" required>
 								</div>
 								<div class="col-md-4">
-									<label for="qty" id="label-qty" class="form-label">Qty <span id="check-qty"></span></label> <input
+									<label for="qty" class="form-label">Qty</label> <input
 										type="number" name="qty" class="form-control" id="qty" placeholder="Qty ..."
 										value="<%=status.equals("update") ? book.getQty() : ""%>"
 										min="0" required>
 								</div>
 
 								<div class="col-md-6">
-									<label for="author" id="label-author" class="form-label">Author</label> <select
+									<label for="author" class="form-label">Author</label> <select
 										id="author" name="author" class="form-control selectpicker"
 										multiple="multiple" required>
 										<%
@@ -282,7 +284,7 @@ input::placeholder {
 									</select>
 								</div>
 								<div class="col-md-6">
-									<label for="genre" id="label-genre" class="form-label">Genre</label> <select
+									<label for="genre" class="form-label">Genre</label> <select
 										id="genre" name="genre" class="form-control selectpicker"
 										multiple="multiple" required>
 										<%
@@ -305,14 +307,13 @@ input::placeholder {
 								</div>
 
 								<div class="col-md-6">
-									<label for="publisher" id="label-publisher" class="form-label">Publisher <span id="check-publisher"></span>
-									</label> 
-									<input type="text" name="publisher" class="form-control"
+									<label for="publisher" class="form-label">Publisher</label> <input
+										type="text" name="publisher" class="form-control"
 										value="<%=status.equals("update") ? book.getPublisher() : ""%>"
 										id="publisher" required>
 								</div>
 								<div class="col-md-6">
-									<label for="publicationdate" id="label-publicationdate" class="form-label">Publication
+									<label for="publicationdate" class="form-label">Publication
 										Date</label> <input type="date" class="form-control"
 										id="publicationdate" name="publicationdate" max="<%=dateStr%>"
 										value="<%=status.equals("update") ? book.getPublicationDate() : ""%>"
@@ -329,7 +330,6 @@ input::placeholder {
 									<span style="float: right; color: green; font-weight: bold;"
 										id="charCount-description">0 / 1000</span>
 								</div>
-								
 								<div class="col-12">
 									<label for="image" class="form-label">Image <small
 										style="color: grey;">(Optional)</small></label> <input type="file"
@@ -338,7 +338,6 @@ input::placeholder {
 										value="<%=status.equals("update") ? book.getImage() : ""%>"
 										name="oldimage">
 								</div>
-								
 								<div class="col-md-12">
 									<label for="image3d" class="form-label">3D Image <small
 										style="color: grey;">(Optional)</small></label> <input type="file"
@@ -347,7 +346,6 @@ input::placeholder {
 										value="<%=status.equals("update") ? book.getImage3D() : ""%>"
 										name="oldimage3d">
 								</div>
-								
 								<div class="text-center">
 									<button id="btnSave" type="submit" class="btn btn-primary"><%=(status.equals("update")) ? "Update" : "Save"%></button>
 								</div>
@@ -369,52 +367,60 @@ input::placeholder {
 		class="back-to-top d-flex align-items-center justify-content-center"><i
 		class="bi bi-arrow-up-short"></i></a>
 
+	<!-- Vendor JS Files -->
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/apexcharts/apexcharts.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/chart.js/chart.umd.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/echarts/echarts.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/quill/quill.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
+
 	<!-- Template Main JS File -->
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
 
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			let descriptionInput = document.getElementById('description');
-			let titleInput = document.getElementById('title');
-			let isbnInput = document.getElementById('isbn');
-			let btnSave = document.getElementById('btnSave');
-			
-			document.getElementById('author').classList.add('selectpicker');
-			document.getElementById('genre').classList.add('selectpicker');
-			document.getElementById('bookForm').addEventListener('submit', function(e) {
-				let invalid = "none";
-				e.preventDefault();
-				
-				if(descriptionInput.value.length > 1000) {
-					invalid = "label-description";
-				}
-				if(invalid === "none") {
-					btnSave.disabled = true;
-					btnSave.innerHTML = "Loading...";
-					this.submit();
-				}
-				else if (invalid === "label-description"){
-					alert("The description cannot be more than 1000 characters!");
-					scrollToElement(invalid);
-				}
-			})
-			descriptionInput.addEventListener('input', checkDescription);
-			titleInput.addEventListener('input', checkTitle);
-			isbnInput.addEventListener('input', () => {checkISBN(isbnInput)});
-		})
-		
-		function scrollToElement(element) {
-			var elementRect = document.getElementById(element).getBoundingClientRect();
-			var absoluteElementTop = elementRect.top + window.pageYOffset;
-			var middle = absoluteElementTop - (window.innerHeight / 2) + 150;
-			window.scrollTo(0, middle);
-		}
+		$(document)
+				.ready(
+						function() {
+							$('#author').selectpicker();
+							$('#genre').selectpicker();
+							$('#bookForm')
+									.submit(
+											function(e) {
+												if ($('#description').val().length > 1000) {
+													alert("The description cannot be more than 1000 characters!");
+													$('html, body')
+															.animate(
+																	{
+																		scrollTop : $(
+																				'#description')
+																				.offset().top
+																	}, 1500);
+													return false;
+												} else {
+													$('#btnSave').prop(
+															'disabled', true);
+													$('#btnSave').html(
+															'Loading...');
+													return true;
+												}
+											});
+							$('#description').on("input", checkDescription);
+							$('#isbn').on("input", checkISBN);
+						})
 
-		function checkISBN(isbnInput) {
-			let checkisbn = document.getElementById('check-isbn');
-			let labelisbn = document.getElementById('label-isbn');
-			let value = isbnInput.value;
-			
+		function checkISBN() {
+			let value = $('#isbn').val();
 			if (value.length == 14) {
 				let condition = true;
 				for (let i = 0; i < value.length; i++) {
@@ -431,53 +437,28 @@ input::placeholder {
 					}
 				}
 				if (condition) {
-					checkisbn.innerHTML = "&#x2713;";
-					labelisbn.style.color = "green";
-					labelisbn.style.fontWeight = "bold";
+					$('#check-isbn').html("&#x2713;");
+					$('#label-isbn').css({
+						"color" : "green",
+						"fontWeight" : "bold"
+					});
 				} else {
-					checkisbn.innerHTML = "&#x2717;";
-					labelisbn.style.color = "red";
-					labelisbn.style.fontWeight = "bold";
+					$('#check-isbn').html("&#x2717;");
+					$('#label-isbn').css({
+						"color" : "red",
+						"fontWeight" : "bold"
+					});
 				}
 			} else if (value.length == 0) {
-				checkisbn.innerHTML = "";
-				labelisbn.style.color = "black";
-				labelisbn.style.fontWeight = "normal";
-			} else {
-				checkisbn.innerHTML = "&#x2717;";
-				labelisbn.style.color = "red";
-				labelisbn.style.fontWeight = "bold";
-			}
-		}
-		
-		function checkTitle() {
-			let count = $('#title').val().length;
-			$('#charCount-title').html(count + " / 100");
-			if (count > 100) {
-				$('#charCount-title').css({
-					"color" : "red"
-				});
-				$('#check-title').html("&#x2717;");
-				$('#label-title').css({
-					"color" : "red",
-					"fontWeight" : "bold"
-				});
-			} else if (count == 0) {
-				$('#charCount-title').css({
-					"color" : "red"
-				});
-				$('#check-title').html("");
-				$('#label-title').css({
+				$('#check-isbn').html("");
+				$('#label-isbn').css({
 					"color" : "black",
 					"fontWeight" : "normal"
 				});
 			} else {
-				$('#charCount-title').css({
-					"color" : "green"
-				});
-				$('#check-title').html("&#x2713;");
-				$('#label-title').css({
-					"color" : "green",
+				$('#check-isbn').html("&#x2717;");
+				$('#label-isbn').css({
+					"color" : "red",
 					"fontWeight" : "bold"
 				});
 			}
@@ -487,7 +468,7 @@ input::placeholder {
 			let count = $('#description').val().length;
 			$('#charCount-description').html(count + " / 1000");
 			if (count > 1000) {
-				$('#charCount-description').css({
+				$('#charCount').css({
 					"color" : "red"
 				});
 				$('#check-description').html("&#x2717;");
@@ -496,7 +477,7 @@ input::placeholder {
 					"fontWeight" : "bold"
 				});
 			} else if (count == 0) {
-				$('#charCoun-descriptiont').css({
+				$('#charCount').css({
 					"color" : "green"
 				});
 				$('#check-description').html("");
@@ -505,7 +486,7 @@ input::placeholder {
 					"fontWeight" : "normal"
 				});
 			} else {
-				$('#charCount-description').css({
+				$('#charCount').css({
 					"color" : "green"
 				});
 				$('#check-description').html("&#x2713;");

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.net.URLDecoder;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -84,6 +83,7 @@ public class BookServlet extends HttpServlet {
 		AuthorDatabase author_db = new AuthorDatabase();
 		GenreDatabase genre_db = new GenreDatabase();
 		book_db.clearBookResult();
+		author_db.clearAuthorResult();
 
 		request.setAttribute("servlet", "true");
 
@@ -262,7 +262,6 @@ public class BookServlet extends HttpServlet {
 								break;
 							}
 							book_db.clearBookResult();
-							genres[i] = URLDecoder.decode(genres[i], "UTF-8");
 							if (book_db.getBookByGenre(genres[i].trim())) {
 								ResultSet rs = book_db.getBookResult();
 								try {
