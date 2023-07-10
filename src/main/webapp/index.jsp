@@ -1,11 +1,10 @@
-
 <%
-//Author: Zay Yar Tun
-//Admin No: 2235035
-// Class: DIT/FT/2A/02
-// Group: 10
-//Date: 3.6.2023
-//Description: home page
+//Author		: Zay Yar Tun
+//Admin No		: 2235035
+// Class		: DIT/FT/2A/02
+// Group		: 10
+//Date			: 7.7.2023
+//Description	: home page
 %>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
