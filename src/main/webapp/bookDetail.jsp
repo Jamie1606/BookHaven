@@ -59,38 +59,6 @@
 	href="<%=request.getContextPath()%>/img/logo.png">
 
 <style>
-.skeleton {
-	background-color: #f6f7f8;
-	animation: skeleton-loading 1.5s ease-in-out infinite alternate;
-}
-.skeleton-img {
-	min-width: 330px;
-	min-height: 500px;
-	background-color: #aaa;
-}
-.skeleton-title {
-	min-width: 250px;
-	min-height: 40px;
-	background-color: #aaa;
-}
-.skeleton-description {
-	min-width: 100%;
-	min-height: 200px;
-	background-color: #aaa;
-}
-.skeleton-text {
-	min-width: 100%;
-	min-height: 40px;
-	background-color: #aaa;
-}
-@keyframes skeleton-loading {
-	 0% {
-	 	opacity: 1;
-	 }
-	 100% {
-	 	opacity: 0.5;
-	 }
-}
 .latest-release h4:hover {
 	color: red;
 }
@@ -164,46 +132,47 @@
 
 	<!-- Start course Area -->
 	<section class="course-area section-gap"
-		style="padding-bottom: 30px; min-height: 500px;" id="course">
+		style="padding-bottom: 30px; visibility: hidden;" id="course">
 		<div class="container">
 			<div class="row d-flex justify-content-center">
 				<div class="col-lg-4">
-					<img class="skeleton skeleton-img" style="width: 330px; height: 500px; border-radius: 10px;"
-						id="book-image" src="" />
+					<img style="width: 330px; height: 500px; border-radius: 10px;"
+						id="book-image" src="" alt="Image" />
 				</div>
 				<div class="col-lg-8"
 					style="color: black; font-size: 16px; letter-spacing: 1.1px;">
-					<h1 style="font-size: 26px;" id="book-title" class="skeleton skeleton-title"></h1>
-					<div id="rating" class="rating skeleton skeleton-text"
+					<h1 style="font-size: 26px;" id="book-title"></h1>
+					<div class="rating"
 						style="margin-top: 20px; vertical-align: middle;">
-						<span class="star"></span> <span class="star"></span>
-						<span class="star"></span> <span class="star"></span>
-						<span class="star"></span>&ensp;&ensp; <span
+						<span class="star">&#9734;</span> <span class="star">&#9734;</span>
+						<span class="star">&#9734;</span> <span class="star">&#9734;</span>
+						<span class="star">&#9734;</span>&ensp;&ensp; <span
 							style="font-weight: bold; color: #333; vertical-align: middle; margin-right: 50px;"
 							id="book-rating"></span> <span
 							style="font-size: 23px; vertical-align: middle;">&#9993;</span><span
-							style="color: black; vertical-align: middle; font-size: 15px; margin-left: 15px;"></span>
+							style="color: black; vertical-align: middle; font-size: 15px; margin-left: 15px;">0
+							Review</span>
 					</div>
 					<p style="text-align: justify; margin-top: 15px; font-size: 13px;"
-						id="book-description" class="skeleton skeleton-description"></p>
+						id="book-description"></p>
 					<div
 						style="display: flex; flex-direction: row; justify-content: space-between;">
 						<div style="display: flex; flex: 1; flex-direction: column;">
 							<label style="color: grey; font-size: 13px;">Written By</label> <label
-								style="color: #555; font-weight: bold;" class="skeleton skeleton-text" id="book-author"></label>
+								style="color: #555; font-weight: bold;" id="book-author"></label>
 						</div>
 						<div style="display: flex; flex: 1; flex-direction: column;">
 							<label style="color: grey; font-size: 13px;">Publisher</label> <label
-								style="color: #555; font-weight: bold;" class="skeleton skeleton-text" id="book-publisher"></label>
+								style="color: #555; font-weight: bold;" id="book-publisher"></label>
 						</div>
 						<div style="display: flex; flex: 1; flex-direction: column;">
 							<label style="color: grey; font-size: 13px;">Year</label> <label
 								style="color: #555; font-weight: bold;"
-								class="skeleton skeleton-text" id="book-publicationdate"></label>
+								id="book-publicationdate"></label>
 						</div>
 						<div style="display: flex; align-items: center;">
-							<label class="skeleton skeleton-text"
-								style="font-weight: bold; color: green; padding: 10px 30px; border-radius: 10px;"
+							<label
+								style="font-weight: bold; color: green; background-color: rgba(0, 220, 0, 0.2); padding: 10px 30px; border-radius: 10px;"
 								id="book-status"></label>
 						</div>
 					</div>
@@ -417,13 +386,9 @@
 						$('#book-status').css({"color": "red", "backgroundColor": "rgba(220, 0, 0, 0.2)"});
 					}
 					$('#book-price').html("$" + list[0].price.toFixed(2));
-					
 					$('#book-rating').html(list[0].rating.toFixed(1));
-					
 					$('#book-author').html(authors);
-					
 					$('#book-title').html(list[0].title);
-					
 					$('#book-detail-genre').html(genres);
 					$('#book-detail-publisher').html(list[0].publisher);
 					$('#book-detail-publicationdate').html(list[0].publicationDate);
@@ -435,16 +400,11 @@
 						$('#cart').css({"visibility": "hidden"});
 					}
 					$('#book-detail-price').html("$" + list[0].price.toFixed(2));
-					
 					$('#book-description').html(list[0].description);
-					
 					$('#book-publisher').html(list[0].publisher);
-					
 					let pubdate = new Date(list[0].publicationDate);
 					$('#book-publicationdate').html(pubdate.getFullYear());
-					
 					$('#book-image').attr("src", "<%=request.getContextPath()%>" + list[0].image);
-					
 					let star = document.getElementsByClassName("star");
 					for(let i = 0; i < star.length; i++) {
 						if(i <= list[0].rating - 1) {
@@ -454,21 +414,6 @@
 							star[i].innerHTML = "&#9734;";
 						}
 					}
-					
-					// Get all elements with the "skeleton" class
-					var elements = document.getElementsByClassName("skeleton");
-
-					// Convert the HTMLCollection to an array to iterate over it
-					var elementsArray = Array.from(elements);
-
-					// Loop through the elements and remove the "skeleton" class
-					elementsArray.forEach(function(element) {
-					  element.classList.remove("skeleton");
-					  element.classList.remove("skeleton-text");
-					  element.classList.remove("skeleton-title");
-					  element.classList.remove("skeleton-img");
-					  element.classList.remove("skeleton-description");
-					});
 					
 					fetch('<%=request.getContextPath()%>/book/genres/<%=id%>/' + genres, {
 						method: 'GET'

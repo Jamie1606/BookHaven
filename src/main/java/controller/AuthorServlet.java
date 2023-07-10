@@ -32,101 +32,93 @@ import model.BookDatabase;
 /**
  * Servlet implementation class AuthorServlet
  */
-
-// admin/authors => showing author list in admin site
-// admin/authorUpdate/{id} => getting author data by author id in admin site
-// admin/authorDelete/{id} => deleting author data by author id by admin 
-// author/{id} => getting author detail by author id in member site 
-
 @WebServlet(urlPatterns = { "/admin/authors", "/admin/authorUpdate/*", "/admin/authorDelete/*", "/author/*" })
 public class AuthorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
 	public AuthorServlet() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		// TODO Auto-generated method stub
 
 		// create author_db object and clear the result
 		AuthorDatabase author_db = new AuthorDatabase();
-		
+		author_db.clearAuthorResult();
 		HttpSession session = request.getSession();
 		Authentication auth = new Authentication();
 
 		String requestURi = request.getRequestURI();
-		if (requestURi.contains(request.getContextPath() + "/admin/authorUpdate")) {
-			
-			// check if the user is admin and authorized
+		if (requestURi.contains("admin/authorUpdate")) {
 			if (!auth.testAdmin(session)) {
 				request.setAttribute("error", "unauthorized");
 				request.getRequestDispatcher("/signout.jsp").forward(request, response);
-				System.out.println("..... Unauthorized in authorUpdate .....");
 				return;
 			}
 
-			// split request url to get author id
-			// author id is in the last part of url e.g. admin/authorUpdate/1
 			String[] parts = requestURi.split("/");
 			if (parts.length == 0) {
-				request.setAttribute("error", "invalidrequest");
+				request.setAttribute("error", "invalid");
 				request.getRequestDispatcher("/admin/authors").forward(request, response);
-				System.out.println("..... Invalid route in authorUpdate .....");
 				return;
 			} else {
 				String id = parts[parts.length - 1];
-				
-				// test whether author id is valid (integer, not negative, not string)
 				if (TestReg.matchInteger(id)) {
-					try {
-						Author author_data = author_db.getAuthorByID(Integer.parseInt(id));
-						
-						// check if there is author data or null value
-						// null value => invalid id given by user
-						if(author_data == null) {
-							request.setAttribute("error", "noauthor");
-							request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
-							System.out.println("..... No author with id in authorUpdate .....");
-							return;
-						}
-						else {
+					if (author_db.getAuthorByID(Integer.parseInt(id))) {
+						ResultSet rs = author_db.getAuthorResult();
+						Author author_data = null;
+
+						try {
+							while (rs.next()) {
+								// sanitizing output by escaping html special characters
+								author_data = new Author(rs.getInt("AuthorID"),
+										StringEscapeUtils.escapeHtml4(rs.getString("Name")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Nationality")),
+										rs.getDate("BirthDate"),
+										StringEscapeUtils.escapeHtml4(rs.getString("Biography")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Link")));
+								break;
+							}
 							request.setAttribute("author", author_data);
 							request.setAttribute("status", "update");
 							request.getRequestDispatcher("/admin/authorRegistration.jsp").forward(request, response);
 							return;
+						} catch (Exception e) {
+							request.setAttribute("error", "serverError");
+							request.getRequestDispatcher("/admin/authors").forward(request, response);
+							return;
 						}
-					}
-					catch(Exception e) {
-						e.printStackTrace();
-						request.setAttribute("error", "servererror");
+					} else {
+						request.setAttribute("error", "invalid");
 						request.getRequestDispatcher("/admin/authors").forward(request, response);
-						System.out.println("..... Error in catch block in authorUpdate .....");
 						return;
 					}
 				} else {
-					request.setAttribute("error", "invalidid");
+					request.setAttribute("error", "invalid");
 					request.getRequestDispatcher("/admin/authors").forward(request, response);
-					System.out.println("..... Invalid author id in authorUpdate .....");
 					return;
 				}
 			}
-		} else if (requestURi.contains(request.getContextPath() + "/admin/authorDelete")) {
-			
-			// check if the user is admin and authorized
+		} else if (requestURi.contains("admin/authorDelete")) {
 			if (!auth.testAdmin(session)) {
-				System.out.println("..... Unauthorized in authorDelete .....");
 				request.setAttribute("error", "unauthorized");
 				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
 
 			doDelete(request, response);
-		} else if (requestURi.endsWith(request.getContextPath() + "/admin/authors")) {
-			
-			// check if the user is admin and authorized
+		} else if (requestURi.endsWith("admin/authors")) {
 			if (!auth.testAdmin(session)) {
-				System.out.println("..... Unauthorized in admin/authors .....");
 				request.setAttribute("error", "unauthorized");
 				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
@@ -136,15 +128,10 @@ public class AuthorServlet extends HttpServlet {
 			
 			try {
 				authorList = author_db.getAuthor();
-				if(authorList.size() == 0) {
-					request.setAttribute("error", "serverretrieveerror");
-					System.out.println("..... Error in retrieving author in admin/authors .....");
-				}
 			}
 			catch(Exception e) {
 				e.printStackTrace();
-				request.setAttribute("error", "servererror");
-				System.out.println("..... Database error in admin/authors .....");
+				request.setAttribute("error", "serverRetrieveError");
 			}
 
 			// set the author arraylist as an attribute
@@ -154,45 +141,57 @@ public class AuthorServlet extends HttpServlet {
 			// forward the data to the jsp
 			request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
 			return;
-		} 
-		// *change structure*
-		else if (requestURi.contains(request.getContextPath() + "/author/")) {
+		} else if (requestURi.contains("/author/")) {
 			BookDatabase book_db = new BookDatabase();
 			String status = "";
 			String[] parts = requestURi.split("/");
 			ArrayList<Author> authorList = new ArrayList<Author>();
 			ArrayList<Book> bookList = new ArrayList<Book>();
-			
 			if (parts.length == 0) {
 				status = "invalid";
 			} else {
 
 				String id = parts[parts.length - 1];
 				if (TestReg.matchInteger(id)) {
-					try {
-						Author author = author_db.getAuthorByID(Integer.parseInt(id));
-						if (author != null) {
-							authorList.add(author);
-							boolean condition = book_db.getBookByAuthorID(author.getAuthorID());
-							if (condition) {
-								ResultSet book_rs = book_db.getBookResult();
-								while (book_rs.next()) {
-									bookList.add(new Book(StringEscapeUtils.escapeHtml4(book_rs.getString("ISBNNo")),
-											StringEscapeUtils.escapeHtml4(book_rs.getString("Title")),
-											StringEscapeUtils.escapeHtml4(book_rs.getString("Image")),
-											StringEscapeUtils.escapeHtml4(book_rs.getString("Status"))));
-								}
-								status = "success";
-							} else {
-								status = "serverError";
+					boolean condition = author_db.getAuthorByID(Integer.parseInt(id));
+					if (condition) {
+						ResultSet rs = author_db.getAuthorResult();
+						try {
+							while (rs.next()) {
+								authorList.add(new Author(rs.getInt("AuthorID"),
+										StringEscapeUtils.escapeHtml4(rs.getString("Name")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Nationality")),
+										rs.getDate("BirthDate"),
+										StringEscapeUtils.escapeHtml4(rs.getString("Biography")),
+										StringEscapeUtils.escapeHtml4(rs.getString("Link"))));
 							}
-						}
-						else {
+							for (Author author : authorList) {
+								book_db.clearBookResult();
+								condition = book_db.getBookByAuthorID(author.getAuthorID());
+								if (condition) {
+									ResultSet book_rs = book_db.getBookResult();
+									try {
+										while (book_rs.next()) {
+											bookList.add(new Book(StringEscapeUtils.escapeHtml4(book_rs.getString("ISBNNo")),
+													StringEscapeUtils.escapeHtml4(book_rs.getString("Title")),
+													StringEscapeUtils.escapeHtml4(book_rs.getString("Image")),
+													StringEscapeUtils.escapeHtml4(book_rs.getString("Status"))));
+										}
+
+									} catch (Exception e) {
+										System.out.println(e);
+										status = "serverError";
+									}
+
+								} else {
+									status = "serverError";
+								}
+							}
+							status = "success";
+						} catch (Exception e) {
 							status = "serverError";
 						}
-					}
-					catch(Exception e) {
-						e.printStackTrace();
+					} else {
 						status = "serverError";
 					}
 				} else {
@@ -207,21 +206,24 @@ public class AuthorServlet extends HttpServlet {
 			return;
 			
 		} else {
-			System.out.println("..... Invalid route for author servlet .....");
-			request.getRequestDispatcher("/errorPage.jsp").forward(request, response);
+			request.setAttribute("error", "unauthorized");
+			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
 		}
 	}
 
-	
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		// TODO Auto-generated method stub
 
 		Authentication auth = new Authentication();
 		HttpSession session = request.getSession();
 
 		if (!auth.testAdmin(session)) {
-			System.out.println("..... Unauthorized in doPost in author servlet .....");
 			request.setAttribute("error", "unauthorized");
 			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
@@ -231,79 +233,63 @@ public class AuthorServlet extends HttpServlet {
 		String status = request.getParameter("status");
 		String name, nationality, birthdate, biography, link;
 
-		// status is to check whether it is create or update
 		if (status == null) {
-			System.out.println("..... Unavailable status in doPost in author servlet .....");
-			response.sendRedirect("authorRegistration.jsp?error=unauthorized");
+			response.sendRedirect("authorRegistration.jsp?errCode=unauthorized");
 		}
 		if (status.equals("register")) {
 			name = request.getParameter("name");
 			if (name != null && !name.isBlank()) {
-				
 				nationality = request.getParameter("nationality");
 				if(nationality != null) {
 					nationality = nationality.trim();
 				}
-				
 				birthdate = request.getParameter("birthdate");
 				biography = request.getParameter("biography");
 				if(biography != null) {
 					biography = biography.trim();
 				}
-				
 				link = request.getParameter("link");
 				if(link != null) {
 					link = link.trim();
 				}
-				
 				Date birth_Date = null;
 
-				// check if birth date is in correct format
 				if (birthdate != null && !birthdate.isEmpty() && TestReg.matchDate(birthdate)) {
 					birth_Date = Date.valueOf(LocalDate.parse(birthdate));
 					LocalDate testDate = birth_Date.toLocalDate();
 					LocalDate currentDate = LocalDate.now();
 					long diff = ChronoUnit.DAYS.between(testDate, currentDate) / 365;
 					if (diff < 5) {
-						response.sendRedirect("authorRegistration.jsp?error=invalid");
+						response.sendRedirect("authorRegistration.jsp?errCode=invalid");
 						return;
 					}
 				}
 
 				AuthorDatabase author_db = new AuthorDatabase();
-				
-				try {
-					if (author_db.registerAuthor(new Author(name, nationality, birth_Date, biography, link)) == 1) {
-						response.sendRedirect("authorRegistration.jsp?success=register");
-					} else {
-						System.out.println("..... Insert failed in doPost in author servlet .....");
-						response.sendRedirect("authorRegistration.jsp?error=servererror");
-					}
-				}
-				catch(Exception e) {
-					e.printStackTrace();
-					System.out.println("..... Database error catch block in doPost in author servlet .....");
-					response.sendRedirect("authorRegistration.jsp?error=servererror");
+				author_db.clearAuthorResult();
+
+				if (author_db.registerAuthor(new Author(name, nationality, birth_Date, biography, link))) {
+					response.sendRedirect("authorRegistration.jsp?success=register");
+				} else {
+					response.sendRedirect("authorRegistration.jsp?errCode=serverError");
 				}
 			} else {
-				System.out.println("..... Invalid name in doPost in author servlet .....");
-				response.sendRedirect("authorRegistration.jsp?error=invalid");
+				response.sendRedirect("authorRegistration.jsp?errCode=invalid");
 			}
 		} else if (status.equals("update")) {
 			doPut(request, response);
 		} else {
-			System.out.println("..... Invalid status in doPost in author servlet .....");
-			response.sendRedirect("authorRegistration.jsp?error=invalid");
+			response.sendRedirect("authorRegistration.jsp?errCode=invalid");
 		}
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		// TODO Auto-generated method stub
 
 		Authentication auth = new Authentication();
 		HttpSession session = request.getSession();
 		if (!auth.testAdmin(session)) {
-			System.out.println("..... Unauthorized in doPut in author servlet .....");
 			request.setAttribute("error", "unauthorized");
 			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
@@ -339,34 +325,34 @@ public class AuthorServlet extends HttpServlet {
 				}
 
 				AuthorDatabase author_db = new AuthorDatabase();
-				
-				try {
-					Author author = author_db.getAuthorByID(authorID);
-					if(author == null) {
-						System.out.println("..... No author with id in doPut in author servlet .....");
-						response.sendRedirect("authorRegistration.jsp?error=noauthor");
+				author_db.clearAuthorResult();
+
+				if (author_db.getAuthorByID(authorID)) {
+					ResultSet rs = author_db.getAuthorResult();
+					int count = 0;
+					try {
+						while (rs.next()) {
+							count++;
+						}
+					} catch (Exception e) {
+						response.sendRedirect("authorRegistration.jsp?errCode=serverError");
 					}
-					else {
-						if (author_db.updateAuthor(new Author(authorID, name, nationality, birth_Date, biography, link)) == 1) {
+					if (count == 1) {
+						if (author_db
+								.updateAuthor(new Author(authorID, name, nationality, birth_Date, biography, link))) {
 							response.sendRedirect("authorRegistration.jsp?success=update");
 						} else {
-							System.out.println("..... Update fail in doPut in author servlet .....");
-							response.sendRedirect("authorRegistration.jsp?error=updatefail");
+							response.sendRedirect("authorRegistration.jsp?errCode=serverError");
 						}
+					} else {
+						response.sendRedirect("authorRegistration.jsp?errCode=invalid");
 					}
 				}
-				catch(Exception e) {
-					e.printStackTrace();
-					System.out.println("..... Database error in doPut in author servlet .....");
-					response.sendRedirect("authorRegistration.jsp?error=servererror");
-				}
 			} else {
-				System.out.println("..... Invalid data in doPut in author servlet .....");
-				response.sendRedirect("authorRegistration.jsp?error=invalid");
+				response.sendRedirect("authorRegistration.jsp?errCode=invalid");
 			}
 		} else {
-			System.out.println("..... Invalid status in doPut in author servlet .....");
-			response.sendRedirect("authorRegistration.jsp?error=invalid");
+			response.sendRedirect("authorRegistration.jsp?errCode=invalid");
 		}
 	}
 
@@ -376,7 +362,6 @@ public class AuthorServlet extends HttpServlet {
 		Authentication auth = new Authentication();
 		HttpSession session = request.getSession();
 		if (!auth.testAdmin(session)) {
-			System.out.println("..... Unauthorized in doDelete in author servlet .....");
 			request.setAttribute("error", "unauthorized");
 			request.getRequestDispatcher("/signout.jsp").forward(request, response);
 			return;
@@ -395,22 +380,11 @@ public class AuthorServlet extends HttpServlet {
 			String id = parts[parts.length - 1];
 			if (TestReg.matchInteger(id)) {
 				if (book_db.deleteBookAuthor(Integer.parseInt(id), null)) {
-					try {
-						if (author_db.deleteAuthor(Integer.parseInt(id)) == 1) {
-							request.setAttribute("success", "delete");
-							request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
-							System.out.println("..... Success in authorDelete .....");
-							return;
-						} else {
-							request.setAttribute("error", "invalid");
-							request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
-							System.out.println("..... Invalid author id in authorDelete .....");
-							return;
-						}
-					}
-					catch(Exception e) {
-						e.printStackTrace();
-						System.out.println("..... Error in catch block in authorDelete .....");
+					if (author_db.deleteAuthor(Integer.parseInt(id))) {
+						request.setAttribute("success", "delete");
+						request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
+						return;
+					} else {
 						request.setAttribute("error", "serverError");
 						request.getRequestDispatcher("/admin/authorList.jsp").forward(request, response);
 						return;

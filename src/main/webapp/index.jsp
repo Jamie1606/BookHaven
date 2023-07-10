@@ -46,18 +46,6 @@
 <link rel="icon" type="image/png" href="<%= request.getContextPath() %>/img/logo.png">
 
 <style>
-	.skeleton {
-		background-color: #f6f7f8;
-		animation: skeleton-loading 1s ease-in-out infinite alternate;
-	}
-	@keyframes skeleton-loading {
-	 	0% {
-	 		opacity: 1;
-	 	}
-	 	100% {
-	 		opacity: 0.4;
-	 	}
-	}
 	.latest-release h4:hover {
 		color: red;
 	}
@@ -94,7 +82,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row skeleton" style="margin-bottom: 0px;" id="latest-release">
+			<div class="row" style="margin-bottom: 0px;" id="latest-release">
 			</div>
 		</div>
 	</section>
@@ -157,7 +145,6 @@
 							htmlStr += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + list[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + list[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + list[i].ISBNNo + '"><h4>' + list[i].title + '</h4></a><p></p></div></div>';
 					}
 					$('#latest-release').html(htmlStr);
-					document.getElementById('latest-release').classList.remove("skeleton");
 				}
 			})
 		})

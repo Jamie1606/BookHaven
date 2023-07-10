@@ -78,9 +78,9 @@
 	Author author = null;
 
 	// show error and success for registration
-	String errCode = request.getParameter("error");
+	String errCode = request.getParameter("errCode");
 	if (errCode != null) {
-		if (errCode.equals("servererror")) {
+		if (errCode.equals("serverError")) {
 			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
 			+ "/admin/authorRegistration.jsp';</script>");
 		} else if (errCode.equals("invalid")) {
