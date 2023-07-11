@@ -1,11 +1,11 @@
 
 <%
-//Author: Zay Yar Tun
-//Admin No: 2235035
-// Class: DIT/FT/2A/02
-// Group: 10
-//Date: 8.6.2023
-//Description: author registration page
+// Author		: Zay Yar Tun
+// Admin No		: 2235035
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 11.7.2023
+// Description	: author registration page
 %>
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -115,18 +115,34 @@
 	// check whether it is to update author data
 	status = (String) request.getAttribute("status");
 	request.removeAttribute("status");
-	if (status == null) {
-		status = "register";
-	} else {
+	if (status != null) {
+		if(status.equals("success")) {
+			out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
+			+ "/admin/authorRegistration.jsp';</script>");
+			return;
+		}
+		if(status.equals("invalid")) {
+			out.println("<script>alert('Invalid data or request!'); location='" + request.getContextPath()
+			+ "/admin/authorRegistration.jsp';</script>");
+			return;
+		}
+		if(status.equals("fail")) {
+			out.println("<script>alert('Server error!'); location='" + request.getContextPath()
+			+ "/admin/authorRegistration.jsp';</script>");
+			return;
+		}
 		if(status.equals("update")) {
 			author = (Author) request.getAttribute("author");
 			request.removeAttribute("author");
 		}
-		else {
-			out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
-			return;
-		}
+	} else {
+		status = "register";
+		
+		//else {
+			//out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
+			//+ "/signout.jsp';</script>");
+			//return;
+		//}
 		
 	}
 
@@ -163,7 +179,7 @@
 
 							<!-- Multi Columns Form -->
 							<form id="authorForm" class="row g-3"
-								action="<%=request.getContextPath()%>/admin/authors"
+								action="<%=request.getContextPath()%>/CreateAuthor"
 								method="post">
 								<input type="hidden" name="status" value="<%=status%>">
 								<input type="hidden" name="id"
