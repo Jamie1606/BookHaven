@@ -2,20 +2,29 @@
 // Admin No: 2235035
 // Class: DIT/FT/2A/02
 // Group: 10
-// Date: 4.6.2023
+// Date: 11.7.2023
 // Description: to store author data from database 
 
 package model;
 
 import java.sql.Date;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
+
 public class Author {
 	private int authorID;
 	private String name;
 	private String nationality;
+	
+	@JsonbDateFormat(value = "yyyy-MM-dd")
 	private Date birthDate;
+	
 	private String biography;
 	private String link;
+	
+	public Author() {
+		
+	}
 	
 	public Author(int authorID) {
 		this.authorID = authorID;

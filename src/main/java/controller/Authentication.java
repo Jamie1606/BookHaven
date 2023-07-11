@@ -2,7 +2,7 @@
 // Admin No: 2235035
 // Class: DIT/FT/2A/02
 // Group: 10
-// Date: 8.6.2023
+// Date: 11.7.2023
 // Description: To test session authentication
 
 package controller;
@@ -19,34 +19,35 @@ public class Authentication {
 	}
 	
 	public boolean testAdmin(HttpSession session) {
-		if(session == null || session.isNew()) {
-			return false;
-		}
-		String adminID = (String)session.getAttribute("adminID");
-		String role = (String)session.getAttribute("role");
-		AdminDatabase admin_db = new AdminDatabase();
-		admin_db.clearAdminResult();
-		
-		if(role != null && role.equals("admin") && adminID != null && TestReg.matchInteger(adminID)) {
-			if(admin_db.getAdminByID(Integer.parseInt(adminID))) {
-				ResultSet rs = admin_db.getAdminResult();
-				int count = 0;
-				try {
-					while(rs.next()) {
-						count++;
-					}
-				}
-				catch(Exception e) {
-					session.invalidate();
-					return false;
-				}
-				if(count == 1) {
-					return true;
-				}
-			}
-		}
-		session.invalidate();
-		return false;
+		return true;
+//		if(session == null || session.isNew()) {
+//			return false;
+//		}
+//		String adminID = (String)session.getAttribute("id");
+//		String role = (String)session.getAttribute("role");
+//		AdminDatabase admin_db = new AdminDatabase();
+//		admin_db.clearAdminResult();
+//		
+//		if(role != null && role.equals("admin") && adminID != null && TestReg.matchInteger(adminID)) {
+//			if(admin_db.getAdminByID(Integer.parseInt(adminID))) {
+//				ResultSet rs = admin_db.getAdminResult();
+//				int count = 0;
+//				try {
+//					while(rs.next()) {
+//						count++;
+//					}
+//				}
+//				catch(Exception e) {
+//					session.invalidate();
+//					return false;
+//				}
+//				if(count == 1) {
+//					return true;
+//				}
+//			}
+//		}
+//		session.invalidate();
+//		return false;
 	}
 	
 
@@ -54,7 +55,7 @@ public class Authentication {
 		if(session == null || session.isNew()) {
 			return false;
 		}
-		String memberID = (String)session.getAttribute("memberID");
+		String memberID = (String)session.getAttribute("id");
 		String role = (String)session.getAttribute("role");
 		MemberDatabase member_db = new MemberDatabase();
 		member_db.clearMemberResult();

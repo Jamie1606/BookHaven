@@ -1,11 +1,11 @@
 
 <%
-//Author: Zay Yar Tun
-//Admin No: 2235035
-// Class: DIT/FT/2A/02
-// Group: 10
-//Date: 3.6.2023
-//Description: sgin in page
+// Author		: Zay Yar Tun
+// Admin No		: 2235035
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 11.7.2023
+// Description	: sgin in page
 %>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -89,21 +89,21 @@
 	<%@ include file="header.jsp"%>
 	
 	<%
-		String errCode = request.getParameter("errCode");
-		
-		if(errCode != null) {
-			if(errCode.equals("invalid")) {
-				out.println("<script>alert('Please enter correct email and password!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+		String status = (String) request.getAttribute("status");
+		request.removeAttribute("status");
+		if(status != null) {
+			if(status.equals("invalid")) {
+				out.println("<script>alert('Invalid email and password!'); location = 'signin.jsp';</script>");
 				return;
 			}
-			if(errCode.equals("serverError")) {
-				out.println("<script>alert('Internal Server Error. Please try again later!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
+			if(status.equals("fail")) {
+				out.println("<script>alert('Server error!'); location = 'signin.jsp';</script>");
 				return;
 			}
 		}
 	%>
 
-	<form id="signinForm" action="<%=request.getContextPath()%>/signin" method="post" style="padding: 100px 0px; display: flex; flex-direction: column; align-items: center;">
+	<form id="signinForm" action="<%=request.getContextPath()%>/TestSigninServlet" method="post" style="padding: 100px 0px; display: flex; flex-direction: column; align-items: center;">
 		<h2>SIGN IN FORM</h2>
 		<input style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" type="email" placeholder="&#x2709; Email" name="email" required />
 		<input style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" type="password" placeholder ="&#x1F511; Password" name="password" required />

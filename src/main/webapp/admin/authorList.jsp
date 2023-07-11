@@ -1,10 +1,10 @@
 <%
-//Author: Zay Yar Tun
-//Admin No: 2235035
-// Class: DIT/FT/2A/02
-// Group: 10
-//Date: 8.6.2023
-//Description: author list page
+// Author		: Zay Yar Tun
+// Admin No		: 2235035
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 11.7.2023
+// Description	: author list page
 %>
 
 <%@ page import="java.util.ArrayList, java.util.Date, model.Author"%>
@@ -91,8 +91,8 @@
 			return;
 		}
 		else {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
-			return;
+			//out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
+			//return;
 		}
 	}
 	if(success != null) {
@@ -105,8 +105,8 @@
 	String servlet = (String)request.getAttribute("servlet");
 	 request.removeAttribute("servlet");
 	if(servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + "/admin/authors';</script>");
-		return;
+		//out.println("<script>location='" + request.getContextPath() + "/admin/authors';</script>");
+		//return;
 	}
 
 	ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
@@ -149,19 +149,33 @@
 								<tbody>
 									<%
 									for (int i = 0; i < authorList.size(); i++) {
+										int authorID = authorList.get(i).getAuthorID();
+										String name = authorList.get(i).getName();
+										Date birthDate = authorList.get(i).getBirthDate();
+										String nationality = authorList.get(i).getNationality();
+										
 										out.println("<tr>");
 										out.println("<td>" + (i + 1) + ".</td>");
-										out.println("<td>" + authorList.get(i).getName() + "</td>");
-										out.println("<td>" + authorList.get(i).getNationality() + "</td>");
-										Date birthDate = authorList.get(i).getBirthDate();
+										out.println("<td>" + name + "</td>");
+										
+										if(nationality == null) {
+											out.println("<td></td>");
+										}
+										else {
+											out.println("<td>" + nationality + "</td>");
+										}
+						
+										
 										if (birthDate == null) {
 											out.println("<td></td>");
 										} else {
 											out.println("<td>" + birthDate.toString() + "</td>");
 										}
+										
+										
 										out.println("<td><a href='" + request.getContextPath() + "/admin/authorUpdate/"
-										+ authorList.get(i).getAuthorID() + " '>Edit</a> | <a href='" + request.getContextPath()
-										+ "/admin/authorDelete/" + authorList.get(i).getAuthorID() + "'>Delete</a></td>");
+										+ authorID + " '>Edit</a> | <a href='" + request.getContextPath()
+										+ "/DeleteAuthor/" + authorID + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
 									%>
