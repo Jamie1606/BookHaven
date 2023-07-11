@@ -37,7 +37,7 @@
 		</a>
 			<ul id="tables-nav" class="nav-content collapse "
 				data-bs-parent="#sidebar-nav">
-				<li><a href="<%= request.getContextPath() %>/admin/authors"> <i class="bi bi-circle"></i><span>Author
+				<li><a href="<%= request.getContextPath() %>/GetAuthorList"> <i class="bi bi-circle"></i><span>Author
 							List</span>
 				</a></li>
 				<li><a href="<%= request.getContextPath() %>/admin/books"> <i class="bi bi-circle"></i><span>Book
