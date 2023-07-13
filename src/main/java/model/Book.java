@@ -18,107 +18,19 @@ public class Book {
 	private String publisher;
 	private Date publicationDate;
 	private int qty;
-	private short rating;
+	private double rating;
 	private String description;
 	private String image;
 	private String image3D;
 	private String status;
-	private Author[] authors;
-	private Genre[] genres;
-	
-	public Book(String iSBNNo, int qty) {
-		ISBNNo = iSBNNo;
-		this.qty = qty;
-	}
-	
-	public Book(String iSBNNo, String title, int page, double price, String publisher, Date publicationDate, int qty,
-			short rating, String description, String image, String image3d, String status, Author[] authors) {
-		ISBNNo = iSBNNo;
-		this.title = title;
-		this.page = page;
-		this.price = price;
-		this.publisher = publisher;
-		this.publicationDate = publicationDate;
-		this.qty = qty;
-		this.rating = rating;
-		this.description = description;
-		this.image = image;
-		image3D = image3d;
-		this.status = status;
-		this.authors = authors;
-	}
+	private ArrayList<Author> authors;
+	private ArrayList<Genre> genres;
 
-	public Book(String iSBNNo, String title, int page, double price, String publisher, Date publicationDate, int qty,
-			String description, String image, String image3d, String status) {
-		ISBNNo = iSBNNo;
-		this.title = title;
-		this.page = page;
-		this.price = price;
-		this.publisher = publisher;
-		this.publicationDate = publicationDate;
-		this.qty = qty;
-		this.description = description;
-		this.image = image;
-		image3D = image3d;
-		this.status = status;
-	}
-
-	public Book(String iSBNNo, String title, double price, String description, String image) {
-		ISBNNo = iSBNNo;
-		this.title = title;
-		this.price = price;
-		this.description = description;
-		this.image = image;
-	}
-
-	public Book(String iSBNNo, String title, String image, String status) {
-		super();
-		ISBNNo = iSBNNo;
-		this.title = title;
-		this.image = image;
-		this.status = status;
-	}
-
-	public Book(String iSBNNo, String title, int page, double price, String publisher, Date publicationDate, int qty,
-			short rating, String description, String image, String image3d, String status) {
-		ISBNNo = iSBNNo;
-		this.title = title;
-		this.page = page;
-		this.price = price;
-		this.publisher = publisher;
-		this.publicationDate = publicationDate;
-		this.qty = qty;
-		this.rating = rating;
-		this.description = description;
-		this.image = image;
-		image3D = image3d;
-		this.status = status;
-	}
-
-	public Book(String iSBNNo, String title, int page, double price, String publisher, Date publicationDate, int qty,
-			short rating, String description, String image, String image3d, String status, Author[] authors,
-			Genre[] genres) {
-		ISBNNo = iSBNNo;
-		this.title = title;
-		this.page = page;
-		this.price = price;
-		this.publisher = publisher;
-		this.publicationDate = publicationDate;
-		this.qty = qty;
-		this.rating = rating;
-		this.description = description;
-		this.image = image;
-		image3D = image3d;
-		this.status = status;
-		this.authors = authors;
-		this.genres = genres;
-	}
-
-	public Genre[] getGenres() {
+	public ArrayList<Genre> getGenres() {
 		return genres;
 	}
 
-	public void setGenres(Genre[] genres) {
+	public void setGenres(ArrayList<Genre> genres) {
 		this.genres = genres;
 	}
 
@@ -178,11 +90,11 @@ public class Book {
 		this.qty = qty;
 	}
 
-	public short getRating() {
+	public double getRating() {
 		return rating;
 	}
 
-	public void setRating(short rating) {
+	public void setRating(double rating) {
 		this.rating = rating;
 	}
 
@@ -218,11 +130,11 @@ public class Book {
 		this.status = status;
 	}
 
-	public Author[] getAuthors() {
+	public ArrayList<Author> getAuthors() {
 		return authors;
 	}
 
-	public void setAuthors(Author[] authors) {
+	public void setAuthors(ArrayList<Author> authors) {
 		this.authors = authors;
 	}
 }
