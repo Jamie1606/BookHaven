@@ -28,18 +28,19 @@ import jakarta.ws.rs.core.Response;
 import model.Author;
 
 /**
- * Servlet implementation class CreateAuthor
+ * Servlet implementation class UpdateAuthor
  */
-@WebServlet("/CreateAuthor")
-public class CreateAuthor extends HttpServlet {
+@WebServlet("/UpdateAuthor")
+public class UpdateAuthor extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public CreateAuthor() {
+    public UpdateAuthor() {
         super();
     }
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String id = request.getParameter("id");
 		String name = request.getParameter("name");
 		String nationality = request.getParameter("nationality");
 		String birthDate = request.getParameter("birthdate");
@@ -47,6 +48,14 @@ public class CreateAuthor extends HttpServlet {
 		String link = request.getParameter("link");
 		
 		Author author = new Author();
+		
+		if(id == null || id.isEmpty() || !TestReg.matchInteger(id)) {
+			
+		}
+		else {
+			author.setAuthorID(Integer.parseInt(id));
+		}
+		
 		if(name == null || name.isEmpty()) {
 			
 		}
@@ -84,29 +93,28 @@ public class CreateAuthor extends HttpServlet {
 		
 		Client client = ClientBuilder.newClient();
 		String restUrl = "http://localhost:8081/bookhaven/api";
-		WebTarget target = client.target(restUrl).path("createAuthor");
+		WebTarget target = client.target(restUrl).path("updateAuthor");
 		Invocation.Builder invocationBuilder = target.request();
-		Response resp = invocationBuilder.post(Entity.json(author));
+		Response resp = invocationBuilder.put(Entity.json(author));
 		
 		String url = "/signout.jsp";
 		if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
 			Integer row = resp.readEntity(Integer.class);
 			if(row == 1) {
 				request.setAttribute("status", "success");
-				url = "/admin/authorRegistration.jsp";
+				url = "/GetAuthorList";
 			}
 			else {
 				request.setAttribute("status", "invalid");
-				url = "/admin/authorRegistration.jsp";
+				url = "/GetAuthorList";
 			}
 		}
 		else {
-			System.out.println("..... Error in CreateAuthor Servlet .....");
-			url = "/admin/authorRegistration.jsp";
+			System.out.println("..... Error in UpdateAuthor Servlet .....");
+			url = "/GetAuthorList";
 			request.setAttribute("status", "fail");
 		}
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
-
 }

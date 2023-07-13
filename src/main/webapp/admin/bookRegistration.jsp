@@ -163,7 +163,7 @@ input::placeholder {
 	String status = (String) request.getAttribute("status");
 	request.removeAttribute("status");
 	Book book = null;
-	ArrayList<Author> bookAuthorList = new ArrayList<Author>();;
+	ArrayList<Author> bookAuthorList = new ArrayList<Author>();
 	ArrayList<Genre> bookGenreList = new ArrayList<Genre>();
 
 	if (status == null) {
@@ -219,7 +219,7 @@ input::placeholder {
 
 							<!-- Multi Columns Form -->
 							<form id="bookForm" class="row g-3"
-								action="<%=request.getContextPath()%>/admin/books"
+								action="<%=request.getContextPath()%>/CreateBook"
 								method="post" enctype="multipart/form-data">
 								<input type="hidden" value="<%=status%>" name="status">
 								<div class="col-md-12">

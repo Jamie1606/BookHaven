@@ -172,10 +172,12 @@ public class AuthorServlet extends HttpServlet {
 									ResultSet book_rs = book_db.getBookResult();
 									try {
 										while (book_rs.next()) {
-											bookList.add(new Book(StringEscapeUtils.escapeHtml4(book_rs.getString("ISBNNo")),
-													StringEscapeUtils.escapeHtml4(book_rs.getString("Title")),
-													StringEscapeUtils.escapeHtml4(book_rs.getString("Image")),
-													StringEscapeUtils.escapeHtml4(book_rs.getString("Status"))));
+											Book book = new Book();
+											book.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
+											book.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));
+											book.setImage(StringEscapeUtils.escapeHtml4(rs.getString("Image")));
+											book.setStatus(StringEscapeUtils.escapeHtml4(rs.getString("Status")));
+											bookList.add(book);
 										}
 
 									} catch (Exception e) {

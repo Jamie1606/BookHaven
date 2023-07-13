@@ -173,8 +173,8 @@
 										}
 										
 										
-										out.println("<td><a href='" + request.getContextPath() + "/admin/authorUpdate/"
-										+ authorID + " '>Edit</a> | <a href='" + request.getContextPath()
+										out.println("<td><a href='" + request.getContextPath() + "/GetAuthorByID/"
+										+ authorID + "'>Edit</a> | <a href='" + request.getContextPath()
 										+ "/DeleteAuthor/" + authorID + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
@@ -224,7 +224,6 @@
 
 	<!-- Template Main JS File -->
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
-
 </body>
 
 </html>
