@@ -117,14 +117,20 @@ public class GenreServlet extends HttpServlet {
 						try {
 							while (rs.next()) {
 								// ESCAPE:StringEscapeUtils.escapeHtml4
-								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
-										rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
-										rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
-										StringEscapeUtils.escapeHtml4(rs.getString("Description")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+								Book book = new Book();
+								book.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
+								book.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));
+								book.setPage(rs.getInt("Page"));
+								book.setPrice(rs.getDouble("Price"));
+								book.setPublisher(StringEscapeUtils.escapeHtml4(rs.getString("Publisher")));
+								book.setPublicationDate(rs.getDate("PublicationDate"));
+								book.setQty(rs.getInt("Qty"));
+								book.setRating(rs.getDouble("Rating"));
+								book.setDescription(StringEscapeUtils.escapeHtml4(rs.getString("Description")));
+								book.setImage(StringEscapeUtils.escapeHtml4(rs.getString("Image")));
+								book.setImage3D(StringEscapeUtils.escapeHtml4(rs.getString("Image3D")));
+								book.setStatus(StringEscapeUtils.escapeHtml4(rs.getString("Status")));
+								bookList.add(book);
 							}
 							status = "success";
 						} catch (Exception e) {

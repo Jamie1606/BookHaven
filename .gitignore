@@ -3,3 +3,4 @@
 .classpath
 **/META-INF/MANIFEST.MF
 /build/
+tmp

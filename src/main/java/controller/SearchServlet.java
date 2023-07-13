@@ -62,11 +62,13 @@ public class SearchServlet extends HttpServlet {
 					if (condition) {
 						ResultSet rs = search_db.getSearchResultSet();
 						try {
-							while (rs.next()) {
-								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Title")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+							while (rs.next()){
+								Book book = new Book();
+								book.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
+								book.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));
+								book.setImage(StringEscapeUtils.escapeHtml4(rs.getString("Image")));
+								book.setStatus(StringEscapeUtils.escapeHtml4(rs.getString("Status")));
+								bookList.add(book);
 							}
 							status = "success";
 						} catch (Exception e) {
@@ -103,10 +105,12 @@ public class SearchServlet extends HttpServlet {
 							while (rs.next()) {
 								authorList.add(new Author(rs.getInt("AuthorID"),
 										StringEscapeUtils.escapeHtml4(rs.getString("Name"))));
-								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Title")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+								Book book = new Book();
+								book.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
+								book.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));
+								book.setImage(StringEscapeUtils.escapeHtml4(rs.getString("Image")));
+								book.setStatus(StringEscapeUtils.escapeHtml4(rs.getString("Status")));
+								bookList.add(book);
 							}
 							status = "success";
 						} catch (Exception e) {

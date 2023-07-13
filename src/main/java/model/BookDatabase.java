@@ -43,7 +43,7 @@ public class BookDatabase {
 			st.setString(5, book.getPublisher());
 			st.setDate(6, Date.valueOf(book.getPublicationDate().toString()));
 			st.setInt(7, book.getQty());
-			st.setShort(8, book.getRating());
+			st.setDouble(8, book.getRating());
 			st.setString(9, book.getDescription());
 			st.setString(10, book.getImage());
 			st.setString(11, book.getImage3D());

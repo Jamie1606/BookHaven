@@ -159,14 +159,21 @@ public class BookServlet extends HttpServlet {
 								for(int j = 0; j < authorList.size(); j++) {
 									authors[j] = new Author(authorList.get(j).getAuthorID(), authorList.get(j).getName());
 								}
-								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
-										rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
-										rs.getDate("PublicationDate"), cart.get(i).getQty(), rs.getShort("Rating"),
-										StringEscapeUtils.escapeHtml4(rs.getString("Description")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Status")), authors));
+								Book book = new Book();
+								book.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
+								book.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));
+								book.setPage(rs.getInt("Page"));
+								book.setPrice(rs.getDouble("Price"));
+								book.setPublisher(StringEscapeUtils.escapeHtml4(rs.getString("Publisher")));
+								book.setPublicationDate(rs.getDate("PublicationDate"));
+								book.setQty(rs.getInt("Qty"));
+								book.setRating(rs.getDouble("Rating"));
+								book.setDescription(StringEscapeUtils.escapeHtml4(rs.getString("Description")));
+								book.setImage(StringEscapeUtils.escapeHtml4(rs.getString("Image")));
+								book.setImage3D(StringEscapeUtils.escapeHtml4(rs.getString("Image3D")));
+								book.setStatus(StringEscapeUtils.escapeHtml4(rs.getString("Status")));
+								book.setAuthors(authorList);
+								bookList.add(book);
 							}
 						} catch (Exception e) {
 							status = "serverError";
@@ -228,7 +235,10 @@ public class BookServlet extends HttpServlet {
 								}
 							}
 							if(!isFound) {
-								cart.add(new Book(isbn, Integer.parseInt(qty)));	
+								Book book = new Book();
+								book.setISBNNo(isbn);
+								book.setQty(Integer.parseInt(qty));
+								cart.add(book);	
 							}
 							session.setAttribute("cart", cart);
 						} else {
@@ -267,16 +277,20 @@ public class BookServlet extends HttpServlet {
 								try {
 									while (rs.next()) {
 										if (!StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")).equals(isbn)) {
-											bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-													StringEscapeUtils.escapeHtml4(rs.getString("Title")),
-													rs.getInt("Page"), rs.getDouble("Price"),
-													StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
-													rs.getDate("PublicationDate"), rs.getInt("Qty"),
-													rs.getShort("Rating"),
-													StringEscapeUtils.escapeHtml4(rs.getString("Description")),
-													StringEscapeUtils.escapeHtml4(rs.getString("Image")),
-													StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
-													StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+											Book book = new Book();
+											book.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
+											book.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));
+											book.setPage(rs.getInt("Page"));
+											book.setPrice(rs.getDouble("Price"));
+											book.setPublisher(StringEscapeUtils.escapeHtml4(rs.getString("Publisher")));
+											book.setPublicationDate(rs.getDate("PublicationDate"));
+											book.setQty(rs.getInt("Qty"));
+											book.setRating(rs.getDouble("Rating"));
+											book.setDescription(StringEscapeUtils.escapeHtml4(rs.getString("Description")));
+											book.setImage(StringEscapeUtils.escapeHtml4(rs.getString("Image")));
+											book.setImage3D(StringEscapeUtils.escapeHtml4(rs.getString("Image3D")));
+											book.setStatus(StringEscapeUtils.escapeHtml4(rs.getString("Status")));
+											bookList.add(book);
 										}
 										if (bookList.size() == 2) {
 											break;
@@ -310,14 +324,20 @@ public class BookServlet extends HttpServlet {
 						ResultSet rs = book_db.getBookResult();
 						try {
 							while (rs.next()) {
-								bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
-										rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
-										rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
-										StringEscapeUtils.escapeHtml4(rs.getString("Description")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+								Book book = new Book();
+								book.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
+								book.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));
+								book.setPage(rs.getInt("Page"));
+								book.setPrice(rs.getDouble("Price"));
+								book.setPublisher(StringEscapeUtils.escapeHtml4(rs.getString("Publisher")));
+								book.setPublicationDate(rs.getDate("PublicationDate"));
+								book.setQty(rs.getInt("Qty"));
+								book.setRating(rs.getDouble("Rating"));
+								book.setDescription(StringEscapeUtils.escapeHtml4(rs.getString("Description")));
+								book.setImage(StringEscapeUtils.escapeHtml4(rs.getString("Image")));
+								book.setImage3D(StringEscapeUtils.escapeHtml4(rs.getString("Image3D")));
+								book.setStatus(StringEscapeUtils.escapeHtml4(rs.getString("Status")));
+								bookList.add(book);
 							}
 						} catch (Exception e) {
 							status = "serverError";
@@ -484,14 +504,19 @@ public class BookServlet extends HttpServlet {
 						try {
 							while (rs.next()) {
 								// sanitizing output by escaping html special characters
-								book_data = new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
-										rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
-										rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
-										StringEscapeUtils.escapeHtml4(rs.getString("Description")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
-										StringEscapeUtils.escapeHtml4(rs.getString("Status")));
+								book_data = new Book();
+								book_data.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
+								book_data.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));
+								book_data.setPage(rs.getInt("Page"));
+								book_data.setPrice(rs.getDouble("Price"));
+								book_data.setPublisher(StringEscapeUtils.escapeHtml4(rs.getString("Publisher")));
+								book_data.setPublicationDate(rs.getDate("PublicationDate"));
+								book_data.setQty(rs.getInt("Qty"));
+								book_data.setRating(rs.getDouble("Rating"));
+								book_data.setDescription(StringEscapeUtils.escapeHtml4(rs.getString("Description")));
+								book_data.setImage(StringEscapeUtils.escapeHtml4(rs.getString("Image")));
+								book_data.setImage3D(StringEscapeUtils.escapeHtml4(rs.getString("Image3D")));
+								book_data.setStatus(StringEscapeUtils.escapeHtml4(rs.getString("Status")));
 								break;
 							}
 						} catch (Exception e) {
@@ -531,14 +556,20 @@ public class BookServlet extends HttpServlet {
 				try {
 					while (rs.next()) {
 						// sanitizing output by escaping html special characters
-						bookList.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
-								rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
-								rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
-								StringEscapeUtils.escapeHtml4(rs.getString("Description")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Image")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+						Book book = new Book();
+						book.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
+						book.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));
+						book.setPage(rs.getInt("Page"));
+						book.setPrice(rs.getDouble("Price"));
+						book.setPublisher(StringEscapeUtils.escapeHtml4(rs.getString("Publisher")));
+						book.setPublicationDate(rs.getDate("PublicationDate"));
+						book.setQty(rs.getInt("Qty"));
+						book.setRating(rs.getDouble("Rating"));
+						book.setDescription(StringEscapeUtils.escapeHtml4(rs.getString("Description")));
+						book.setImage(StringEscapeUtils.escapeHtml4(rs.getString("Image")));
+						book.setImage3D(StringEscapeUtils.escapeHtml4(rs.getString("Image3D")));
+						book.setStatus(StringEscapeUtils.escapeHtml4(rs.getString("Status")));
+						bookList.add(book);
 					}
 				} catch (Exception e) {
 					request.setAttribute("error", "serverRetrieveError");
@@ -568,14 +599,20 @@ public class BookServlet extends HttpServlet {
 
 				try {
 					while (rs.next()) {
-						book.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
-								rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
-								rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
-								StringEscapeUtils.escapeHtml4(rs.getString("Description")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Image")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+						Book tmp_book = new Book();
+						tmp_book.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
+						tmp_book.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));
+						tmp_book.setPage(rs.getInt("Page"));
+						tmp_book.setPrice(rs.getDouble("Price"));
+						tmp_book.setPublisher(StringEscapeUtils.escapeHtml4(rs.getString("Publisher")));
+						tmp_book.setPublicationDate(rs.getDate("PublicationDate"));
+						tmp_book.setQty(rs.getInt("Qty"));
+						tmp_book.setRating(rs.getDouble("Rating"));
+						tmp_book.setDescription(StringEscapeUtils.escapeHtml4(rs.getString("Description")));
+						tmp_book.setImage(StringEscapeUtils.escapeHtml4(rs.getString("Image")));
+						tmp_book.setImage3D(StringEscapeUtils.escapeHtml4(rs.getString("Image3D")));
+						tmp_book.setStatus(StringEscapeUtils.escapeHtml4(rs.getString("Status")));
+						book.add(tmp_book);
 					}
 				} catch (Exception e) {
 					error = "serverError";
@@ -597,14 +634,20 @@ public class BookServlet extends HttpServlet {
 
 				try {
 					while (rs.next()) {
-						book.add(new Book(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Title")), rs.getInt("Page"),
-								rs.getDouble("Price"), StringEscapeUtils.escapeHtml4(rs.getString("Publisher")),
-								rs.getDate("PublicationDate"), rs.getInt("Qty"), rs.getShort("Rating"),
-								StringEscapeUtils.escapeHtml4(rs.getString("Description")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Image")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Image3D")),
-								StringEscapeUtils.escapeHtml4(rs.getString("Status"))));
+						Book tmp_book = new Book();
+						tmp_book.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
+						tmp_book.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));
+						tmp_book.setPage(rs.getInt("Page"));
+						tmp_book.setPrice(rs.getDouble("Price"));
+						tmp_book.setPublisher(StringEscapeUtils.escapeHtml4(rs.getString("Publisher")));
+						tmp_book.setPublicationDate(rs.getDate("PublicationDate"));
+						tmp_book.setQty(rs.getInt("Qty"));
+						tmp_book.setRating(rs.getDouble("Rating"));
+						tmp_book.setDescription(StringEscapeUtils.escapeHtml4(rs.getString("Description")));
+						tmp_book.setImage(StringEscapeUtils.escapeHtml4(rs.getString("Image")));
+						tmp_book.setImage3D(StringEscapeUtils.escapeHtml4(rs.getString("Image3D")));
+						tmp_book.setStatus(StringEscapeUtils.escapeHtml4(rs.getString("Status")));
+						book.add(tmp_book);
 					}
 				} catch (Exception e) {
 					error = "serverError";
@@ -786,9 +829,19 @@ public class BookServlet extends HttpServlet {
 							if(image3d == null) {
 								image3d = defaultimage3d;
 							}
-							if (book_db.registerBook(new Book(isbn, title.trim(), Integer.parseInt(page),
-									Double.parseDouble(price), publisher.trim(), publicationDate, Integer.parseInt(qty),
-									description, image, image3d, bookstatus))) {
+							Book book = new Book();
+							book.setISBNNo(isbn);
+							book.setTitle(title.trim());
+							book.setPage(Integer.parseInt(page));
+							book.setPrice(Double.parseDouble(price));
+							book.setPublisher(publisher.trim());
+							book.setPublicationDate(publicationDate);
+							book.setQty(Integer.parseInt(qty));
+							book.setDescription(description);
+							book.setImage(image);
+							book.setImage3D(image3d);
+							book.setStatus(bookstatus);
+							if (book_db.registerBook(book)) {
 								if (book_db.registerBookAuthor(authors, isbn)) {
 									if (book_db.registerBookGenre(genres, isbn)) {
 										request.setAttribute("success", "register");
@@ -833,9 +886,19 @@ public class BookServlet extends HttpServlet {
 								request.getRequestDispatcher("/admin/bookRegistration.jsp").forward(request, response);
 								return;
 							}
-							if (book_db.updateBook(new Book(isbn, title.trim(), Integer.parseInt(page),
-									Double.parseDouble(price), publisher.trim(), publicationDate, Integer.parseInt(qty),
-									description, image, image3d, bookstatus))) {
+							Book book = new Book();
+							book.setISBNNo(isbn);
+							book.setTitle(title.trim());
+							book.setPage(Integer.parseInt(page));
+							book.setPrice(Double.parseDouble(price));
+							book.setPublisher(publisher.trim());
+							book.setPublicationDate(publicationDate);
+							book.setQty(Integer.parseInt(qty));
+							book.setDescription(description);
+							book.setImage(image);
+							book.setImage3D(image3d);
+							book.setStatus(bookstatus);
+							if (book_db.updateBook(book)) {
 								book_db.deleteBookAuthor(0, isbn);
 								if (book_db.registerBookAuthor(authors, isbn)) {
 									book_db.deleteBookGenre(0, isbn);
