@@ -1,4 +1,3 @@
-
 <%
 // Author		: Zay Yar Tun
 // Admin No		: 2235035
@@ -10,7 +9,7 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="java.util.*, java.text.*, model.Author"%>
+<%@ page import="java.util.*, java.text.*, model.Author, model.URL"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -73,77 +72,32 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	// set default value for status
-	String status = "register";
+	// set default value for author data
 	Author author = null;
-
-	// show error and success for registration
-	String errCode = request.getParameter("errCode");
-	if (errCode != null) {
-		if (errCode.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
-		} else if (errCode.equals("invalid")) {
-			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
-		} else if (errCode.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
-			return;
-		} 
-		else {
-			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
-			return;
-		}
-	} else {
-		String success = request.getParameter("success");
-		if (success != null) {
-			if (success.equals("register")) {
-		out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
-				+ "/admin/authorRegistration.jsp';</script>");
-				return;
-			}
-			if (success.equals("update")) {
-		out.println("<script>alert('Author data is successfully updated!'); location='" + request.getContextPath()
-				+ "/admin/authors';</script>");
-				return;
-			}
-		}
-	}
-
-	// check whether it is to update author data
-	status = (String) request.getAttribute("status");
-	request.removeAttribute("status");
-	if (status != null) {
-		if(status.equals("success")) {
-			out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
-			return;
-		}
+	
+			
+	String status = (String) request.getAttribute("status");
+	if(status != null) {
 		if(status.equals("invalid")) {
-			out.println("<script>alert('Invalid data or request!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
+			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath()
+			+ URL.authorRegistration + "';</script>");
 			return;
 		}
-		if(status.equals("fail")) {
+		else if(status.equals("success")) {
+			out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
+			+ URL.authorRegistration + "';</script>");
+			return;
+		}
+		else if(status.equals("servererror")) {
 			out.println("<script>alert('Server error!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
+			+ URL.authorRegistration + "';</script>");
 			return;
 		}
-		if(status.equals("update")) {
-			author = (Author) request.getAttribute("author");
-			request.removeAttribute("author");
+		else {
+			out.println("<script>alert('Unexpected error! Please contact IT team!'); location='" + request.getContextPath()
+			+ URL.authorRegistration + "';</script>");
+			return;
 		}
-	} else {
-		status = "register";
-		
-		//else {
-			//out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
-			//+ "/signout.jsp';</script>");
-			//return;
-		//}
-		
 	}
 	
 	String update = (String) request.getAttribute("update");
@@ -181,6 +135,7 @@
 				</ol>
 			</nav>
 		</div>
+		
 		<!-- End Page Title -->
 		<section class="section">
 			<div class="row">
@@ -193,7 +148,6 @@
 							<form id="authorForm" class="row g-3"
 								action='<%=request.getContextPath()%>/<%= (update != null) ? "UpdateAuthor" : "CreateAuthor"%>'
 								method="post">
-								<input type="hidden" name="status" value="<%=status%>">
 								<input type="hidden" name="id"
 									value="<%=(update != null) ? author.getAuthorID() : ""%>">
 								<div class="col-md-4">

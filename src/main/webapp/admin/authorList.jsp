@@ -7,7 +7,7 @@
 // Description	: author list page
 %>
 
-<%@ page import="java.util.ArrayList, java.util.Date, model.Author"%>
+<%@ page import="java.util.ArrayList, java.util.Date, model.Author, model.URL"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -46,9 +46,8 @@
 <link
 	href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css"
 	rel="stylesheet">
-<link
-	href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
-	rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
 
 <!-- Template Main CSS File -->
 <link href="<%=request.getContextPath()%>/assets/css/style.css"
@@ -71,45 +70,39 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	String error = (String) request.getAttribute("error");
-	request.removeAttribute("error");
-	String success = (String) request.getAttribute("success");
-	request.removeAttribute("success");
-	if (error != null) {
-		if (error.equals("invalid")) {
-			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath() + "/admin/authors';</script>");
-		}
-		else if (error.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/authors';</script>");
-		}
-		else if (error.equals("serverRetrieveError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/adminHomePage.jsp';</script>");
+	String status = (String) request.getAttribute("status");
+	request.removeAttribute("status");
+	if(status != null) {
+		if(status.equals("servererror")) {
+			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
 			return;
 		}
-		else if (error.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
+		if(status.equals("invalid")) {
+			out.println("<script>alert('Invalid data or request!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
 			return;
 		}
-		else {
-			//out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
-			//return;
+		if(status.equals("success")) {
+			out.println("<script>alert('Author is successfully deleted!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
+			return;
 		}
-	}
-	if(success != null) {
-		if(success.equals("delete")) {
-			out.println("<script>alert('The author is successfully deleted!'); location='" + request.getContextPath() + "/admin/authors';</script>");
+		if(status.equals("deleteservererror")) {
+			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
 			return;
 		}
 	}
 	
 	String servlet = (String)request.getAttribute("servlet");
-	 request.removeAttribute("servlet");
+	request.removeAttribute("servlet");
 	if(servlet == null || !servlet.equals("true")) {
-		//out.println("<script>location='" + request.getContextPath() + "/admin/authors';</script>");
-		//return;
+		out.println("<script>location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
+		return;
 	}
 
 	ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
+	if(authorList == null) {
+		out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
+		return;
+	}
 	%>
 
 	<main id="main" class="main">
@@ -119,7 +112,7 @@
 			<nav>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item"><a
-						href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
+						href="<%= request.getContextPath() + URL.adminHomePage %>">Home</a></li>
 					<li class="breadcrumb-item">Tables</li>
 					<li class="breadcrumb-item active">Author Data</li>
 				</ol>
@@ -136,7 +129,7 @@
 							<h5 class="card-title">Author Information</h5>
 
 							<!-- Table with stripped rows -->
-							<table class="table datatable">
+							<table class="display datatable nowrap hover" style="width: 100%">
 								<thead>
 									<tr>
 										<th scope="col">No.</th>
@@ -173,13 +166,21 @@
 										}
 										
 										
-										out.println("<td><a href='" + request.getContextPath() + "/GetAuthorByID/"
-										+ authorID + "'>Edit</a> | <a href='" + request.getContextPath()
-										+ "/DeleteAuthor/" + authorID + "'>Delete</a></td>");
+										out.println("<td><a href='" + request.getContextPath() + "/GetAuthorByID/" + authorID + "'>Edit</a> | "
+										+ "<a href='" + request.getContextPath() + URL.deleteAuthorServlet + authorID + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
 									%>
 								</tbody>
+								<tfoot>
+									<tr>
+										<th scope="col">No.</th>
+										<th scope="col">Name</th>
+										<th scope="col">Nationality</th>
+										<th scope="col">BirthDate</th>
+										<th scope="col">Action</th>
+									</tr>
+								</tfoot>
 							</table>
 							<!-- End Table with stripped rows -->
 
@@ -216,14 +217,21 @@
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/quill/quill.min.js"></script>
 	<script
-		src="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
-	<script
 		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
+		
+	<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
 
 	<!-- Template Main JS File -->
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
+	
+	<script>
+		let table = new DataTable('.datatable', {
+			"scrollX": true,
+			"pageLength": 25,
+			"stateSave": true
+		});
+	</script>
 </body>
-
 </html>

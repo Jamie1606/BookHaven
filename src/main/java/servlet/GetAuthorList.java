@@ -8,10 +8,8 @@
 package servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +23,9 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
 import model.Author;
+import model.URL;
 
 /**
  * Servlet implementation class GetAuthorList
@@ -40,28 +40,32 @@ public class GetAuthorList extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		Client client = ClientBuilder.newClient();
-		String restUrl = "http://localhost:8081/bookhaven/api";
-		WebTarget target = client.target(restUrl).path("getAllAuthor");
+		WebTarget target = client.target(URL.baseURL).path("getAllAuthor");
 		Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
 		Response resp = invocationBuilder.get();
-		String url = "/signout.jsp";
+		String url = URL.authorList;
 		
 		if(resp.getStatus() == Response.Status.OK.getStatusCode()) {			
 			ArrayList<Author> authorList = resp.readEntity(new GenericType<ArrayList<Author>>() {});	
 			if(authorList == null) {
-				
+				System.out.println("..... Server error in GetAuthorList servlet .....");
+				request.setAttribute("status", "servererror");
+				url = URL.authorList;
 			}
-			request.setAttribute("authorList", authorList);
-			request.setAttribute("servlet", "true");
-			url = "/admin/authorList.jsp";
+			else {
+				request.setAttribute("authorList", authorList);
+				request.setAttribute("servlet", "true");
+				url = URL.authorList;
+			}
 		}
 		else {
-			System.out.println("..... Error in GetAuthorList Servlet .....");
-			url = "/admin/authorList.jsp";
-			request.setAttribute("err", "NotFound");
-			
+			System.out.println("..... Error in GetAuthorList servlet .....");
+			request.setAttribute("status", "servererror");
+			url = URL.authorList;
 		}
+		
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
