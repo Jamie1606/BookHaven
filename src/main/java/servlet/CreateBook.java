@@ -26,6 +26,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClients;
 
 import controller.TestReg;
+import model.Book;
 
 /**
  * Servlet implementation class CreateBook
@@ -98,6 +99,7 @@ public class CreateBook extends HttpServlet {
 		        }
 			}
 			
+			Book book = new Book();
 			
 		}
 		else {

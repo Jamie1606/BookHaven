@@ -21,36 +21,6 @@ public class Author {
 	
 	private String biography;
 	private String link;
-	
-	public Author() {
-		
-	}
-	
-	public Author(int authorID) {
-		this.authorID = authorID;
-	}
-	
-	public Author(int authorID, String name) {
-		this.authorID = authorID;
-		this.name = name;
-	}
-	
-	public Author(String name, String nationality, Date birthDate, String biography, String link) {
-		this.name = name;
-		this.nationality = nationality;
-		this.birthDate = birthDate;
-		this.biography = biography;
-		this.link = link;
-	}
-	
-	public Author(int authorID, String name, String nationality, Date birthDate, String biography, String link) {
-		this.authorID = authorID;
-		this.name = name;
-		this.nationality = nationality;
-		this.birthDate = birthDate;
-		this.biography = biography;
-		this.link = link;
-	}
 
 	public int getAuthorID() {
 		return authorID;

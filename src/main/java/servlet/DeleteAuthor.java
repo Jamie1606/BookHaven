@@ -15,11 +15,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import controller.TestReg;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
+import model.URL;
 
 /**
  * Servlet implementation class DeleteAuthor
@@ -36,36 +38,48 @@ public class DeleteAuthor extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String requestURi = (String) request.getRequestURI();
 		String[] parts = requestURi.split("/");
+		String url = URL.authorList;
+		boolean condition = true;
+		
 		if(parts.length == 0) {
-			
+			System.out.println("..... Invalid delete request in DeleteAuthor servlet .....");
+			request.setAttribute("status", "invalid");
+			condition = false;
 		}
 		
 		String id = parts[parts.length - 1];
+		if(id == null || !TestReg.matchInteger(id)) {
+			System.out.println("..... Invalid author id in DeleteAuthor servlet .....");
+			request.setAttribute("status", "invalid");
+			condition = false;
+		}
 		
-		Client client = ClientBuilder.newClient();
-		String restUrl = "http://localhost:8081/bookhaven/api";
-		WebTarget target = client.target(restUrl).path("deleteAuthor").path("{id}").resolveTemplate("id", id);
-		Invocation.Builder invocationBuilder = target.request();
-		Response resp = invocationBuilder.delete();
-		String url = "/signout.jsp";
-		
-		if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
-			Integer row = resp.readEntity(Integer.class);	
-			if(row == 1) {
-				
+		if(condition) {
+			Client client = ClientBuilder.newClient();
+			WebTarget target = client.target(URL.baseURL).path("deleteAuthor").path("{id}").resolveTemplate("id", id);
+			Invocation.Builder invocationBuilder = target.request();
+			Response resp = invocationBuilder.delete();
+			
+			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
+				Integer row = resp.readEntity(Integer.class);	
+				if(row == 1) {
+					request.setAttribute("status", "success");
+					url = URL.authorList;
+				}
+				else {
+					System.out.println("..... Author not deleted in DeleteAuthor servlet .....");
+					request.setAttribute("status", "invalid");
+					url = URL.authorList;
+				}
 			}
 			else {
+				System.out.println("..... Error in DeleteAuthor servlet .....");
+				url = URL.authorList;
+				request.setAttribute("status", "deleteservererror");
 				
 			}
-			request.setAttribute("status", "success");
-			url = "/GetAuthorList";
 		}
-		else {
-			System.out.println("..... Error in DeleteAuthor Servlet .....");
-			url = "/GetAuthorList";
-			request.setAttribute("err", "NotFound");
 			
-		}
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
