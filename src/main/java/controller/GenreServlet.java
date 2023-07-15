@@ -26,8 +26,6 @@ import org.apache.commons.text.StringEscapeUtils;
 
 import com.google.gson.Gson;
 
-import model.Author;
-import model.AuthorDatabase;
 //[IMPORT FROM MODEL]
 import model.Book;
 import model.BookDatabase;
