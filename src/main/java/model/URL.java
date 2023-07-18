@@ -1,3 +1,10 @@
+// Author		: Zay Yar Tun, Thu Htet San
+// Admin No		: 2235035, 2235022
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 15.7.2023
+// Description	: url
+
 package model;
 
 public class URL {
@@ -12,4 +19,7 @@ public class URL {
 	// servlets
 	public static final String getAuthorListServlet = "/GetAuthorList";
 	public static final String deleteAuthorServlet = "/DeleteAuthor/";
+	public static final String getAuthorByIDServlet = "/GetAuthorByID/";
+	public static final String createAuthorServlet = "/CreateAuthor";
+	public static final String updateAuthorServlet = "/UpdateAuthor";
 }

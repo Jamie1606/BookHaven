@@ -69,4 +69,13 @@ public class Author {
 	public void setLink(String link) {
 		this.link = link;
 	}
+	
+	public String formatNull(String value) {
+		if(value == null) {
+			return "";
+		}
+		else {
+			return value;
+		}
+	}
 }
