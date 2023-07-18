@@ -81,11 +81,15 @@
 			out.println("<script>alert('Invalid data or request!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
 			return;
 		}
-		if(status.equals("success")) {
+		if(status.equals("deletesuccess")) {
 			out.println("<script>alert('Author is successfully deleted!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
 			return;
 		}
 		if(status.equals("deleteservererror")) {
+			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
+			return;
+		}
+		if(status.equals("updateservererror")) {
 			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
 			return;
 		}
@@ -166,8 +170,8 @@
 										}
 										
 										
-										out.println("<td><a href='" + request.getContextPath() + "/GetAuthorByID/" + authorID + "'>Edit</a> | "
-										+ "<a href='" + request.getContextPath() + URL.deleteAuthorServlet + authorID + "'>Delete</a></td>");
+										out.println("<td><a href='" + request.getContextPath() + URL.getAuthorByIDServlet + authorID + "'>Edit</a>" 
+										+ " | <a href='" + request.getContextPath() + URL.deleteAuthorServlet + authorID + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
 									%>

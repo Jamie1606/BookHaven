@@ -25,6 +25,8 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
+
+import model.URL;
 import model.Author;
 
 /**
@@ -46,18 +48,24 @@ public class UpdateAuthor extends HttpServlet {
 		String birthDate = request.getParameter("birthdate");
 		String biography = request.getParameter("biography");
 		String link = request.getParameter("link");
+		String url = URL.authorList;
+		boolean condition = true;
 		
 		Author author = new Author();
 		
 		if(id == null || id.isEmpty() || !TestReg.matchInteger(id)) {
-			
+			System.out.println(".... Invalid id in UpdateAuthor servlet .....");
+			request.setAttribute("status", "invalid");
+			condition = false;
 		}
 		else {
 			author.setAuthorID(Integer.parseInt(id));
 		}
 		
 		if(name == null || name.isEmpty()) {
-			
+			System.out.println("..... Invalid name in UpdateAuthor servlet .....");
+			request.setAttribute("status", "invalid");
+			condition = false;
 		}
 		else {
 			author.setName(name.trim());
@@ -68,7 +76,9 @@ public class UpdateAuthor extends HttpServlet {
 			LocalDate testBirthDate = tmpBirthDate.toLocalDate();
 			long diff = ChronoUnit.DAYS.between(testBirthDate, LocalDate.now()) / 365;
 			if(diff < 5) {
-				
+				System.out.println("..... Invalid birth date in UpdateAuthor servlet .....");
+				request.setAttribute("status", "invalid");
+				condition = false;
 			}
 			else {
 				author.setBirthDate(tmpBirthDate);
@@ -90,30 +100,28 @@ public class UpdateAuthor extends HttpServlet {
 			author.setLink(link.trim());
 		}
 		
-		
-		Client client = ClientBuilder.newClient();
-		String restUrl = "http://localhost:8081/bookhaven/api";
-		WebTarget target = client.target(restUrl).path("updateAuthor");
-		Invocation.Builder invocationBuilder = target.request();
-		Response resp = invocationBuilder.put(Entity.json(author));
-		
-		String url = "/signout.jsp";
-		if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
-			Integer row = resp.readEntity(Integer.class);
-			if(row == 1) {
-				request.setAttribute("status", "success");
-				url = "/GetAuthorList";
+		if(condition) {
+			Client client = ClientBuilder.newClient();
+			WebTarget target = client.target(URL.baseURL).path("updateAuthor");
+			Invocation.Builder invocationBuilder = target.request();
+			Response resp = invocationBuilder.put(Entity.json(author));
+			
+			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
+				Integer row = resp.readEntity(Integer.class);
+				if(row == 1) {
+					request.setAttribute("status", "success");
+				}
+				else {
+					System.out.println("..... Author not updated in UpdateAuthor servlet .....");
+					request.setAttribute("status", "invalid");
+				}
 			}
 			else {
-				request.setAttribute("status", "invalid");
-				url = "/GetAuthorList";
+				System.out.println("..... Error in UpdateAuthor servlet .....");
+				request.setAttribute("status", "updateservererror");
 			}
 		}
-		else {
-			System.out.println("..... Error in UpdateAuthor Servlet .....");
-			url = "/GetAuthorList";
-			request.setAttribute("status", "fail");
-		}
+			
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
