@@ -74,7 +74,12 @@
 	<%
 	// set default value for author data
 	Author author = null;
-	
+	int authorid = 0;
+	String name = "";
+	String nationality = "";
+	String birthdate = "";
+	String biography = "";
+	String link = "";
 			
 	String status = (String) request.getAttribute("status");
 	if(status != null) {
@@ -101,14 +106,22 @@
 	}
 	
 	String update = (String) request.getAttribute("update");
-	if(update != null) 
-	{
+	if(update != null) {
 		if(update.equals("true")) {
 			author = (Author) request.getAttribute("author");
 			request.removeAttribute("author");
+			authorid = author.getAuthorID();
+			name = author.formatNull(author.getName());
+			nationality = author.formatNull(author.getNationality());
+			biography = author.formatNull(author.getBiography());
+			link = author.formatNull(author.getLink());
+			if(author.getBirthDate() != null) {
+				birthdate = author.getBirthDate().toString();				
+			}
 		}
 		else {
-			
+			out.println("<script>location='" + request.getContextPath()	+ URL.authorRegistration + "';</script>");
+			return;
 		}
 	}
 
@@ -146,40 +159,40 @@
 
 							<!-- Multi Columns Form -->
 							<form id="authorForm" class="row g-3"
-								action='<%=request.getContextPath()%>/<%= (update != null) ? "UpdateAuthor" : "CreateAuthor"%>'
+								action='<%=request.getContextPath() + ((update != null) ? URL.updateAuthorServlet : URL.createAuthorServlet) %>'
 								method="post">
 								<input type="hidden" name="id"
-									value="<%=(update != null) ? author.getAuthorID() : ""%>">
+									value="<%=(update != null) ? authorid : ""%>">
 								<div class="col-md-4">
 									<label for="name" class="form-label">Name</label> <input
 										type="text" class="form-control" name="name" id="name"
-										value="<%=(update != null) ? author.getName() : ""%>"
+										value="<%=(update != null) ? name : ""%>"
 										required>
 								</div>
 								<div class="col-md-4">
 									<label for="nationality" class="form-label">Nationality</label>
 									<input type="text" class="form-control" name="nationality"
-										value="<%=(update != null) ? (author.getNationality() == null)? "" : author.getNationality() : ""%>"
+										value="<%=(update != null) ? nationality : ""%>"
 										id="nationality">
 								</div>
 
 								<div class="col-md-4">
 									<label for="birthdate" class="form-label">BirthDate</label> <input
 										type="date" class="form-control" name="birthdate"
-										value="<%=(update != null) ? author.getBirthDate() : ""%>"
+										value="<%=(update != null) ? birthdate : ""%>"
 										id="birthdate" max="<%=date_str%>">
 								</div>
 
 								<div class="col-12">
 									<label for="biography" class="form-label">Biography</label>
 									<textarea rows="10" cols="10" class="form-control"
-										name="biography" id="biography"><%=(update != null) ? (author.getBiography() == null)?"" :author.getBiography() : ""%></textarea>
+										name="biography" id="biography"><%=(update != null) ? biography : ""%></textarea>
 								</div>
 								<div class="col-12">
 									<label for="link" class="form-label">Link</label> <input
 										type="text" class="form-control" autocomplete="off"
 										name="link" id="link"
-										value="<%=(update != null) ? (author.getLink() == null) ? "" : author.getLink()  : ""%>">
+										value="<%=(update != null) ? link : ""%>">
 								</div>
 								<div class="text-center">
 									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update != null) ? "Update" : "Save"%></button>

@@ -63,18 +63,15 @@ public class DeleteAuthor extends HttpServlet {
 			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
 				Integer row = resp.readEntity(Integer.class);	
 				if(row == 1) {
-					request.setAttribute("status", "success");
-					url = URL.authorList;
+					request.setAttribute("status", "deletesuccess");
 				}
 				else {
 					System.out.println("..... Author not deleted in DeleteAuthor servlet .....");
 					request.setAttribute("status", "invalid");
-					url = URL.authorList;
 				}
 			}
 			else {
 				System.out.println("..... Error in DeleteAuthor servlet .....");
-				url = URL.authorList;
 				request.setAttribute("status", "deleteservererror");
 				
 			}
