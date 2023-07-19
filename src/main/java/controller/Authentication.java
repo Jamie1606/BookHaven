@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import model.AdminDatabase;
 import model.MemberDatabase;
+import model.TestReg;
 
 public class Authentication {
 	public Authentication() {

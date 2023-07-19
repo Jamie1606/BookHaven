@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controller.TestReg;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
@@ -19,6 +18,7 @@ import jakarta.ws.rs.core.Response;
 
 import model.URL;
 import model.Author;
+import model.TestReg;
 
 /**
  * Servlet implementation class GetAuthorByID

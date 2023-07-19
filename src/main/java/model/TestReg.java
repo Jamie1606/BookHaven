@@ -5,7 +5,7 @@
 // Date: 8.6.2023
 // Description: To test string with regular expressions
 
-package controller;
+package model;
 
 import java.util.ArrayList;
 import java.util.regex.*;
@@ -13,7 +13,6 @@ import java.util.regex.*;
 public class TestReg {
 	private static final String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 	private static final String passwordPattern = "^.{8,16}$";
-	private static final String isbnPattern = "^[\\d]{3}-[\\d]{10}$";
 	private static final String integerPattern = "^[\\d]+$";
 	private static final String negIntegerPattern = "^[-]{0,1}[\\d]+$";
 	private static final String decimalPattern = "^[\\d]+[.]{0,1}[\\d]*$";
@@ -42,12 +41,6 @@ public class TestReg {
 			return false;
 		}
 		return Pattern.matches(passwordPattern, test);
-	}
-	public static boolean matchISBN(String test) {
-		if(test == null) {
-			return false;
-		}
-		return Pattern.matches(isbnPattern, test);
 	}
 	
 	public static boolean matchInteger(String test) {

@@ -10,19 +10,6 @@ package model;
 public class Genre {
 	private int genreID;
 	private String genre;
-	
-	public Genre(int genreID) {
-		this.genreID = genreID;
-	}
-	
-	public Genre(String genre) {
-		this.genre = genre;
-	}
-
-	public Genre(int genreID, String genre) {
-		this.genreID = genreID;
-		this.genre = genre;
-	}
 
 	public int getGenreID() {
 		return genreID;

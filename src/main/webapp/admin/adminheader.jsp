@@ -1,15 +1,5 @@
 <%@ page import="controller.Authentication"%>
 
-<%
-// testing for whether the admin has logged in or not
-Authentication auth = new Authentication();
-if (!auth.testAdmin(session)) {
-	out.println(
-	"<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
-	return;
-}
-%>
-
 <!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">
 
