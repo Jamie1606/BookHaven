@@ -81,6 +81,10 @@
 			out.println("<script>alert('Invalid data or request!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
 			return;
 		}
+		if(status.equals("updatesuccess")) {
+			out.println("<script>alert('Author is successfully updated!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
+			return;
+		}
 		if(status.equals("deletesuccess")) {
 			out.println("<script>alert('Author is successfully deleted!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
 			return;
@@ -133,7 +137,7 @@
 							<h5 class="card-title">Author Information</h5>
 
 							<!-- Table with stripped rows -->
-							<table class="display datatable nowrap hover" style="width: 100%">
+							<table class="display data-table nowrap hover" style="width: 100%">
 								<thead>
 									<tr>
 										<th scope="col">No.</th>
@@ -171,7 +175,7 @@
 										
 										
 										out.println("<td><a href='" + request.getContextPath() + URL.getAuthorByIDServlet + authorID + "'>Edit</a>" 
-										+ " | <a href='" + request.getContextPath() + URL.deleteAuthorServlet + authorID + "'>Delete</a></td>");
+										+ " | <a class='deleteLink' href='" + request.getContextPath() + URL.deleteAuthorServlet + authorID + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
 									%>
@@ -199,6 +203,25 @@
 
 	</main>
 	<!-- End #main -->
+	
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        Are you sure you want to delete?
+	      </div>
+	      <div class="modal-footer">
+	      	<button type="button" class="btn btn-danger btnDelete">Delete</button>
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>	        
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
 	<%@ include file="adminfooter.jsp"%>
 
@@ -231,10 +254,26 @@
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
 	
 	<script>
-		let table = new DataTable('.datatable', {
+		let table = new DataTable('.data-table', {
 			"scrollX": true,
 			"pageLength": 25,
 			"stateSave": true
+		});
+		
+		document.addEventListener('click', function(event) {
+			let target = event.target;
+			
+			if(target.classList.contains("deleteLink")) {
+				event.preventDefault();
+				
+				var deleteModal = new bootstrap.Modal(document.getElementById("exampleModal"));
+				deleteModal.show();
+				
+				document.querySelector('#exampleModal .btnDelete').addEventListener('click', function() {
+					window.location.href = target.getAttribute('href');
+					deleteModal.hide();
+				})
+			}
 		});
 	</script>
 </body>

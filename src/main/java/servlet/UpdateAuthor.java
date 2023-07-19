@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controller.TestReg;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -28,6 +27,7 @@ import jakarta.ws.rs.core.Response;
 
 import model.URL;
 import model.Author;
+import model.TestReg;
 
 /**
  * Servlet implementation class UpdateAuthor
@@ -109,7 +109,7 @@ public class UpdateAuthor extends HttpServlet {
 			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
 				Integer row = resp.readEntity(Integer.class);
 				if(row == 1) {
-					request.setAttribute("status", "success");
+					request.setAttribute("status", "updatesuccess");
 				}
 				else {
 					System.out.println("..... Author not updated in UpdateAuthor servlet .....");

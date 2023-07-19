@@ -1,10 +1,3 @@
-// Author		: Zay Yar Tun
-// Admin No		: 2235035
-// Class		: DIT/FT/2A/02
-// Group		: 10
-// Date			: 11.7.2023
-// Description	: this is to store admin data from database
-
 package servlet;
 
 import java.io.IOException;
@@ -25,19 +18,19 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import model.Author;
+import model.Genre;
 import model.URL;
 
 /**
- * Servlet implementation class GetAuthorList
+ * Servlet implementation class GetBookRegistration
  */
-@WebServlet("/GetAuthorList")
-public class GetAuthorList extends HttpServlet {
+@WebServlet("/GetBookRegistration")
+public class GetBookRegistration extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public GetAuthorList() {
+    public GetBookRegistration() {
         super();
     }
-
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -45,12 +38,12 @@ public class GetAuthorList extends HttpServlet {
 		WebTarget target = client.target(URL.baseURL).path("getAllAuthor");
 		Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
 		Response resp = invocationBuilder.get();
-		String url = URL.authorList;
+		String url = URL.bookRegistration;
 		
 		if(resp.getStatus() == Response.Status.OK.getStatusCode()) {			
 			ArrayList<Author> authorList = resp.readEntity(new GenericType<ArrayList<Author>>() {});	
 			if(authorList == null) {
-				System.out.println("..... Server error in GetAuthorList servlet .....");
+				System.out.println("..... Author null error in GetBookRegistration servlet .....");
 				request.setAttribute("status", "servererror");
 			}
 			else {
@@ -59,7 +52,27 @@ public class GetAuthorList extends HttpServlet {
 			}
 		}
 		else {
-			System.out.println("..... Error in GetAuthorList servlet .....");
+			System.out.println("..... Author error in GetBookRegistration servlet .....");
+			request.setAttribute("status", "servererror");
+		}
+		
+		target = client.target(URL.baseURL).path("getAllGenre");
+		invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+		resp = invocationBuilder.get();
+		
+		if(resp.getStatus() == Response.Status.OK.getStatusCode()) {			
+			ArrayList<Genre> genreList = resp.readEntity(new GenericType<ArrayList<Genre>>() {});	
+			if(genreList == null) {
+				System.out.println("..... Genre null error in GetBookRegistration servlet .....");
+				request.setAttribute("status", "servererror");
+			}
+			else {
+				request.setAttribute("genreList", genreList);
+				request.setAttribute("servlet", "true");
+			}
+		}
+		else {
+			System.out.println("..... Genre error in GetBookRegistration servlet .....");
 			request.setAttribute("status", "servererror");
 		}
 		

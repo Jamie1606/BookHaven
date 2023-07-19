@@ -10,12 +10,16 @@ package model;
 import java.sql.Date;
 import java.util.ArrayList;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
+
 public class Book {
-	private String ISBNNo;
+	private String isbnno;
 	private String title;
 	private int page;
 	private double price;
 	private String publisher;
+	
+	@JsonbDateFormat(value = "yyyy-MM-dd")
 	private Date publicationDate;
 	private int qty;
 	private double rating;
@@ -26,115 +30,115 @@ public class Book {
 	private ArrayList<Author> authors;
 	private ArrayList<Genre> genres;
 
-	public ArrayList<Genre> getGenres() {
-		return genres;
-	}
-
-	public void setGenres(ArrayList<Genre> genres) {
-		this.genres = genres;
-	}
-
 	public String getISBNNo() {
-		return ISBNNo;
+		return isbnno;
 	}
-
-	public void setISBNNo(String iSBNNo) {
-		ISBNNo = iSBNNo;
+	
+	public void setISBNNo(String isbnno) {
+		this.isbnno = isbnno;
 	}
-
+	
 	public String getTitle() {
 		return title;
 	}
-
+	
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
+	
 	public int getPage() {
 		return page;
 	}
-
+	
 	public void setPage(int page) {
 		this.page = page;
 	}
-
+	
 	public double getPrice() {
 		return price;
 	}
-
+	
 	public void setPrice(double price) {
 		this.price = price;
 	}
-
+	
 	public String getPublisher() {
 		return publisher;
 	}
-
+	
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
 	}
-
+	
 	public Date getPublicationDate() {
 		return publicationDate;
 	}
-
+	
 	public void setPublicationDate(Date publicationDate) {
 		this.publicationDate = publicationDate;
 	}
-
+	
 	public int getQty() {
 		return qty;
 	}
-
+	
 	public void setQty(int qty) {
 		this.qty = qty;
 	}
-
+	
 	public double getRating() {
 		return rating;
 	}
-
+	
 	public void setRating(double rating) {
 		this.rating = rating;
 	}
-
+	
 	public String getDescription() {
 		return description;
 	}
-
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
+	
 	public String getImage() {
 		return image;
 	}
-
+	
 	public void setImage(String image) {
 		this.image = image;
 	}
-
+	
 	public String getImage3D() {
 		return image3D;
 	}
-
+	
 	public void setImage3D(String image3d) {
 		image3D = image3d;
 	}
-
+	
 	public String getStatus() {
 		return status;
 	}
-
+	
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
+	
 	public ArrayList<Author> getAuthors() {
 		return authors;
 	}
-
+	
 	public void setAuthors(ArrayList<Author> authors) {
 		this.authors = authors;
+	}
+	
+	public ArrayList<Genre> getGenres() {
+		return genres;
+	}
+	
+	public void setGenres(ArrayList<Genre> genres) {
+		this.genres = genres;
 	}
 }
