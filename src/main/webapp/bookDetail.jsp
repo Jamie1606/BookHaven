@@ -12,7 +12,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page
-	import="controller.Authentication, javax.servlet.http.HttpSession, controller.TestReg"%>
+	import="controller.Authentication, javax.servlet.http.HttpSession,model.TestReg"%>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 

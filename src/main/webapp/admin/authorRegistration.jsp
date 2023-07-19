@@ -124,6 +124,9 @@
 			return;
 		}
 	}
+	else {
+		update = "";
+	}
 
 	// calendar for author birthdate
 	// author must be at least 5 years old
@@ -142,7 +145,7 @@
 			<nav>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item"><a
-						href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
+						href="<%=request.getContextPath() + URL.adminHomePage %>">Home</a></li>
 					<li class="breadcrumb-item">Registration Forms</li>
 					<li class="breadcrumb-item active">Author Registration</li>
 				</ol>
@@ -159,10 +162,10 @@
 
 							<!-- Multi Columns Form -->
 							<form id="authorForm" class="row g-3"
-								action='<%=request.getContextPath() + ((update != null) ? URL.updateAuthorServlet : URL.createAuthorServlet) %>'
+								action='<%=request.getContextPath() + ((update.equals("true")) ? URL.updateAuthorServlet : URL.createAuthorServlet) %>'
 								method="post">
 								<input type="hidden" name="id"
-									value="<%=(update != null) ? authorid : ""%>">
+									value="<%=(update.equals("true")) ? authorid : ""%>">
 								<div class="col-md-4">
 									<label for="name" class="form-label">Name</label> <input
 										type="text" class="form-control" name="name" id="name"
@@ -172,30 +175,30 @@
 								<div class="col-md-4">
 									<label for="nationality" class="form-label">Nationality</label>
 									<input type="text" class="form-control" name="nationality"
-										value="<%=(update != null) ? nationality : ""%>"
+										value="<%=(update.equals("true")) ? nationality : ""%>"
 										id="nationality">
 								</div>
 
 								<div class="col-md-4">
 									<label for="birthdate" class="form-label">BirthDate</label> <input
 										type="date" class="form-control" name="birthdate"
-										value="<%=(update != null) ? birthdate : ""%>"
+										value="<%=(update.equals("true")) ? birthdate : ""%>"
 										id="birthdate" max="<%=date_str%>">
 								</div>
 
 								<div class="col-12">
 									<label for="biography" class="form-label">Biography</label>
 									<textarea rows="10" cols="10" class="form-control"
-										name="biography" id="biography"><%=(update != null) ? biography : ""%></textarea>
+										name="biography" id="biography"><%=(update.equals("true")) ? biography : ""%></textarea>
 								</div>
 								<div class="col-12">
 									<label for="link" class="form-label">Link</label> <input
 										type="text" class="form-control" autocomplete="off"
 										name="link" id="link"
-										value="<%=(update != null) ? link : ""%>">
+										value="<%=(update.equals("true")) ? link : ""%>">
 								</div>
 								<div class="text-center">
-									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update != null) ? "Update" : "Save"%></button>
+									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update.equals("true")) ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Multi Columns Form -->
