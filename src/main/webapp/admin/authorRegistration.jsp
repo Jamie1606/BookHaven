@@ -1,4 +1,3 @@
-
 <%
 // Author		: Zay Yar Tun
 // Admin No		: 2235035
@@ -10,7 +9,7 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="java.util.*, java.text.*, model.Author"%>
+<%@ page import="java.util.*, java.text.*, model.Author, model.URL"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -73,89 +72,60 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	// set default value for status
-	String status = "register";
+	// set default value for author data
 	Author author = null;
-
-	// show error and success for registration
-	String errCode = request.getParameter("errCode");
-	if (errCode != null) {
-		if (errCode.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
-		} else if (errCode.equals("invalid")) {
-			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
-		} else if (errCode.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
-			return;
-		} 
-		else {
-			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
-			return;
-		}
-	} else {
-		String success = request.getParameter("success");
-		if (success != null) {
-			if (success.equals("register")) {
-		out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
-				+ "/admin/authorRegistration.jsp';</script>");
-				return;
-			}
-			if (success.equals("update")) {
-		out.println("<script>alert('Author data is successfully updated!'); location='" + request.getContextPath()
-				+ "/admin/authors';</script>");
-				return;
-			}
-		}
-	}
-
-	// check whether it is to update author data
-	status = (String) request.getAttribute("status");
-	request.removeAttribute("status");
-	if (status != null) {
-		if(status.equals("success")) {
-			out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
-			return;
-		}
+	int authorid = 0;
+	String name = "";
+	String nationality = "";
+	String birthdate = "";
+	String biography = "";
+	String link = "";
+			
+	String status = (String) request.getAttribute("status");
+	if(status != null) {
 		if(status.equals("invalid")) {
-			out.println("<script>alert('Invalid data or request!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
+			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath()
+			+ URL.authorRegistration + "';</script>");
 			return;
 		}
-		if(status.equals("fail")) {
+		else if(status.equals("success")) {
+			out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
+			+ URL.authorRegistration + "';</script>");
+			return;
+		}
+		else if(status.equals("servererror")) {
 			out.println("<script>alert('Server error!'); location='" + request.getContextPath()
-			+ "/admin/authorRegistration.jsp';</script>");
+			+ URL.authorRegistration + "';</script>");
 			return;
 		}
-		if(status.equals("update")) {
-			author = (Author) request.getAttribute("author");
-			request.removeAttribute("author");
+		else {
+			out.println("<script>alert('Unexpected error! Please contact IT team!'); location='" + request.getContextPath()
+			+ URL.authorRegistration + "';</script>");
+			return;
 		}
-	} else {
-		status = "register";
-		
-		//else {
-			//out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
-			//+ "/signout.jsp';</script>");
-			//return;
-		//}
-		
 	}
 	
 	String update = (String) request.getAttribute("update");
-	if(update != null) 
-	{
+	if(update != null) {
 		if(update.equals("true")) {
 			author = (Author) request.getAttribute("author");
 			request.removeAttribute("author");
+			authorid = author.getAuthorID();
+			name = author.formatNull(author.getName());
+			nationality = author.formatNull(author.getNationality());
+			biography = author.formatNull(author.getBiography());
+			link = author.formatNull(author.getLink());
+			if(author.getBirthDate() != null) {
+				birthdate = author.getBirthDate().toString();				
+			}
 		}
 		else {
-			
+			out.println("<script>location='" + request.getContextPath()	+ URL.authorRegistration + "';</script>");
+			return;
 		}
+	}
+	else {
+		update = "";
 	}
 
 	// calendar for author birthdate
@@ -175,12 +145,13 @@
 			<nav>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item"><a
-						href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
+						href="<%=request.getContextPath() + URL.adminHomePage %>">Home</a></li>
 					<li class="breadcrumb-item">Registration Forms</li>
 					<li class="breadcrumb-item active">Author Registration</li>
 				</ol>
 			</nav>
 		</div>
+		
 		<!-- End Page Title -->
 		<section class="section">
 			<div class="row">
@@ -191,44 +162,43 @@
 
 							<!-- Multi Columns Form -->
 							<form id="authorForm" class="row g-3"
-								action='<%=request.getContextPath()%>/<%= (update != null) ? "UpdateAuthor" : "CreateAuthor"%>'
+								action='<%=request.getContextPath() + ((update.equals("true")) ? URL.updateAuthorServlet : URL.createAuthorServlet) %>'
 								method="post">
-								<input type="hidden" name="status" value="<%=status%>">
 								<input type="hidden" name="id"
-									value="<%=(update != null) ? author.getAuthorID() : ""%>">
+									value="<%=(update.equals("true")) ? authorid : ""%>">
 								<div class="col-md-4">
 									<label for="name" class="form-label">Name</label> <input
 										type="text" class="form-control" name="name" id="name"
-										value="<%=(update != null) ? author.getName() : ""%>"
+										value="<%=(update != null) ? name : ""%>"
 										required>
 								</div>
 								<div class="col-md-4">
 									<label for="nationality" class="form-label">Nationality</label>
 									<input type="text" class="form-control" name="nationality"
-										value="<%=(update != null) ? (author.getNationality() == null)? "" : author.getNationality() : ""%>"
+										value="<%=(update.equals("true")) ? nationality : ""%>"
 										id="nationality">
 								</div>
 
 								<div class="col-md-4">
 									<label for="birthdate" class="form-label">BirthDate</label> <input
 										type="date" class="form-control" name="birthdate"
-										value="<%=(update != null) ? author.getBirthDate() : ""%>"
+										value="<%=(update.equals("true")) ? birthdate : ""%>"
 										id="birthdate" max="<%=date_str%>">
 								</div>
 
 								<div class="col-12">
 									<label for="biography" class="form-label">Biography</label>
 									<textarea rows="10" cols="10" class="form-control"
-										name="biography" id="biography"><%=(update != null) ? (author.getBiography() == null)?"" :author.getBiography() : ""%></textarea>
+										name="biography" id="biography"><%=(update.equals("true")) ? biography : ""%></textarea>
 								</div>
 								<div class="col-12">
 									<label for="link" class="form-label">Link</label> <input
 										type="text" class="form-control" autocomplete="off"
 										name="link" id="link"
-										value="<%=(update != null) ? (author.getLink() == null) ? "" : author.getLink()  : ""%>">
+										value="<%=(update.equals("true")) ? link : ""%>">
 								</div>
 								<div class="text-center">
-									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update != null) ? "Update" : "Save"%></button>
+									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update.equals("true")) ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Multi Columns Form -->

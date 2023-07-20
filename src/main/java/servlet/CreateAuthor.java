@@ -18,14 +18,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controller.TestReg;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
+
 import model.Author;
+import model.TestReg;
+import model.URL;
 
 /**
  * Servlet implementation class CreateAuthor
@@ -46,9 +48,14 @@ public class CreateAuthor extends HttpServlet {
 		String biography = request.getParameter("biography");
 		String link = request.getParameter("link");
 		
+		String url = URL.authorRegistration;
+		boolean condition = true;
 		Author author = new Author();
+		
 		if(name == null || name.isEmpty()) {
-			
+			System.out.println("..... Invalid author data in CreateAuthor servlet .....");
+			request.setAttribute("status", "invalid");
+			condition = false;
 		}
 		else {
 			author.setName(name.trim());
@@ -59,7 +66,9 @@ public class CreateAuthor extends HttpServlet {
 			LocalDate testBirthDate = tmpBirthDate.toLocalDate();
 			long diff = ChronoUnit.DAYS.between(testBirthDate, LocalDate.now()) / 365;
 			if(diff < 5) {
-				
+				System.out.println("..... Invalid author data in CreateAuthor servlet .....");
+				request.setAttribute("status", "invalid");
+				condition = false;
 			}
 			else {
 				author.setBirthDate(tmpBirthDate);
@@ -81,30 +90,28 @@ public class CreateAuthor extends HttpServlet {
 			author.setLink(link.trim());
 		}
 		
-		
-		Client client = ClientBuilder.newClient();
-		String restUrl = "http://localhost:8081/bookhaven/api";
-		WebTarget target = client.target(restUrl).path("createAuthor");
-		Invocation.Builder invocationBuilder = target.request();
-		Response resp = invocationBuilder.post(Entity.json(author));
-		
-		String url = "/signout.jsp";
-		if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
-			Integer row = resp.readEntity(Integer.class);
-			if(row == 1) {
-				request.setAttribute("status", "success");
-				url = "/admin/authorRegistration.jsp";
+		if(condition) {
+			Client client = ClientBuilder.newClient();
+			WebTarget target = client.target(URL.baseURL).path("createAuthor");
+			Invocation.Builder invocationBuilder = target.request();
+			Response resp = invocationBuilder.post(Entity.json(author));
+			
+			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
+				Integer row = resp.readEntity(Integer.class);
+				if(row == 1) {
+					request.setAttribute("status", "success");
+				}
+				else {
+					System.out.println("..... Invalid author data in CreateAuthor servlet .....");
+					request.setAttribute("status", "invalid");
+				}
 			}
 			else {
-				request.setAttribute("status", "invalid");
-				url = "/admin/authorRegistration.jsp";
+				System.out.println("..... Error in CreateAuthor servlet .....");
+				request.setAttribute("status", "servererror");
 			}
 		}
-		else {
-			System.out.println("..... Error in CreateAuthor Servlet .....");
-			url = "/admin/authorRegistration.jsp";
-			request.setAttribute("status", "fail");
-		}
+		
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}

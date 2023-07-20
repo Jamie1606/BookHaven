@@ -1,17 +1,17 @@
 
 <%
-//Author: Zay Yar Tun
-//Admin No: 2235035
-// Class: DIT/FT/2A/02
-// Group: 10
-//Date: 7.6.2023
-//Description: book registration page
+// Author		: Zay Yar Tun
+// Admin No		: 2235035
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 7.6.2023
+// Description	: book registration page
 %>
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page
-	import="java.util.*, java.text.*, model.Author, model.Genre, model.Book"%>
+	import="java.util.*, java.text.*, model.Author, model.Genre, model.Book, model.URL"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -48,9 +48,6 @@
 	rel="stylesheet">
 <link
 	href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css"
-	rel="stylesheet">
-<link
-	href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
 	rel="stylesheet">
 
 <!-- bootstrap-select -->
@@ -100,88 +97,114 @@ input::placeholder {
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	String error = (String) request.getAttribute("error");
-	request.removeAttribute("error");
-	String success = (String) request.getAttribute("success");
-	request.removeAttribute("success");
-	if (error != null) {
-		if (error.equals("invalid")) {
-			out.println("<script>alert('Invalid Request or Data!'); location='" + request.getContextPath()
-			+ "/admin/bookRegistration';</script>");
-		} else if (error.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-			+ "/admin/bookRegistration';</script>");
-		} else if (error.equals("upload")) {
-			out.println("<script>alert('Error in uploading data!'); location='" + request.getContextPath()
-			+ "/admin/bookRegistration';</script>");
-			return;
-		} else if (error.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
-			return;
-		} else if (error.equals("authorError")) {
-			out.println(
-			"<script>alert('Error in linking author and book! Please try with edit function in bookList!'); location='"
-					+ request.getContextPath() + "/admin/bookRegistration';</script>");
-			return;
-		} else if (error.equals("genreError")) {
-			out.println(
-			"<script>alert('Error in linking genre and book! Please try with edit function in bookList!'); location='"
-					+ request.getContextPath() + "/admin/bookRegistration';</script>");
-			return;
-		} else if (error.equals("duplicate")) {
-			out.println("<script>alert('This book is already registered in database!'); location='"
-			+ request.getContextPath() + "/admin/bookRegistration';</script>");
-			return;
-		} else {
-			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
-			+ "/admin/bookRegistration.jsp';</script>");
-			return;
-		}
-	}
-	if (success != null) {
-		if (success.equals("register")) {
-			out.println("<script>alert('Book data is successfully added!'); location='" + request.getContextPath()
-			+ "/admin/bookRegistration';</script>");
-			return;
-		}
-		if (success.equals("update")) {
-			out.println("<script>alert('Book data is successfully updated!'); location='" + request.getContextPath()
-			+ "/admin/books';</script>");
-			return;
-		}
-	}
+	//String error = (String) request.getAttribute("error");
+	//request.removeAttribute("error");
+	//String success = (String) request.getAttribute("success");
+	//request.removeAttribute("success");
+	//if (error != null) {
+	//	if (error.equals("invalid")) {
+	//		out.println("<script>alert('Invalid Request or Data!'); location='" + request.getContextPath()
+	//		+ "/admin/bookRegistration';</script>");
+	//	} else if (error.equals("serverError")) {
+	//		out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
+	//		+ "/admin/bookRegistration';</script>");
+	//	} else if (error.equals("upload")) {
+	//		out.println("<script>alert('Error in uploading data!'); location='" + request.getContextPath()
+	//		+ "/admin/bookRegistration';</script>");
+	//		return;
+	//	} else if (error.equals("unauthorized")) {
+	//		out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
+	//		+ "/signout.jsp';</script>");
+	//		return;
+	//	} else if (error.equals("authorError")) {
+	//		out.println(
+	//		"<script>alert('Error in linking author and book! Please try with edit function in bookList!'); location='"
+	//				+ request.getContextPath() + "/admin/bookRegistration';</script>");
+	//		return;
+	//	} else if (error.equals("genreError")) {
+	//		out.println(
+	//		"<script>alert('Error in linking genre and book! Please try with edit function in bookList!'); location='"
+	//				+ request.getContextPath() + "/admin/bookRegistration';</script>");
+	//		return;
+	//	} else if (error.equals("duplicate")) {
+	//		out.println("<script>alert('This book is already registered in database!'); location='"
+	//		+ request.getContextPath() + "/admin/bookRegistration';</script>");
+	//		return;
+	//	} else {
+	//		out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
+	//		+ "/admin/bookRegistration.jsp';</script>");
+	//		return;
+	//	}
+	//}
+	//if (success != null) {
+	//	if (success.equals("register")) {
+	//		out.println("<script>alert('Book data is successfully added!'); location='" + request.getContextPath()
+	//		+ "/admin/bookRegistration';</script>");
+	//		return;
+	//	}
+	//	if (success.equals("update")) {
+	//		out.println("<script>alert('Book data is successfully updated!'); location='" + request.getContextPath()
+	//		+ "/admin/books';</script>");
+	//		return;
+	//	}
+	//}
 
 	String servlet = (String) request.getAttribute("servlet");
 	if (servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + "/admin/bookRegistration';</script>");
+		out.println("<script>location='" + request.getContextPath() + URL.getBookRegistrationServlet + "';</script>");
 		return;
 	}
 
-	// retrieve author and genre list from request attributes sent from book servlet
-
 	String status = (String) request.getAttribute("status");
 	request.removeAttribute("status");
-	Book book = null;
-	ArrayList<Author> bookAuthorList = new ArrayList<Author>();
-	ArrayList<Genre> bookGenreList = new ArrayList<Genre>();
-
-	if (status == null) {
-		status = "register";
-	} else {
-		if (status.equals("update")) {
-			book = (Book) request.getAttribute("book");
-			request.removeAttribute("book");
-			bookAuthorList = (ArrayList<Author>) request.getAttribute("bookAuthorList");
-			request.removeAttribute("bookAuthorList");
-			bookGenreList = (ArrayList<Genre>) request.getAttribute("bookGenreList");
-			request.removeAttribute("bookGenreList");
-		} else {
-			out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
+	if(status != null) {
+		if(status.equals("servererror")) {
+			out.println("<script>alert('Server error!'); location='" + request.getContextPath()	+ URL.adminHomePage + "';</script>");
+			return;
+		}
+		if(status.equals("invalid")) {
+			out.println("<script>alert('Invalid data or request!'); location='" + request.getContextPath()	+ URL.getBookRegistrationServlet + "';</script>");
+			return;
+		}
+		if(status.equals("duplicate")) {
+			out.println("<script>alert('The book is already stored in database!'); location='" + request.getContextPath()	+ URL.getBookRegistrationServlet + "';</script>");
+			return;
+		}
+		if(status.equals("insertsuccess")) {
+			out.println("<script>alert('The book is successfully saved in database!'); location='" + request.getContextPath()	+ URL.getBookRegistrationServlet + "';</script>");
 			return;
 		}
 	}
+	
+	
+	Book book = null;
+	ArrayList<Author> bookAuthorList = new ArrayList<Author>();
+	ArrayList<Genre> bookGenreList = new ArrayList<Genre>();
+	
+	String update = (String) request.getAttribute("update");
+	if(update != null) {
+		book = (Book) request.getAttribute("book");
+	}
+	else {
+		update = "";
+	}
+
+	//if (status == null) {
+	//	status = "register";
+	//} else {
+	//	if (status.equals("update")) {
+	//		book = (Book) request.getAttribute("book");
+	//		request.removeAttribute("book");
+	//		bookAuthorList = (ArrayList<Author>) request.getAttribute("bookAuthorList");
+	//		request.removeAttribute("bookAuthorList");
+	//		bookGenreList = (ArrayList<Genre>) request.getAttribute("bookGenreList");
+	//		request.removeAttribute("bookGenreList");
+	//	} else {
+	//		out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
+	//		+ "/signout.jsp';</script>");
+	//		return;
+	//	}
+	//}
 
 	ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
 	ArrayList<Genre> genreList = (ArrayList<Genre>) request.getAttribute("genreList");
@@ -203,12 +226,13 @@ input::placeholder {
 			<nav>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item"><a
-						href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
+						href="<%=request.getContextPath() + URL.adminHomePage %>">Home</a></li>
 					<li class="breadcrumb-item">Registration Forms</li>
 					<li class="breadcrumb-item active">Book Registration</li>
 				</ol>
 			</nav>
 		</div>
+		
 		<!-- End Page Title -->
 		<section class="section">
 			<div class="row">
@@ -219,23 +243,22 @@ input::placeholder {
 
 							<!-- Multi Columns Form -->
 							<form id="bookForm" class="row g-3"
-								action="<%=request.getContextPath()%>/CreateBook"
+								action="<%=request.getContextPath() + ((update.equals("true")) ? URL.updateBookServlet : URL.createBookServlet) %>"
 								method="post" enctype="multipart/form-data">
-								<input type="hidden" value="<%=status%>" name="status">
+	
 								<div class="col-md-12">
 									<label for="isbn" id="label-isbn" class="form-label">ISBN
 										No <span id="check-isbn"></span>
 									</label> <input type="text" name="isbn" class="form-control" id="isbn"
-										value="<%=status.equals("update") ? book.getISBNNo() : ""%>"
-										placeholder="111-1234567890" required
-										<%=status.equals("update") ? "readonly" : ""%>>
+										value="<%=update.equals("true") ? book.getISBNNo() : ""%>"
+										placeholder="111-1234567890" required>
 								</div>
 								<div class="col-md-12">
 									<label for="title" class="form-label" id="label-title">Title
 										<span style="color: red; font-weight: bold;"></span>
 									</label> <input type="text" name="title" class="form-control"
 										id="title"
-										value="<%=status.equals("update") ? book.getTitle() : ""%>" placeholder="Book Title ..."
+										value="<%=update.equals("true") ? book.getTitle() : ""%>" placeholder="Book Title"
 										required> <span
 										style="float: right; color: red; font-weight: bold;"
 										id="charCount-title">0 / 100</span>
@@ -244,20 +267,20 @@ input::placeholder {
 								<div class="col-md-4">
 									<label for="page" class="form-label">Page</label> <input
 										type="number" name="page" class="form-control" id="page"
-										min="1" placeholder="Total Page ..."
-										value="<%=status.equals("update") ? book.getPage() : ""%>"
+										min="1" placeholder="Total Page"
+										value="<%=update.equals("true") ? book.getPage() : ""%>"
 										required>
 								</div>
 								<div class="col-md-4">
 									<label for="price" class="form-label">Price</label> <input
-										type="number" name="price" step=".01" min="5" placeholder="Unit Price ..."
-										value="<%=status.equals("update") ? book.getPrice() : ""%>"
+										type="number" name="price" step=".01" min="5" placeholder="Unit Price"
+										value="<%=update.equals("true") ? book.getPrice() : ""%>"
 										class="form-control" id="price" required>
 								</div>
 								<div class="col-md-4">
 									<label for="qty" class="form-label">Qty</label> <input
-										type="number" name="qty" class="form-control" id="qty" placeholder="Qty ..."
-										value="<%=status.equals("update") ? book.getQty() : ""%>"
+										type="number" name="qty" class="form-control" id="qty" placeholder="Qty"
+										value="<%=update.equals("true") ? book.getQty() : ""%>"
 										min="0" required>
 								</div>
 
@@ -309,14 +332,14 @@ input::placeholder {
 								<div class="col-md-6">
 									<label for="publisher" class="form-label">Publisher</label> <input
 										type="text" name="publisher" class="form-control"
-										value="<%=status.equals("update") ? book.getPublisher() : ""%>"
+										value="<%=update.equals("true") ? book.getPublisher() : ""%>" placeholder="Publisher"
 										id="publisher" required>
 								</div>
 								<div class="col-md-6">
 									<label for="publicationdate" class="form-label">Publication
 										Date</label> <input type="date" class="form-control"
 										id="publicationdate" name="publicationdate" max="<%=dateStr%>"
-										value="<%=status.equals("update") ? book.getPublicationDate() : ""%>"
+										value="<%=update.equals("true") ? book.getPublicationDate() : ""%>"
 										required>
 								</div>
 
@@ -326,7 +349,7 @@ input::placeholder {
 										style="color: grey; font-weight: normal;">(Optional)</small> <span
 										id="check-description"></span></label>
 									<textarea rows="10" cols="10" class="form-control"
-										name="description" id="description"><%=status.equals("update") ? book.getDescription() : ""%></textarea>
+										name="description" id="description"><%=update.equals("true") ? book.getDescription() : ""%></textarea>
 									<span style="float: right; color: green; font-weight: bold;"
 										id="charCount-description">0 / 1000</span>
 								</div>
@@ -335,7 +358,7 @@ input::placeholder {
 										style="color: grey;">(Optional)</small></label> <input type="file"
 										class="form-control" name="image" id="image" accept="image/*">
 									<input type="hidden"
-										value="<%=status.equals("update") ? book.getImage() : ""%>"
+										value="<%=update.equals("true") ? book.getImage() : ""%>"
 										name="oldimage">
 								</div>
 								<div class="col-md-12">
@@ -343,11 +366,11 @@ input::placeholder {
 										style="color: grey;">(Optional)</small></label> <input type="file"
 										class="form-control" name="image3d" id="image3d"
 										accept="image/*"> <input type="hidden"
-										value="<%=status.equals("update") ? book.getImage3D() : ""%>"
+										value="<%=update.equals("true") ? book.getImage3D() : ""%>"
 										name="oldimage3d">
 								</div>
 								<div class="text-center">
-									<button id="btnSave" type="submit" class="btn btn-primary"><%=(status.equals("update")) ? "Update" : "Save"%></button>
+									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update.equals("true")) ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Multi Columns Form -->
@@ -379,8 +402,6 @@ input::placeholder {
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/quill/quill.min.js"></script>
 	<script
-		src="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
-	<script
 		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
@@ -389,35 +410,25 @@ input::placeholder {
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
 
 	<script>
-		$(document)
-				.ready(
-						function() {
-							$('#author').selectpicker();
-							$('#genre').selectpicker();
-							$('#bookForm')
-									.submit(
-											function(e) {
-												if ($('#description').val().length > 1000) {
-													alert("The description cannot be more than 1000 characters!");
-													$('html, body')
-															.animate(
-																	{
-																		scrollTop : $(
-																				'#description')
-																				.offset().top
-																	}, 1500);
-													return false;
-												} else {
-													$('#btnSave').prop(
-															'disabled', true);
-													$('#btnSave').html(
-															'Loading...');
-													return true;
-												}
-											});
-							$('#description').on("input", checkDescription);
-							$('#isbn').on("input", checkISBN);
-						})
+		$(document).ready(function() {
+			$('#author').selectpicker();
+			$('#genre').selectpicker();
+			$('#bookForm').submit(function(e) {
+				if ($('#description').val().length > 1000) {
+					alert("The description cannot be more than 1000 characters!");
+					$('html, body').animate({
+						scrollTop : $('#description').offset().top
+					}, 1500);
+					return false;
+				} else {
+					$('#btnSave').prop('disabled', true);
+					$('#btnSave').html('Loading...');
+					return true;
+				}
+			});
+			$('#description').on("input", checkDescription);
+			$('#isbn').on("input", checkISBN);
+		})
 
 		function checkISBN() {
 			let value = $('#isbn').val();

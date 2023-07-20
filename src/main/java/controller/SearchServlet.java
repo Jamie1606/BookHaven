@@ -103,8 +103,10 @@ public class SearchServlet extends HttpServlet {
 						ResultSet rs = search_db.getSearchResultSet();
 						try {
 							while (rs.next()) {
-								authorList.add(new Author(rs.getInt("AuthorID"),
-										StringEscapeUtils.escapeHtml4(rs.getString("Name"))));
+								Author author = new Author();
+								author.setAuthorID(rs.getInt("AuthorID"));
+								author.setName(StringEscapeUtils.escapeHtml4(rs.getString("Name")));
+								authorList.add(author);
 								Book book = new Book();
 								book.setISBNNo(StringEscapeUtils.escapeHtml4(rs.getString("ISBNNo")));
 								book.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("Title")));

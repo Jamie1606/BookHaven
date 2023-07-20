@@ -42,6 +42,7 @@ import model.Genre;
 import model.GenreDatabase;
 import model.Member;
 import model.MemberDatabase;
+import model.TestReg;
 
 /**
  * Servlet implementation class MemberServlet

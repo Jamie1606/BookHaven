@@ -10,7 +10,6 @@ package model;
 public class Genre {
 	private int genreID;
 	private String genre;
-	
 	public int getGenreID() {
 		return genreID;
 	}

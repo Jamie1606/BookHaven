@@ -9,7 +9,7 @@
 
 <!-- [IMPORT] -->
 <%@ page
-	import="java.util.ArrayList, model.Genre, model.Book, controller.Authentication, controller.TestReg"%>
+	import="java.util.ArrayList, model.Genre, model.Book, controller.Authentication,model.TestReg"%>
 
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
