@@ -79,7 +79,7 @@ public class MemberServlet extends HttpServlet {
 				request.getRequestDispatcher("/signout.jsp").forward(request, response);
 				return;
 			}
-			// [CKECK AUTHENTICATION-END]
+			// [CHECK AUTHENTICATION-END]
 
 			boolean condition = member_db.getMember();
 			if (condition) {

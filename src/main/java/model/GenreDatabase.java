@@ -200,8 +200,7 @@ public class GenreDatabase {
 			// get database connection
 			Connection db = DriverManager.getConnection(connURL, db_username, db_password);
 
-			System.out.println("before dbStatement");
-			String sqlStatement = "SELECT * FROM \"public\".\"Book\" b JOIN \"public\".\"BookGenre\" g ON b.\"ISBNNo\" = g.\"ISBNNo\" WHERE g.\"GenreID\"�=�? ;";
+			String sqlStatement = "SELECT * FROM \"public\".\"Book\" b JOIN \"public\".\"BookGenre\" g ON b.\"ISBNNo\" = g.\"ISBNNo\" WHERE g.\"GenreID\"=? ;";
 			PreparedStatement st = db.prepareStatement(sqlStatement);
 			st.setInt(1, ID);
 			bookResultSet = st.executeQuery();
