@@ -8,26 +8,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
-import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import model.Book;
 import model.URL;
-import model.Author;
-import model.TestReg;
 
 /**
- * Servlet implementation class GetAuthorByID
+ * Servlet implementation class GetBookByISBN
  */
-@WebServlet("/GetAuthorByID/*")
-public class GetAuthorByID extends HttpServlet {
+@WebServlet("/GetBookByISBN/*")
+public class GetBookByISBN extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public GetAuthorByID() {
+    public GetBookByISBN() {
         super();
     }
 
@@ -35,42 +36,45 @@ public class GetAuthorByID extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String requestURi = (String) request.getRequestURI();
 		String[] parts = requestURi.split("/");
-		String url = URL.authorList;
+		String url = URL.bookList;
 		boolean condition = true;
 		
 		if(parts.length == 0) {
-			System.out.println("..... Invalid data request in GetAuthorByID servlet .....");
+			System.out.println("..... Invalid data request in GetBookByISBN servlet .....");
 			request.setAttribute("status", "invalid");
 			condition = false;
 		}
 		
-		String id = parts[parts.length - 1];
-		if(id == null || !TestReg.matchInteger(id)) {
-			System.out.println("..... Invalid author id in GetAuthorByID servlet .....");
+		String isbn = parts[parts.length - 1];
+		if(isbn == null || isbn.isEmpty()) {
+			System.out.println("..... Invalid isbn in GetBookByISBN servlet .....");
 			request.setAttribute("status", "invalid");
 			condition = false;
 		}
 		
 		if(condition) {
 			Client client = ClientBuilder.newClient();
-			WebTarget target = client.target(URL.baseURL).path("getAuthor").path("{id}").resolveTemplate("id", id);
+			WebTarget target = client.target(URL.baseURL).path("getBook").path("details").path("{isbn}").resolveTemplate("isbn", isbn);
 			Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
 			Response resp = invocationBuilder.get();
 			
 			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
-				Author author = resp.readEntity(new GenericType<Author>() {});
-				if(author != null) {				
-					request.setAttribute("author", author);
+				String json = resp.readEntity(String.class);
+				ObjectMapper obj = new ObjectMapper();
+				Book book = obj.readValue(json, new TypeReference<Book>() {});
+				
+				if(book != null) {				
+					request.setAttribute("book", book);
 					request.setAttribute("update", "true");
-					url = URL.authorRegistration;
+					url = URL.getBookRegistrationServlet;
 				}
 				else {
-					System.out.println("..... No author in GetAuthorByID servlet");
+					System.out.println("..... No book in GetBookByISBN servlet");
 					request.setAttribute("status", "invalid");
 				}
 			}
 			else {
-				System.out.println("..... Error in GetAuthorByID servlet .....");
+				System.out.println("..... Error in GetBookByISBN servlet .....");
 				request.setAttribute("status", "updateservererror");
 			}
 		}
