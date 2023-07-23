@@ -88,7 +88,7 @@
 			+ URL.authorRegistration + "';</script>");
 			return;
 		}
-		else if(status.equals("success")) {
+		else if(status.equals("insertsuccess")) {
 			out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
 			+ URL.authorRegistration + "';</script>");
 			return;
@@ -97,6 +97,9 @@
 			out.println("<script>alert('Server error!'); location='" + request.getContextPath()
 			+ URL.authorRegistration + "';</script>");
 			return;
+		}
+		else if(status.equals("retrievesuccess")) {
+			
 		}
 		else {
 			out.println("<script>alert('Unexpected error! Please contact IT team!'); location='" + request.getContextPath()

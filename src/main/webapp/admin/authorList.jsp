@@ -48,6 +48,7 @@
 	rel="stylesheet">
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" />
 
 <!-- Template Main CSS File -->
 <link href="<%=request.getContextPath()%>/assets/css/style.css"
@@ -249,6 +250,7 @@
 		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
 		
 	<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+	<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 
 	<!-- Template Main JS File -->
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
@@ -257,7 +259,8 @@
 		let table = new DataTable('.data-table', {
 			"scrollX": true,
 			"pageLength": 25,
-			"stateSave": true
+			"stateSave": true,
+			"colReorder": true
 		});
 		
 		document.addEventListener('click', function(event) {

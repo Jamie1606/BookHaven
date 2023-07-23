@@ -149,12 +149,6 @@ input::placeholder {
 	//	}
 	//}
 
-	String servlet = (String) request.getAttribute("servlet");
-	if (servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + URL.getBookRegistrationServlet + "';</script>");
-		return;
-	}
-
 	String status = (String) request.getAttribute("status");
 	request.removeAttribute("status");
 	if(status != null) {
@@ -176,6 +170,12 @@ input::placeholder {
 		}
 	}
 	
+	String servlet = (String) request.getAttribute("servlet");
+	if (servlet == null || !servlet.equals("true")) {
+		out.println("<script>location='" + request.getContextPath() + URL.getBookRegistrationServlet + "';</script>");
+		return;
+	}
+	
 	
 	Book book = null;
 	ArrayList<Author> bookAuthorList = new ArrayList<Author>();
@@ -183,7 +183,14 @@ input::placeholder {
 	
 	String update = (String) request.getAttribute("update");
 	if(update != null) {
-		book = (Book) request.getAttribute("book");
+		if(update.equals("true")) {
+			book = (Book) request.getAttribute("book");
+			bookAuthorList = book.getAuthors();
+			bookGenreList = book.getGenres();
+		}
+		else {
+			update = "";
+		}
 	}
 	else {
 		update = "";
@@ -243,7 +250,7 @@ input::placeholder {
 
 							<!-- Multi Columns Form -->
 							<form id="bookForm" class="row g-3"
-								action="<%=request.getContextPath() + ((update.equals("true")) ? URL.updateBookServlet : URL.createBookServlet) %>"
+								action="<%=request.getContextPath() + ((update.equals("true")) ? URL.updateBookServlet + book.getISBNNo() : URL.createBookServlet) %>"
 								method="post" enctype="multipart/form-data">
 	
 								<div class="col-md-12">
@@ -293,8 +300,8 @@ input::placeholder {
 											boolean isSelected = false;
 											for (Author bookAuthor : bookAuthorList) {
 												if (author.getAuthorID() == bookAuthor.getAuthorID()) {
-											isSelected = true;
-											break;
+													isSelected = true;
+													break;
 												}
 											}
 											if (isSelected) {
@@ -315,8 +322,8 @@ input::placeholder {
 											boolean isSelected = false;
 											for (Genre bookGenre : bookGenreList) {
 												if (genre.getGenreID() == bookGenre.getGenreID()) {
-											isSelected = true;
-											break;
+													isSelected = true;
+													break;
 												}
 											}
 											if (isSelected) {
@@ -426,8 +433,8 @@ input::placeholder {
 					return true;
 				}
 			});
-			$('#description').on("input", checkDescription);
-			$('#isbn').on("input", checkISBN);
+			//$('#description').on("input", checkDescription);
+			//$('#isbn').on("input", checkISBN);
 		})
 
 		function checkISBN() {

@@ -12,7 +12,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page
-	import="controller.Authentication, javax.servlet.http.HttpSession,model.TestReg"%>
+	import="controller.Authentication, javax.servlet.http.HttpSession,model.URL"%>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -120,12 +120,6 @@
 	if (id == null) {
 		out.println("<script>alert('Invalid book id!'); location='" + request.getContextPath() + "/index.jsp';</script>");
 		return;
-	}
-	else {
-		if(!TestReg.matchISBN(id)) {
-			out.println("<script>alert('Invalid book id!'); location='" + request.getContextPath() + "/index.jsp';</script>");
-			return;
-		}
 	}
 	%>
 	<%@ include file="header.jsp"%>
@@ -235,7 +229,7 @@
 						<hr>
 						<label>Publisher</label>
 						<hr>
-						<label>Publication Date</label>
+						<label>Publish Date</label>
 						<hr>
 						<label>Qty in Stock</label>
 						<hr>
@@ -339,23 +333,17 @@
 
 	<script>
 		$(document).ready(function() {
-			fetch('<%=request.getContextPath()%>/book/<%=id%>',
+			fetch('<%= URL.baseURL + URL.getOneBookDetail + id %>',
 			{
 				method: 'GET'
 			})
 			.then(response => response.json())
 			.then(data => {
-				var list = data.list;
-				var authorList = data.authorList;
-				var genreList = data.genreList;
-				var status = data.status;
-				if(status == "serverError") {
-					alert('Error in retrieving book detail!');
-					location = "index.jsp";
-				}
-				else if(status == "invalid") {
-					alert('Invalid request for retrieving book detail!');
-					location = "index.jsp";
+				console.log(data);
+				var authorList = data.authors;
+				var genreList = data.genres;
+				if(data == undefined) {
+					
 				}
 				else {
 					$('#course').css({"visibility": "visible"});
@@ -378,36 +366,38 @@
 							genres += genreList[i].genre + ", ";
 						}
 					}
-					$('#book-status').html(makeCapital(list[0].status));
-					if(list[0].status == "available") {
+					$('#book-status').html(makeCapital(data.status));
+					if(data.status == "available") {
 						$('#book-status').css({"color": "green", "backgroundColor": "rgba(0, 220, 0, 0.2)"});
 					}
 					else {
 						$('#book-status').css({"color": "red", "backgroundColor": "rgba(220, 0, 0, 0.2)"});
 					}
-					$('#book-price').html("$" + list[0].price.toFixed(2));
-					$('#book-rating').html(list[0].rating.toFixed(1));
+					$('#book-price').html("$" + data.price.toFixed(2));
+					$('#book-rating').html(data.rating.toFixed(1));
 					$('#book-author').html(authors);
-					$('#book-title').html(list[0].title);
+					$('#book-title').html(data.title);
 					$('#book-detail-genre').html(genres);
-					$('#book-detail-publisher').html(list[0].publisher);
-					$('#book-detail-publicationdate').html(list[0].publicationDate);
+					$('#book-detail-publisher').html(data.publisher);
+					
+					let pubdate = new Date(data.publicationDate);
+					$('#book-detail-publicationdate').html(pubdate.getDate() + "." + (pubdate.getMonth() + 1) + "." + pubdate.getFullYear());
 					$('#book-detail-author').html(authors);
-					$('#book-detail-title').html(list[0].title);
-					$('#book-detail-isbn').html(list[0].ISBNNo);
-					$('#book-detail-qty').html(list[0].qty);
-					if(list[0].qty <= 0) {
+					$('#book-detail-title').html(data.title);
+					$('#book-detail-isbn').html(data.isbnno);
+					$('#book-detail-qty').html(data.qty);
+					if(data.qty <= 0) {
 						$('#cart').css({"visibility": "hidden"});
 					}
-					$('#book-detail-price').html("$" + list[0].price.toFixed(2));
-					$('#book-description').html(list[0].description);
-					$('#book-publisher').html(list[0].publisher);
-					let pubdate = new Date(list[0].publicationDate);
+					$('#book-detail-price').html("$" + data.price.toFixed(2));
+					$('#book-description').html(data.description);
+					$('#book-publisher').html(data.publisher);
+					
 					$('#book-publicationdate').html(pubdate.getFullYear());
-					$('#book-image').attr("src", "<%=request.getContextPath()%>" + list[0].image);
+					$('#book-image').attr("src", data.image);
 					let star = document.getElementsByClassName("star");
 					for(let i = 0; i < star.length; i++) {
-						if(i <= list[0].rating - 1) {
+						if(i <= data.rating - 1) {
 							star[i].innerHTML = "&#9733;";
 						}
 						else {
@@ -415,35 +405,30 @@
 						}
 					}
 					
-					fetch('<%=request.getContextPath()%>/book/genres/<%=id%>/' + genres, {
+					fetch('<%= URL.baseURL + URL.getRelatedBook + id %>/2', {
 						method: 'GET'
 					})
 					.then(response => response.json())
 					.then(data => {
-						var list = data.list;
-						var status = data.status;
-						if(status == "serverError") {
+						if(data == undefined) {
 							alert('Error in retrieving related book!');
 						}
-						else if(status == "invalid") {
-							alert('Invalid request for retrieving related book!');
-						}
 						else {
-							for(let i = 0; i < list.length; i++) {
+							for(let i = 0; i < data.length; i++) {
 								$('#related-book' + (i + 1)).css({"visibility": "visible"});
-								$('#book-related-image' + (i + 1)).attr("src", "<%=request.getContextPath()%>" + list[i].image);
-								$('#book-related-title' + (i + 1)).html(list[i].title);
-								$('#book-related-title' + (i + 1)).attr("href", "<%=request.getContextPath()%>/bookDetail.jsp?id=" + list[i].ISBNNo);
-								$('#book-related-ratingtext' + (i + 1)).html(list[i].rating.toFixed(1));
-								if(list[i].rating > 0) {
+								$('#book-related-image' + (i + 1)).attr("src", data[i].image);
+								$('#book-related-title' + (i + 1)).html(data[i].title);
+								$('#book-related-title' + (i + 1)).attr("href", "<%=request.getContextPath()%>/bookDetail.jsp?id=" + data[i].isbnno);
+								$('#book-related-ratingtext' + (i + 1)).html(data[i].rating.toFixed(1));
+								if(data[i].rating > 0) {
 									$('#book-related-rating' + (i + 1)).html("&#9733;");
 								}
 								else {
 									$('#book-related-rating' + (i + 1)).html("&#9734;");
 								}
-								$('#book-related-price' + (i + 1)).html("$" + list[i].price.toFixed(2));
-								$('#book-related-status' + (i + 1)).html(makeCapital(list[i].status));
-								if(list[i].status == "available") {
+								$('#book-related-price' + (i + 1)).html("$" + data[i].price.toFixed(2));
+								$('#book-related-status' + (i + 1)).html(makeCapital(data[i].status));
+								if(data[i].status == "available") {
 									$('#book-related-status' + (i + 1)).css({"color": "green"});
 								}
 								else {

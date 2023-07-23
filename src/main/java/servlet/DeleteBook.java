@@ -1,10 +1,3 @@
-// Author		: Zay Yar Tun
-// Admin No		: 2235035
-// Class		: DIT/FT/2A/02
-// Group		: 10
-// Date			: 11.7.2023
-// Description	: this is to store admin data from database
-
 package servlet;
 
 import java.io.IOException;
@@ -24,50 +17,54 @@ import jakarta.ws.rs.core.Response;
 import model.URL;
 
 /**
- * Servlet implementation class DeleteAuthor
+ * Servlet implementation class DeleteBook
  */
-@WebServlet("/DeleteAuthor/*")
-public class DeleteAuthor extends HttpServlet {
+@WebServlet("/DeleteBook/*")
+public class DeleteBook extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public DeleteAuthor() {
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public DeleteBook() {
         super();
     }
 
-
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String url = URL.authorList;
+		String url = URL.bookList;
 		boolean condition = true;
 		String status = "";
-		String id = "";
+		String isbn = "";
+		
 		
 		try {
 			String requestURi = (String) request.getRequestURI();
 			String[] parts = requestURi.split("/");
-			id = parts[parts.length - 1];
-			id = id.trim();
-			Integer.parseInt(id);
+			isbn = parts[parts.length - 1];
+			isbn = isbn.trim();
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			condition = false;
+			System.out.println("..... Invalid isbn in DeleteBook servlet .....");
 			status = "invalid";
-			System.out.println("..... Invalid delete request in DeleteAuthor servlet .....");
 		}
+		
 		
 		if(condition) {
 			Client client = ClientBuilder.newClient();
-			WebTarget target = client.target(URL.baseURL).path("deleteAuthor").path("{id}").resolveTemplate("id", id);
+			WebTarget target = client.target(URL.baseURL).path("deleteBook").path("{isbn}").resolveTemplate("isbn", isbn);
 			Invocation.Builder invocationBuilder = target.request();
 			Response resp = invocationBuilder.delete();
 			
 			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
-				Integer row = resp.readEntity(Integer.class);	
+				Integer row = resp.readEntity(Integer.class);
 				if(row == 1) {
 					status = "deletesuccess";
 				}
 				else {
-					System.out.println("..... Author not deleted in DeleteAuthor servlet .....");
+					System.out.println("..... Book not deleted in DeleteBook servlet .....");
 					status = "invalid";
 				}
 			}
@@ -81,5 +78,4 @@ public class DeleteAuthor extends HttpServlet {
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
-
 }

@@ -18,7 +18,6 @@ import jakarta.ws.rs.core.Response;
 
 import model.URL;
 import model.Author;
-import model.TestReg;
 
 /**
  * Servlet implementation class GetAuthorByID
@@ -33,22 +32,23 @@ public class GetAuthorByID extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestURi = (String) request.getRequestURI();
-		String[] parts = requestURi.split("/");
 		String url = URL.authorList;
 		boolean condition = true;
+		String status = "";
+		String id = "";
 		
-		if(parts.length == 0) {
-			System.out.println("..... Invalid data request in GetAuthorByID servlet .....");
-			request.setAttribute("status", "invalid");
-			condition = false;
+		try {
+			String requestURi = (String) request.getRequestURI();
+			String[] parts = requestURi.split("/");
+			id = parts[parts.length - 1];
+			id = id.trim();
+			Integer.parseInt(id);
 		}
-		
-		String id = parts[parts.length - 1];
-		if(id == null || !TestReg.matchInteger(id)) {
-			System.out.println("..... Invalid author id in GetAuthorByID servlet .....");
-			request.setAttribute("status", "invalid");
+		catch(Exception e) {
+			e.printStackTrace();
+			status = "invalid";
 			condition = false;
+			System.out.println("..... Invalid data request in GetAuthorByID servlet .....");
 		}
 		
 		if(condition) {
@@ -62,21 +62,21 @@ public class GetAuthorByID extends HttpServlet {
 				if(author != null) {				
 					request.setAttribute("author", author);
 					request.setAttribute("update", "true");
+					request.setAttribute("status", "retrievesuccess");
 					url = URL.authorRegistration;
 				}
 				else {
 					System.out.println("..... No author in GetAuthorByID servlet");
-					url = URL.authorList;
-					request.setAttribute("status", "invalid");
+					status = "invalid";
 				}
 			}
 			else {
 				System.out.println("..... Error in GetAuthorByID servlet .....");
-				url = URL.authorList;
-				request.setAttribute("status", "updateservererror");
+				status = "updateservererror";
 			}
 		}
 		
+		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
