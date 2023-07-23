@@ -7,6 +7,7 @@
 
 package model;
 
+
 import javax.servlet.http.Part;
 
 import org.apache.http.HttpEntity;
@@ -18,6 +19,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
@@ -25,26 +27,7 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
 
 public class Functions {
-	
-	/**
-	 * Check form data is null or empty
-	 * 
-	 * @param data takes all string parameters provided
-	 * @return True if the form data are valid
-	 * 
-	 */
-	public static boolean checkFormData(String...data) {
-		if(data == null || data.length == 0) {
-			return false;
-		}
-		for(String value: data) {
-			if(value == null || value.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
+		
 	/**
 	 * 
 	 * Check ISBN 13
@@ -90,25 +73,33 @@ public class Functions {
 		
 		try {
 			if(filePart == null) {
-				return returnStr;
+				return null;
 			}
 			
 			String submittedFileName = filePart.getSubmittedFileName();
-			fileName = fileName.toLowerCase() + "_" + id + submittedFileName.substring(submittedFileName.indexOf(".")).trim();
+			int index = submittedFileName.indexOf(".");
+			if(index == -1) {
+				return null;
+			}
+			fileName = fileName.toLowerCase() + "_" + id + submittedFileName.substring(index).trim();
 			
 			HttpClient httpClient = HttpClients.createDefault();
 			String url = URL.baseURL;
+			String imagepath = "";
 			if(type.equals("booknormal")) {
 				url += URL.bookNormalImageUpload;
+				imagepath = "book/normal/";
 			}
 			else if(type.equals("book3d")) {
 				url += URL.book3DImageUpload;
+				imagepath = "book/3d/";
 			}
 			else if(type.equals("member")) {
 				url += URL.memberImageUpload;
+				imagepath = "member/";
 			}
 			else {
-				return returnStr;
+				return null;
 			}
 			HttpPost httpPost = new HttpPost(url);
 
@@ -126,18 +117,19 @@ public class Functions {
 				String responseStr = EntityUtils.toString(httpEntity);
 				boolean condition = Boolean.parseBoolean(responseStr);
 				if(condition) {
-					returnStr = fileName;
+					returnStr = URL.s3ImageLink + imagepath + fileName;
 				}
 				// Image uploaded successfully
 				// Handle the response if needed
 			} else {
 				System.out.println("..... Error in uploading " + type + " image in Functions .....");
+				return null;
 				// Error occurred while uploading the image
 				// Handle the error response if needed
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return returnStr;
+			return null;
 		}
 
 		return returnStr;
@@ -145,8 +137,9 @@ public class Functions {
 	
 	
 	/**
-	 * Delete image from s3
+	 * Delete image from s3 (cannot be used now)
 	 * 
+	 * @hidden
 	 * @param image Image should include s3 path, where image is stored. e.g. book/image.jpg
 	 * @return True if the image is successfully deleted
 	 *  

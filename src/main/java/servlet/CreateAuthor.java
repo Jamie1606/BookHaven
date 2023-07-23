@@ -26,7 +26,6 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
 
 import model.Author;
-import model.TestReg;
 import model.URL;
 
 /**
@@ -42,53 +41,57 @@ public class CreateAuthor extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String status = "";
+		String url = URL.authorRegistration;
+		boolean condition = true;
+		Author author = new Author();
+		
+		
 		String name = request.getParameter("name");
 		String nationality = request.getParameter("nationality");
 		String birthDate = request.getParameter("birthdate");
 		String biography = request.getParameter("biography");
 		String link = request.getParameter("link");
 		
-		String url = URL.authorRegistration;
-		boolean condition = true;
-		Author author = new Author();
-		
-		if(name == null || name.isEmpty()) {
-			System.out.println("..... Invalid author data in CreateAuthor servlet .....");
-			request.setAttribute("status", "invalid");
-			condition = false;
-		}
-		else {
+		try {
 			author.setName(name.trim());
-		}
-		
-		if(birthDate != null && !birthDate.isEmpty() && TestReg.matchDate(birthDate)) {
-			Date tmpBirthDate = Date.valueOf(LocalDate.parse(birthDate));
-			LocalDate testBirthDate = tmpBirthDate.toLocalDate();
-			long diff = ChronoUnit.DAYS.between(testBirthDate, LocalDate.now()) / 365;
-			if(diff < 5) {
-				System.out.println("..... Invalid author data in CreateAuthor servlet .....");
-				request.setAttribute("status", "invalid");
-				condition = false;
+			
+			if(birthDate != null) {
+				Date tmpBirthDate = Date.valueOf(LocalDate.parse(birthDate));
+				LocalDate testBirthDate = tmpBirthDate.toLocalDate();
+				long diff = ChronoUnit.DAYS.between(testBirthDate, LocalDate.now()) / 365;
+				if(diff < 5) {
+					throw new Error();
+				}
+				else {
+					author.setBirthDate(tmpBirthDate);
+				}
 			}
 			else {
-				author.setBirthDate(tmpBirthDate);
+				author.setBirthDate(null);
 			}
+			
+			if(nationality != null && !nationality.isEmpty()) {
+				author.setNationality(nationality.trim());
+			}
+			
+			if(biography != null && !biography.isEmpty()) {
+				author.setBiography(biography.trim());
+			}
+			
+			if(link != null && !link.isEmpty()) {
+				author.setLink(link.trim());
+			}
+				
 		}
-		else {
-			author.setBirthDate(null);
+		catch(Exception e) {
+			e.printStackTrace();
+			condition = false;
+			status = "invalid";
+			System.out.println("..... Invalid author data in CreateAuthor servlet .....");
 		}
 		
-		if(nationality != null && !nationality.isEmpty()) {
-			author.setNationality(nationality.trim());
-		}
-		
-		if(biography != null && !biography.isEmpty()) {
-			author.setBiography(biography.trim());
-		}
-		
-		if(link != null && !link.isEmpty()) {
-			author.setLink(link.trim());
-		}
 		
 		if(condition) {
 			Client client = ClientBuilder.newClient();
@@ -99,19 +102,20 @@ public class CreateAuthor extends HttpServlet {
 			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
 				Integer row = resp.readEntity(Integer.class);
 				if(row == 1) {
-					request.setAttribute("status", "success");
+					status = "insertsuccess";
 				}
 				else {
 					System.out.println("..... Invalid author data in CreateAuthor servlet .....");
-					request.setAttribute("status", "invalid");
+					status = "invalid";
 				}
 			}
 			else {
 				System.out.println("..... Error in CreateAuthor servlet .....");
-				request.setAttribute("status", "servererror");
+				status = "servererror";
 			}
 		}
 		
+		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}

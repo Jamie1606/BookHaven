@@ -20,7 +20,7 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
-import model.TestReg;
+
 import model.URL;
 
 /**
@@ -36,22 +36,23 @@ public class DeleteAuthor extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestURi = (String) request.getRequestURI();
-		String[] parts = requestURi.split("/");
 		String url = URL.authorList;
 		boolean condition = true;
+		String status = "";
+		String id = "";
 		
-		if(parts.length == 0) {
-			System.out.println("..... Invalid delete request in DeleteAuthor servlet .....");
-			request.setAttribute("status", "invalid");
-			condition = false;
+		try {
+			String requestURi = (String) request.getRequestURI();
+			String[] parts = requestURi.split("/");
+			id = parts[parts.length - 1];
+			id = id.trim();
+			Integer.parseInt(id);
 		}
-		
-		String id = parts[parts.length - 1];
-		if(id == null || !TestReg.matchInteger(id)) {
-			System.out.println("..... Invalid author id in DeleteAuthor servlet .....");
-			request.setAttribute("status", "invalid");
+		catch(Exception e) {
+			e.printStackTrace();
 			condition = false;
+			status = "invalid";
+			System.out.println("..... Invalid delete request in DeleteAuthor servlet .....");
 		}
 		
 		if(condition) {
@@ -63,19 +64,20 @@ public class DeleteAuthor extends HttpServlet {
 			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
 				Integer row = resp.readEntity(Integer.class);	
 				if(row == 1) {
-					request.setAttribute("status", "deletesuccess");
+					status = "deletesuccess";
 				}
 				else {
 					System.out.println("..... Author not deleted in DeleteAuthor servlet .....");
-					request.setAttribute("status", "invalid");
+					status = "invalid";
 				}
 			}
 			else {
 				System.out.println("..... Error in DeleteAuthor servlet .....");
-				request.setAttribute("status", "deleteservererror");
+				status = "deleteservererror";
 			}
 		}
 			
+		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}

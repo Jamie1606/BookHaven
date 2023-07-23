@@ -114,6 +114,10 @@
 			out.println("<script>alert('Book is successfully deleted!'); location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
 			return;
 		}
+		else if(status.equals("updatesuccess")) {
+			out.println("<script>alert('Book is successfully updated!'); location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
+			return;
+		}
 	}
 
 	String servlet = (String) request.getAttribute("servlet");
