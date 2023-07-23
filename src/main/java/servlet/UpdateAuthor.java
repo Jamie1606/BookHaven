@@ -27,7 +27,6 @@ import jakarta.ws.rs.core.Response;
 
 import model.URL;
 import model.Author;
-import model.TestReg;
 
 /**
  * Servlet implementation class UpdateAuthor
@@ -42,62 +41,56 @@ public class UpdateAuthor extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String url = URL.authorList;
+		boolean condition = true;
+		String status = "";
+		Author author = new Author();
+		
+		
 		String id = request.getParameter("id");
 		String name = request.getParameter("name");
 		String nationality = request.getParameter("nationality");
 		String birthDate = request.getParameter("birthdate");
 		String biography = request.getParameter("biography");
 		String link = request.getParameter("link");
-		String url = URL.authorList;
-		boolean condition = true;
 		
-		Author author = new Author();
-		
-		if(id == null || id.isEmpty() || !TestReg.matchInteger(id)) {
-			System.out.println(".... Invalid id in UpdateAuthor servlet .....");
-			request.setAttribute("status", "invalid");
-			condition = false;
-		}
-		else {
+		try {
 			author.setAuthorID(Integer.parseInt(id));
-		}
-		
-		if(name == null || name.isEmpty()) {
-			System.out.println("..... Invalid name in UpdateAuthor servlet .....");
-			request.setAttribute("status", "invalid");
-			condition = false;
-		}
-		else {
 			author.setName(name.trim());
-		}
-		
-		if(birthDate != null && !birthDate.isEmpty() && TestReg.matchDate(birthDate)) {
-			Date tmpBirthDate = Date.valueOf(LocalDate.parse(birthDate));
-			LocalDate testBirthDate = tmpBirthDate.toLocalDate();
-			long diff = ChronoUnit.DAYS.between(testBirthDate, LocalDate.now()) / 365;
-			if(diff < 5) {
-				System.out.println("..... Invalid birth date in UpdateAuthor servlet .....");
-				request.setAttribute("status", "invalid");
-				condition = false;
+			
+			if(birthDate != null && !birthDate.isEmpty()) {
+				Date tmpBirthDate = Date.valueOf(LocalDate.parse(birthDate));
+				LocalDate testBirthDate = tmpBirthDate.toLocalDate();
+				long diff = ChronoUnit.DAYS.between(testBirthDate, LocalDate.now()) / 365;
+				if(diff < 5) {
+					throw new Error();
+				}
+				else {
+					author.setBirthDate(tmpBirthDate);
+				}
 			}
 			else {
-				author.setBirthDate(tmpBirthDate);
+				author.setBirthDate(null);
+			}
+			
+			if(nationality != null && !nationality.isEmpty()) {
+				author.setNationality(nationality.trim());
+			}
+			
+			if(biography != null && !biography.isEmpty()) {
+				author.setBiography(biography.trim());
+			}
+			
+			if(link != null && !link.isEmpty()) {
+				author.setLink(link.trim());
 			}
 		}
-		else {
-			author.setBirthDate(null);
-		}
-		
-		if(nationality != null && !nationality.isEmpty()) {
-			author.setNationality(nationality.trim());
-		}
-		
-		if(biography != null && !biography.isEmpty()) {
-			author.setBiography(biography.trim());
-		}
-		
-		if(link != null && !link.isEmpty()) {
-			author.setLink(link.trim());
+		catch(Exception e) {
+			e.printStackTrace();
+			System.out.println(".... Invalid id in UpdateAuthor servlet .....");
+			status = "invalid";
+			condition = false;
 		}
 		
 		if(condition) {
@@ -109,19 +102,20 @@ public class UpdateAuthor extends HttpServlet {
 			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
 				Integer row = resp.readEntity(Integer.class);
 				if(row == 1) {
-					request.setAttribute("status", "updatesuccess");
+					status = "updatesuccess";
 				}
 				else {
 					System.out.println("..... Author not updated in UpdateAuthor servlet .....");
-					request.setAttribute("status", "invalid");
+					status = "invalid";
 				}
 			}
 			else {
 				System.out.println("..... Error in UpdateAuthor servlet .....");
-				request.setAttribute("status", "updateservererror");
+				status = "updateservererror";
 			}
 		}
-			
+		
+		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}

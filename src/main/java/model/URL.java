@@ -14,6 +14,10 @@ public class URL {
 	public static final String bookNormalImageUpload = "/uploadImage/book/normal";
 	public static final String book3DImageUpload = "/uploadImage/book/3d";
 	public static final String memberImageUpload = "/uploadImage/member";
+	public static final String getLatestBook = "/getLatest/";
+	public static final String s3ImageLink = "http://s3.amazonaws.com/bookhavenjad10/";
+	public static final String getOneBookDetail = "/getBook/details/";
+	public static final String getRelatedBook = "/getRelated/";
 	
 	
 	// admin jsp pages
@@ -39,4 +43,7 @@ public class URL {
 	public static final String updateBookServlet = "/UpdateBook/";
 	public static final String getBookByISBNServlet = "/GetBookByISBN/";
 	public static final String deleteBookServlet = "/DeleteBook/";
+	
+	// customer jsp pages
+	public static final String bookDetail = "/bookDetail.jsp";
 }

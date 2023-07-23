@@ -14,7 +14,6 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
 
-import model.Functions;
 import model.URL;
 
 /**
@@ -33,24 +32,25 @@ public class DeleteBook extends HttpServlet {
 
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestURi = (String) request.getRequestURI();
-		String[] parts = requestURi.split("/");
 		String url = URL.bookList;
 		boolean condition = true;
+		String status = "";
+		String isbn = "";
 		
-		if(parts.length == 0) {
-			System.out.println("..... Invalid delete request in DeleteBook servlet .....");
-			request.setAttribute("status", "invalid");
-			condition = false;
+		
+		try {
+			String requestURi = (String) request.getRequestURI();
+			String[] parts = requestURi.split("/");
+			isbn = parts[parts.length - 1];
+			isbn = isbn.trim();
 		}
-		
-		String isbn = parts[parts.length - 1];
-		
-		if(!Functions.checkFormData(isbn)) {
+		catch(Exception e) {
+			e.printStackTrace();
+			condition = false;
 			System.out.println("..... Invalid isbn in DeleteBook servlet .....");
-			request.setAttribute("status", "invalid");
-			condition = false;
+			status = "invalid";
 		}
+		
 		
 		if(condition) {
 			Client client = ClientBuilder.newClient();
@@ -61,19 +61,20 @@ public class DeleteBook extends HttpServlet {
 			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
 				Integer row = resp.readEntity(Integer.class);
 				if(row == 1) {
-					request.setAttribute("status", "deletesuccess");
+					status = "deletesuccess";
 				}
 				else {
 					System.out.println("..... Book not deleted in DeleteBook servlet .....");
-					request.setAttribute("status", "invalid");
+					status = "invalid";
 				}
 			}
 			else {
 				System.out.println("..... Error in DeleteAuthor servlet .....");
-				request.setAttribute("status", "deleteservererror");
+				status = "deleteservererror";
 			}
 		}
 			
+		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}

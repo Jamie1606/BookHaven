@@ -1,26 +1,35 @@
 package servlet;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.util.ArrayList;
+
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
+import model.Author;
+import model.Book;
 import model.Functions;
-import model.TestReg;
+import model.Genre;
 import model.URL;
 
 /**
  * Servlet implementation class UpdateBook
  */
 @WebServlet("/UpdateBook/*")
+@MultipartConfig(location = "/tmp", maxFileSize = 20971520, maxRequestSize = 41943040, fileSizeThreshold = 1048576)
 public class UpdateBook extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -33,18 +42,26 @@ public class UpdateBook extends HttpServlet {
 		final String defaultNormalImage = "book/normal/defaultBookHavenImage_normal.png";
 		final String default3DImage = "book/3d/defaultBookHavenImage_3d.png";
 		
-		String requestURi = (String) request.getRequestURI();
-		String[] parts = requestURi.split("/");
-		boolean condition = false;
+		boolean condition = true;
 		String status = "";
+		ArrayList<Author> authorList = new ArrayList<Author>();
+		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		String pathisbn = "";
 		
-		if(parts.length == 0) {
-			System.out.println("..... Invalid data request in UpdateBook servlet .....");
+		try {
+			String requestURi = (String) request.getRequestURI();
+			String[] parts = requestURi.split("/");
+			pathisbn = parts[parts.length - 1];
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			condition = false;
+			System.out.println("..... Invalid update request in UpdateBook servlet .....");
 			status = "invalid";
 		}
 		
-		String pathisbn = parts[parts.length - 1];
-
+		
+		Book book = null;
 		String isbn = request.getParameter("isbn");
 		String title = request.getParameter("title");
 		String page = request.getParameter("page");
@@ -60,69 +77,107 @@ public class UpdateBook extends HttpServlet {
 		String oldimage = request.getParameter("oldimage");
 		String oldimage3d = request.getParameter("oldimage3d");
 		String url = URL.bookList;
-
-		if (Functions.checkFormData(isbn, title, page, price, qty, publisher, publicationdate, pathisbn)) {
+		
+		try {
+			pathisbn = pathisbn.trim();
+			isbn = isbn.trim();
+			title = title.trim();
+			page = page.trim();
+			price = price.trim();
+			qty = qty.trim();
+			publisher = publisher.trim();
+			publicationdate = publicationdate.trim();
 			
-			if (TestReg.matchInteger(title) || !TestReg.matchInteger(page) || !TestReg.matchDecimal(price)
-					|| !TestReg.matchInteger(qty) || TestReg.matchInteger(publisher)
-					|| !TestReg.matchDate(publicationdate)) {
-				status = "invalid";
-				System.out.println("..... Invalid book data in UpdateBook servlet .....");
-			} else {
-				isbn = isbn.trim();
-				title = title.trim();
-				page = page.trim();
-				price = price.trim();
-				qty = qty.trim();
-				publisher = publisher.trim();
-				publicationdate = publicationdate.trim();
-				pathisbn = pathisbn.trim();
+			if (description != null) {
+				description = description.trim();
+			}
+			
+			if(Functions.checkISBN13(isbn)) {
 				
-				if (description != null) {
-					description = description.trim();
+				image = Functions.uploadImage(title, isbn, "booknormal", request.getPart("image"));
+				if(image == null) {
+					if(oldimage == null || oldimage.isEmpty()) {
+						image = defaultNormalImage;
+					}
+					else {
+						image = oldimage.trim();
+					}
+				}
+
+				image3d = Functions.uploadImage(title, isbn, "book3d", request.getPart("image3d"));
+				if(image3d == null) {
+					if(oldimage3d == null || oldimage3d.isEmpty()) {
+						image3d = default3DImage;
+					}
+					else {
+						image3d = oldimage3d.trim();
+					}
 				}
 				
-				if(Functions.checkISBN13(isbn) && Functions.checkISBN13(pathisbn)) {
-					if(oldimage == null || oldimage.isEmpty()) {
-						oldimage = defaultNormalImage;
-					}
-					else {
-						oldimage = oldimage.trim();
-					}
-					
-					if(oldimage3d == null || oldimage3d.isEmpty()) {
-						oldimage3d = default3DImage;
-					}
-					else {
-						oldimage3d = oldimage3d.trim();
-					}
-					
-					image = Functions.uploadImage(title, isbn, "booknormal", request.getPart("image"));
-					if(image == null) {
-						image = oldimage;
-					}
-
-					image3d = Functions.uploadImage(title, isbn, "book3d", request.getPart("image3d"));
-					if(image3d == null) {
-						image3d = oldimage3d;
-					}
-					
-					
-					
+				for (int i = 0; i < authors.length; i++) {
+					Author author = new Author();
+					author.setAuthorID(Integer.parseInt(authors[i]));
+					authorList.add(author);
+				}
+				
+				for (int i = 0; i < genres.length; i++) {
+					Genre genre = new Genre();
+					genre.setGenreID(Integer.parseInt(genres[i]));
+					genreList.add(genre);
+				}
+				
+				book = new Book();
+				book.setISBNNo(isbn);
+				book.setTitle(title);
+				book.setPage(Integer.parseInt(page));
+				book.setQty(Integer.parseInt(qty));
+				book.setPrice(Double.parseDouble(price));
+				book.setRating(0);
+				book.setPublisher(publisher);
+				book.setPublicationDate(Date.valueOf(publicationdate));
+				book.setImage(image);
+				book.setImage3D(image3d);
+				book.setAuthors(authorList);
+				book.setGenres(genreList);
+				
+				if(book.getQty() <= 0) {
+					book.setStatus("unavailable");
 				}
 				else {
-					status = "invalid";
-					System.out.println("..... Invalid isbn in UpdateBook servlet .....");
+					book.setStatus("available");
 				}
 			}
+			else {
+				throw new Error();
+			}
 		}
-		else {
+		catch(Exception e) {
+			e.printStackTrace();
 			status = "invalid";
-			System.out.println("..... Null or empty data in UpdateBook servlet .....");
+			System.out.println("..... Invalid book data in UpdateBook servlet .....");
+			condition = false;
 		}
 		
-		if(condition) {
-			
+		if(condition) {			
+			Client client = ClientBuilder.newClient();
+			WebTarget target = client.target(URL.baseURL).path("updateBook").path("{isbn}").resolveTemplate("isbn", isbn);
+			Invocation.Builder invocationBuilder = target.request();
+			ObjectMapper obj = new ObjectMapper();
+			String jsonBook = obj.writeValueAsString(book);
+			Response resp = invocationBuilder.put(Entity.json(jsonBook));
+
+			if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
+				Integer row = resp.readEntity(Integer.class);
+				if (row == 1) {
+					status = "updatesuccess";
+				}  else {
+					System.out.println("..... Invalid isbn in UpdateBook servlet .....");
+					status = "invalid";
+				}
+			} else {
+				System.out.println("..... Error in UpdateBook servlet .....");
+				status = "servererror";
+			}
 		}
 		
 		request.setAttribute("status", status);

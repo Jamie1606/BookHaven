@@ -26,6 +26,7 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import model.Admin;
+import model.URL;
 
 /**
  * Servlet implementation class TestSigninServlet
@@ -53,8 +54,7 @@ public class TestSigninServlet extends HttpServlet {
 		admin.setPassword(password.trim());
 		
 		Client client = ClientBuilder.newClient();
-		String restUrl = "http://localhost:8081/bookhaven/api";
-		WebTarget target = client.target(restUrl).path("loginAdmin");
+		WebTarget target = client.target(URL.baseURL).path("loginAdmin");
 		Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
 		Response resp = invocationBuilder.post(Entity.json(admin));
 		

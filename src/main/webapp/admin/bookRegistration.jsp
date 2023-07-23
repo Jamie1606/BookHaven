@@ -433,8 +433,8 @@ input::placeholder {
 					return true;
 				}
 			});
-			$('#description').on("input", checkDescription);
-			$('#isbn').on("input", checkISBN);
+			//$('#description').on("input", checkDescription);
+			//$('#isbn').on("input", checkISBN);
 		})
 
 		function checkISBN() {
