@@ -9,13 +9,14 @@ package servlet;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -25,8 +26,11 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
 import model.Admin;
+import model.Member;
 import model.URL;
+import model.UserCredentials;
 
 /**
  * Servlet implementation class TestSigninServlet
@@ -42,48 +46,65 @@ public class TestSigninServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
+		String status = "";
+		boolean condition = true;
+		String url = URL.signIn;
+		HttpSession session = request.getSession();
+		UserCredentials userCredentials = new UserCredentials();
 		
-		if(email != null && password != null) {
-			
+		try {
+			userCredentials.setEmail(email.trim());
+			userCredentials.setPassword(password.trim());
 		}
-		else {
-			
+		catch(Exception e) {
+			e.printStackTrace();
+			status = "invalid";
+			condition = false;
+			System.out.println("..... Invalid email and password in SignIn servlet .....");
 		}
-		Admin admin = new Admin();
-		admin.setEmail(email.trim());
-		admin.setPassword(password.trim());
 		
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(URL.baseURL).path("loginAdmin");
-		Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
-		Response resp = invocationBuilder.post(Entity.json(admin));
-		
-		String url = "/signout.jsp";
-		if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
+		if(condition) {
+			Client client = ClientBuilder.newClient();
+			WebTarget target = client.target(URL.baseURL).path("userlogin");
+			Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+			Response resp = invocationBuilder.post(Entity.json(userCredentials));
 			
-			admin = resp.readEntity(new GenericType<Admin>() {});
-			if(admin == null) {
-				request.setAttribute("status", "invalid");
-				url = "/signin.jsp";
+			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
+				
+				userCredentials = resp.readEntity(new GenericType<UserCredentials>() {});
+				if(userCredentials == null) {
+					status = "invalid";
+				}
+				else {
+					condition = false;
+					session.setAttribute("email", userCredentials.getEmail());
+					session.setAttribute("role", userCredentials.getRole());
+					session.setAttribute("token", userCredentials.getToken());
+					session.setMaxInactiveInterval(2 * 60 * 60);
+					
+					if(userCredentials.getRole().equals("ROLE_ADMIN")) {
+						response.sendRedirect(request.getContextPath() + URL.adminHomePage);
+						return;
+					}
+					else if(userCredentials.getRole().equals("ROLE_MEMBER")) {
+						response.sendRedirect(request.getContextPath() + URL.homePage);
+						return;
+					}
+					else {
+						session.invalidate();
+						status = "invalid";
+					}
+				}
 			}
 			else {
-				HttpSession session = request.getSession();
-				session.setAttribute("id", admin.getAdminID() + "");
-				session.setAttribute("role", "admin");
-				session.setMaxInactiveInterval(3* 60 * 60);
-				url = request.getContextPath() + "/admin/adminHomePage.jsp";
-				response.sendRedirect(url);
-				return;
+				status = "fail";
+				condition = false;
+				System.out.println("..... Error in TestSigninServlet .....");
 			}
 		}
-		else {
-			System.out.println("..... Error in TestSigninServlet .....");
-			url = "/signin.jsp";
-			request.setAttribute("status", "fail");
-		}
 		
-		RequestDispatcher rd = request.getRequestDispatcher(url);
-		rd.forward(request, response);
+		request.setAttribute("status", status);
+		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
 }

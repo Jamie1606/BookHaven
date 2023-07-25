@@ -16,6 +16,10 @@ public class Member {
 	private Date birthDate;
 	private String phone;
 	private String address;
+	
+	public Member() {
+		
+	}
 
 	public Member(String name, char gender, Date birthDate, String phone, String address, String email, String image) {
 		super();

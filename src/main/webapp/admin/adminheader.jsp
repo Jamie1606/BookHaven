@@ -1,4 +1,21 @@
-<%@ page import="controller.Authentication"%>
+<%@page import="model.URL"%>
+<%
+	if(session != null) {
+		String email = (String) session.getAttribute("email");
+		String role = (String) session.getAttribute("role");
+		String token = (String) session.getAttribute("token");
+		if(email != null && role != null && token != null) {
+			if(!role.equals("ROLE_ADMIN")) {
+				out.println("<script>alert('Unauthorized!'); location='" + request.getContextPath() + URL.signOut + "';</script>");
+				return;
+			}
+		}
+	}
+	else {
+		out.println("<script>alert('Unauthorized!'); location='" + request.getContextPath() + URL.signOut + "';</script>");
+		return;
+	}
+%>
 
 <!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">

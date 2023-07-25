@@ -10,7 +10,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="controller.Authentication" %>
+<%@ page import="controller.Authentication, model.URL" %>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -96,7 +96,7 @@
 				out.println("<script>alert('Invalid email and password!'); location = 'signin.jsp';</script>");
 				return;
 			}
-			if(status.equals("fail")) {
+			else if(status.equals("fail")) {
 				out.println("<script>alert('Server error!'); location = 'signin.jsp';</script>");
 				return;
 			}

@@ -104,10 +104,10 @@
 	<%@ include file="header.jsp"%>
 
 	<%
-	if (!auth.testMember(session)) {
-		out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
-		return;
-	}
+	//if (!auth.testMember(session)) {
+	//	out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
+	//	return;
+	//}
 
 	ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
 	if (cart == null) {

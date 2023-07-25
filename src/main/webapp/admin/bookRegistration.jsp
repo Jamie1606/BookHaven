@@ -178,6 +178,7 @@ input::placeholder {
 	
 	
 	Book book = null;
+	String description = "";
 	ArrayList<Author> bookAuthorList = new ArrayList<Author>();
 	ArrayList<Genre> bookGenreList = new ArrayList<Genre>();
 	
@@ -187,6 +188,10 @@ input::placeholder {
 			book = (Book) request.getAttribute("book");
 			bookAuthorList = book.getAuthors();
 			bookGenreList = book.getGenres();
+			description = book.getDescription();
+			if(description == null) {
+				description = "";
+			}
 		}
 		else {
 			update = "";
@@ -356,7 +361,7 @@ input::placeholder {
 										style="color: grey; font-weight: normal;">(Optional)</small> <span
 										id="check-description"></span></label>
 									<textarea rows="10" cols="10" class="form-control"
-										name="description" id="description"><%=update.equals("true") ? book.getDescription() : ""%></textarea>
+										name="description" id="description"><%=update.equals("true") ? description : ""%></textarea>
 									<span style="float: right; color: green; font-weight: bold;"
 										id="charCount-description">0 / 1000</span>
 								</div>
