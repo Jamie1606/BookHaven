@@ -55,7 +55,7 @@
 </head>
 
 <body>
-	<%@ include file="header.jsp"%>
+	<%@ include file="header.jsp" %>
 
 	<!-- start banner Area -->
 	<section class="banner-area" id="home">
@@ -110,25 +110,25 @@
 
 	<script>
 		$(document).ready(function() {
-			fetch('<%= request.getContextPath()%>/books/latest',
-			{
-				method: 'GET'
-			})
-			.then(response => response.json())
-			.then(data => {
-				var list = data.list;
-				var status = data.status;
-				if(status == "serverError") {
-					alert('Error in retrieving latest book!');
-				}
-				else {
-					if(list != undefined) {
-						for(let i = 0; i < list.length; i++) {
-							
-						}
-					}
-				}
-			});
+			//fetch('/books/latest',
+			//{
+			//	method: 'GET'
+			//})
+			//.then(response => response.json())
+			//.then(data => {
+			//	var list = data.list;
+			//	var status = data.status;
+			//	if(status == "serverError") {
+			//		alert('Error in retrieving latest book!');
+			//	}
+			//	else {
+			//		if(list != undefined) {
+			//			for(let i = 0; i < list.length; i++) {
+			//				
+			//			}
+			//		}
+			//	}
+			//});
 			fetch('<%= URL.baseURL + URL.getLatestBook %>6', {
 				method: 'GET'
 			})
@@ -141,10 +141,24 @@
 						htmlStr += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;">';
 						htmlStr += '<div style="position: relative;">';
 						htmlStr += '<img style="width: 250px; height: 300px;" class="img-fluid" src="' + data[i].image + '" alt="">';
-						htmlStr += '<p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + data[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[i].isbnno + '"><h4>' + data[i].title + '</h4></a><p></p></div></div>';
+						let qty = data[i].qty;
+						if(qty < 10) {
+							htmlStr += '<p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + data[i].qty + ' items left </p></div>';
+						}
+						else {
+							htmlStr += '<p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + data[i].status + '</p></div>';
+						}
+						htmlStr += '<div style="margin-top: 10px;"><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[i].isbnno + '"><h4>' + data[i].title + '</h4></a><p></p></div></div>';
 				}
 					$('#latest-release').html(htmlStr);
-					$('#latest-book').html('<h5 class="text-white text-uppercase"></h5><h1 class="text-uppercase">' + data[0].title + '</h1><p class="text-white pt-20 pb-20">' + data[0].description + '</p><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[0].isbnno + '" class="primary-btn text-uppercase">View More</a>');
+					let description = data[0].description;
+					if(description == null) {
+						$('#latest-book').html('<h5 class="text-white text-uppercase"></h5><h1 class="text-uppercase" style="font-size: 45px;">' + data[0].title + '</h1><p class="text-white pt-20 pb-20">No information available</p><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[0].isbnno + '" class="primary-btn text-uppercase">View More</a>');
+					}
+					else {
+						$('#latest-book').html('<h5 class="text-white text-uppercase"></h5><h1 class="text-uppercase" style="font-size: 45px;">' + data[0].title + '</h1><p class="text-white pt-20 pb-20">' + data[0].description + '</p><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[0].isbnno + '" class="primary-btn text-uppercase">View More</a>');
+					}
+					
 					$('#latest-book-image').html('<img class="img-fluid" src="' + data[0].image3D + '" alt="">');
 				}
 				else {

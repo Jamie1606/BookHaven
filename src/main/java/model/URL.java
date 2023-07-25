@@ -43,7 +43,17 @@ public class URL {
 	public static final String updateBookServlet = "/UpdateBook/";
 	public static final String getBookByISBNServlet = "/GetBookByISBN/";
 	public static final String deleteBookServlet = "/DeleteBook/";
+	public static final String defaultBookNormalImage = "book/normal/defaultBookHavenImage_normal.png";
+	public static final String defaultBook3DImage = "book/3d/defaultBookHavenImage_3d.png";
 	
 	// customer jsp pages
+	public static final String homePage = "/index.jsp";
 	public static final String bookDetail = "/bookDetail.jsp";
+	public static final String signOut = "/signout.jsp";
+	public static final String signIn = "/signin.jsp";
+	public static final String profile = "/profile.jsp";
+	public static final String cart = "/cart.jsp";
+	public static final String signUp = "/signup.jsp";
+	public static final String header = "/header.jsp";
+	public static final String footer = "/footer.jsp";
 }

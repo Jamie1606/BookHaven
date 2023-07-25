@@ -39,8 +39,6 @@ public class UpdateBook extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		final String defaultNormalImage = "book/normal/defaultBookHavenImage_normal.png";
-		final String default3DImage = "book/3d/defaultBookHavenImage_3d.png";
 		
 		boolean condition = true;
 		String status = "";
@@ -97,7 +95,7 @@ public class UpdateBook extends HttpServlet {
 				image = Functions.uploadImage(title, isbn, "booknormal", request.getPart("image"));
 				if(image == null) {
 					if(oldimage == null || oldimage.isEmpty()) {
-						image = defaultNormalImage;
+						image = URL.s3ImageLink + URL.defaultBookNormalImage;
 					}
 					else {
 						image = oldimage.trim();
@@ -107,7 +105,7 @@ public class UpdateBook extends HttpServlet {
 				image3d = Functions.uploadImage(title, isbn, "book3d", request.getPart("image3d"));
 				if(image3d == null) {
 					if(oldimage3d == null || oldimage3d.isEmpty()) {
-						image3d = default3DImage;
+						image3d = URL.s3ImageLink + URL.defaultBook3DImage;
 					}
 					else {
 						image3d = oldimage3d.trim();
@@ -135,6 +133,7 @@ public class UpdateBook extends HttpServlet {
 				book.setRating(0);
 				book.setPublisher(publisher);
 				book.setPublicationDate(Date.valueOf(publicationdate));
+				book.setDescription(description);
 				book.setImage(image);
 				book.setImage3D(image3d);
 				book.setAuthors(authorList);

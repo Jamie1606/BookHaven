@@ -122,7 +122,7 @@
 		return;
 	}
 	%>
-	<%@ include file="header.jsp"%>
+	<%@ include file="header.jsp" %>
 
 	<!-- Start course Area -->
 	<section class="course-area section-gap"
@@ -178,9 +178,10 @@
 								style="font-size: 26px; font-weight: bold;"></label>
 						</div>
 						<%
-						HttpSession session2 = request.getSession();
-						String memberID = (String) session2.getAttribute("memberID");
-						if (memberID != null) {
+							if(session != null) {
+								String userid = (String) session.getAttribute("id");
+								String role = (String) session.getAttribute("role");
+								if (userid != null && role != null && role.equals("member")) {
 						%>
 						<div style="display: flex; align-items: center;" id="cart">
 							<label id="btn-minus" onclick="changeQty(-1)"
@@ -196,7 +197,8 @@
 							</button>
 						</div>
 						<%
-						}
+								}
+							}
 						%>
 					</div>
 				</div>
@@ -231,8 +233,6 @@
 						<hr>
 						<label>Publish Date</label>
 						<hr>
-						<label>Qty in Stock</label>
-						<hr>
 						<label>Price</label>
 						<hr>
 						<label>Genre</label>
@@ -249,10 +249,9 @@
 						<hr>
 						<label id="book-detail-publicationdate"></label>
 						<hr>
-						<label id="book-detail-qty"></label>
-						<hr>
 						<label id="book-detail-price"></label>
 						<hr>
+						<label style="display: none;" id="book-detail-qty"></label>
 						<label id="book-detail-genre"></label>
 					</div>
 				</div>
@@ -339,13 +338,13 @@
 			})
 			.then(response => response.json())
 			.then(data => {
-				console.log(data);
-				var authorList = data.authors;
-				var genreList = data.genres;
-				if(data == undefined) {
-					
+				if(data == undefined || data == null) {
+					alert("Invalid request!");
+					location = "<%= request.getContextPath() + URL.homePage %>";
 				}
 				else {
+					let authorList = data.authors;
+					let genreList = data.genres;
 					$('#course').css({"visibility": "visible"});
 					$('#detail').css({"visibility": "visible"});
 					let authors = "";
@@ -368,7 +367,13 @@
 					}
 					$('#book-status').html(makeCapital(data.status));
 					if(data.status == "available") {
-						$('#book-status').css({"color": "green", "backgroundColor": "rgba(0, 220, 0, 0.2)"});
+						if(data.qty < 10) {
+							$('#book-status').css({"color": "green", "backgroundColor": "rgba(0, 220, 0, 0.2)"});
+							$('#book-status').html(data.qty + " items left");
+						}
+						else {
+							$('#book-status').css({"color": "green", "backgroundColor": "rgba(0, 220, 0, 0.2)"});							
+						}
 					}
 					else {
 						$('#book-status').css({"color": "red", "backgroundColor": "rgba(220, 0, 0, 0.2)"});
@@ -379,13 +384,13 @@
 					$('#book-title').html(data.title);
 					$('#book-detail-genre').html(genres);
 					$('#book-detail-publisher').html(data.publisher);
+					$('#book-detail-qty').html(data.qty);
 					
 					let pubdate = new Date(data.publicationDate);
 					$('#book-detail-publicationdate').html(pubdate.getDate() + "." + (pubdate.getMonth() + 1) + "." + pubdate.getFullYear());
 					$('#book-detail-author').html(authors);
 					$('#book-detail-title').html(data.title);
 					$('#book-detail-isbn').html(data.isbnno);
-					$('#book-detail-qty').html(data.qty);
 					if(data.qty <= 0) {
 						$('#cart').css({"visibility": "hidden"});
 					}

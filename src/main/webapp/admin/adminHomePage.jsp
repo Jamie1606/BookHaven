@@ -55,6 +55,13 @@
 <body>
 
 	<%
+	
+	HttpSession usersession = request.getSession(false);
+	if(usersession != null) {
+		String id = (String) usersession.getAttribute("id");
+		String role = (String) usersession.getAttribute("role");
+	}
+	
 	String error = (String) request.getAttribute("error");
 	if (error != null) {
 		if (error.equals("unauthorized")) {

@@ -48,8 +48,6 @@ public class CreateBook extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		final String defaultNormalImage = "book/normal/defaultBookHavenImage_normal.png";
-		final String default3DImage = "book/3d/defaultBookHavenImage_3d.png";
 		Book book = null;
 		ArrayList<Author> authorList = new ArrayList<Author>();
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
@@ -73,27 +71,38 @@ public class CreateBook extends HttpServlet {
 
 
 		try {
-			isbn = isbn.trim();
-			title = title.trim();
-			page = page.trim();
-			price = price.trim();
-			qty = qty.trim();
-			publisher = publisher.trim();
-			publicationdate = publicationdate.trim();
+			book = new Book();
+			book.setISBNNo(isbn.trim());
 			
-			if(description != null) {
-				description = description.trim();
-			}
-			
-			if(Functions.checkISBN13(isbn)) {
-				image = Functions.uploadImage(title, isbn, "booknormal", request.getPart("image"));
-				if(image == null) {
-					image = defaultNormalImage;
+			if(Functions.checkISBN13(book.getISBNNo())) {
+				
+				book.setTitle(title.trim());
+				book.setPage(Integer.parseInt(page.trim()));
+				book.setQty(Integer.parseInt(qty.trim()));
+				book.setPrice(Double.parseDouble(price.trim()));
+				book.setRating(0);
+				book.setPublisher(publisher.trim());
+				book.setPublicationDate(Date.valueOf(publicationdate.trim()));
+				if(description != null) {
+					book.setDescription(description.trim());
 				}
 				
-				image3d = Functions.uploadImage(title, isbn, "book3d", request.getPart("image3d"));
+				if(book.getQty() <= 0) {
+					book.setStatus("unavailable");
+				}
+				else {
+					book.setStatus("available");
+				}
+				
+				
+				image = Functions.uploadImage(book.getTitle(), book.getISBNNo(), "booknormal", request.getPart("image"));
+				if(image == null) {
+					image = URL.s3ImageLink + URL.defaultBookNormalImage;
+				}
+				
+				image3d = Functions.uploadImage(book.getTitle(), book.getISBNNo(), "book3d", request.getPart("image3d"));
 				if(image3d == null) {
-					image3d = default3DImage;
+					image3d = URL.s3ImageLink + URL.defaultBook3DImage;
 				}
 				
 				for (int i = 0; i < authors.length; i++) {
@@ -108,26 +117,10 @@ public class CreateBook extends HttpServlet {
 					genreList.add(genre);
 				}
 				
-				book = new Book();
-				book.setISBNNo(isbn);
-				book.setTitle(title);
-				book.setPage(Integer.parseInt(page));
-				book.setQty(Integer.parseInt(qty));
-				book.setPrice(Double.parseDouble(price));
-				book.setRating(0);
-				book.setPublisher(publisher);
-				book.setPublicationDate(Date.valueOf(publicationdate));
-				book.setImage(image);
-				book.setImage3D(image3d);
+				book.setImage(image.trim());
+				book.setImage3D(image3d.trim());			
 				book.setAuthors(authorList);
 				book.setGenres(genreList);
-				
-				if(book.getQty() <= 0) {
-					book.setStatus("unavailable");
-				}
-				else {
-					book.setStatus("available");
-				}
 			}
 			else {
 				throw new Error();
