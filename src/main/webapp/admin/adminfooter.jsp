@@ -1,7 +1,8 @@
 <!-- ======= Footer ======= -->
 <footer id="footer" class="footer">
 	<div class="copyright">
-		&copy; Copyright <strong><span>BookHaven</span></strong>. All Rights
+		&copy; Copyright <strong><span>BookHaven 
+		<script>document.write(new Date().getFullYear());</script></span></strong>. All Rights
 		Reserved
 	</div>
 	<div class="credits">

@@ -11,6 +11,7 @@ package model;
 import javax.servlet.http.Part;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -18,7 +19,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -63,13 +63,18 @@ public class Functions {
 	 * @param fileName is the name of the file after uploaded
 	 * @param id will be added to the fileName, e.g. hello_12345
 	 * @param type 3 types are available: booknormal, book3d, member
-	 * @param filePart is the file you will get from web form
-	 * @return fileName if the image is successfully uploaded
+	 * @param filePart is the file you want to upload to s3
+	 * @param token must be provided
+	 * @return imagepath if the image is successfully uploaded
 	 * @return null if the image upload is failed
 	 * 
 	 */
-	public static String uploadImage(String fileName, String id, String type, Part filePart) {
+	public static String uploadImage(String fileName, String id, String type, Part filePart, String token) {
 		String returnStr = null;
+		
+		if(token == null || token.isEmpty()) {
+			return null;
+		}
 		
 		try {
 			if(filePart == null) {
@@ -101,7 +106,9 @@ public class Functions {
 			else {
 				return null;
 			}
+			
 			HttpPost httpPost = new HttpPost(url);
+			httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
 			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 			builder.addBinaryBody("image", filePart.getInputStream(), ContentType.DEFAULT_BINARY, fileName);
@@ -121,7 +128,8 @@ public class Functions {
 				}
 				// Image uploaded successfully
 				// Handle the response if needed
-			} else {
+			} 
+			else {
 				System.out.println("..... Error in uploading " + type + " image in Functions .....");
 				return null;
 				// Error occurred while uploading the image
@@ -137,9 +145,9 @@ public class Functions {
 	
 	
 	/**
+	 * @deprecated
 	 * Delete image from s3 (cannot be used now)
 	 * 
-	 * @hidden
 	 * @param image Image should include s3 path, where image is stored. e.g. book/image.jpg
 	 * @return True if the image is successfully deleted
 	 *  

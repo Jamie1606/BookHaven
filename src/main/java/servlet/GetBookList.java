@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import model.Book;
+import model.Status;
 import model.URL;
 
 /**
@@ -34,30 +36,51 @@ public class GetBookList extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(URL.baseURL).path("getAllBook");
-		Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
-		Response resp = invocationBuilder.get();
-		String url = URL.bookList;
 		
-		if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
-			String json = resp.readEntity(String.class);
-			ObjectMapper obj = new ObjectMapper();
-			ArrayList<Book> bookList = obj.readValue(json, new TypeReference<ArrayList<Book>>() {});
-			if(bookList == null || bookList.isEmpty()) {
-				System.out.println("..... Server error in GetBookList servlet .....");
-				request.setAttribute("status", "servererror");
+		HttpSession session = request.getSession();
+		String url = URL.bookList;
+		String status = "";
+		
+		if(session != null && !session.isNew()) {
+			String token = (String) session.getAttribute("token");
+			
+			if(token == null || token.isEmpty()) {
+				status = Status.unauthorized;
+				url = URL.signOut;
 			}
 			else {
-				request.setAttribute("bookList", bookList);
-				request.setAttribute("servlet", "true");
+				Client client = ClientBuilder.newClient();
+				WebTarget target = client.target(URL.baseURL).path("getAllBook");
+				Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+				Response resp = invocationBuilder.get();
+				
+				if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
+					
+					String json = resp.readEntity(String.class);
+					ObjectMapper obj = new ObjectMapper();
+					ArrayList<Book> bookList = obj.readValue(json, new TypeReference<ArrayList<Book>>() {});
+					
+					if(bookList == null || bookList.isEmpty()) {
+						System.out.println("..... Server error in GetBookList servlet .....");
+						status = Status.serverError;
+					}
+					else {
+						request.setAttribute("bookList", bookList);
+						status = Status.servletStatus;
+					}
+				}
+				else {
+					System.out.println("..... Error in GetBookList servlet .....");
+					status = Status.serverError;
+				}
 			}
 		}
 		else {
-			System.out.println("..... Error in GetBookList servlet .....");
-			request.setAttribute("status", "servererror");
+			status = Status.unauthorized;
+			url = URL.signOut;
 		}
 		
+		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}

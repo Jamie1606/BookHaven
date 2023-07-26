@@ -20,6 +20,7 @@ public class URL {
 	public static final String getRelatedBook = "/getRelated/";
 	
 	
+	
 	// admin jsp pages
 	public static final String authorList = "/admin/authorList.jsp";
 	public static final String adminHomePage = "/admin/adminHomePage.jsp";
@@ -28,12 +29,19 @@ public class URL {
 	public static final String bookList = "/admin/bookList.jsp";
 	
 	
+	
+	// authentication servlets
+	public static final String signInServlet = "/SigninServlet";
+	
+	
+	
 	// author servlets
 	public static final String getAuthorListServlet = "/GetAuthorList";
 	public static final String deleteAuthorServlet = "/DeleteAuthor/";
 	public static final String getAuthorByIDServlet = "/GetAuthorByID/";
 	public static final String createAuthorServlet = "/CreateAuthor";
 	public static final String updateAuthorServlet = "/UpdateAuthor";
+	
 	
 	
 	// book servlets
@@ -45,6 +53,8 @@ public class URL {
 	public static final String deleteBookServlet = "/DeleteBook/";
 	public static final String defaultBookNormalImage = "book/normal/defaultBookHavenImage_normal.png";
 	public static final String defaultBook3DImage = "book/3d/defaultBookHavenImage_3d.png";
+	
+	
 	
 	// customer jsp pages
 	public static final String homePage = "/index.jsp";

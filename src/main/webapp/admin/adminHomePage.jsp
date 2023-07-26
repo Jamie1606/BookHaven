@@ -53,25 +53,6 @@
 </head>
 
 <body>
-
-	<%
-	
-	HttpSession usersession = request.getSession(false);
-	if(usersession != null) {
-		String id = (String) usersession.getAttribute("id");
-		String role = (String) usersession.getAttribute("role");
-	}
-	
-	String error = (String) request.getAttribute("error");
-	if (error != null) {
-		if (error.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
-			return;
-		}
-	}
-	%>
-
 	<%@ include file="adminheader.jsp"%>
 
 	<%@ include file="adminsidebar.jsp"%>
@@ -82,7 +63,7 @@
 			<h1>Dashboard</h1>
 			<nav>
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="<%= request.getContextPath() %>/admin/adminHomePage.jsp">Home</a></li>
+					<li class="breadcrumb-item"><a href="<%= request.getContextPath() + URL.adminHomePage %>">Home</a></li>
 					<li class="breadcrumb-item active">Dashboard</li>
 				</ol>
 			</nav>
@@ -104,7 +85,6 @@
 	<script src="<%= request.getContextPath() %>/assets/vendor/chart.js/chart.umd.js"></script>
 	<script src="<%= request.getContextPath() %>/assets/vendor/echarts/echarts.min.js"></script>
 	<script src="<%= request.getContextPath() %>/assets/vendor/quill/quill.min.js"></script>
-	<script src="<%= request.getContextPath() %>/assets/vendor/simple-datatables/simple-datatables.js"></script>
 	<script src="<%= request.getContextPath() %>/assets/vendor/tinymce/tinymce.min.js"></script>
 	<script src="<%= request.getContextPath() %>/assets/vendor/php-email-form/validate.js"></script>
 

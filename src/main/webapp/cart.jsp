@@ -11,7 +11,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page
-	import="controller.Authentication, model.Book, java.util.ArrayList"%>
+	import="model.Book, java.util.ArrayList"%>
 <!DOCTYPE html>
 <html>
 <head>

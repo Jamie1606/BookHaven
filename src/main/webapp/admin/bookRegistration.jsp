@@ -11,7 +11,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page
-	import="java.util.*, java.text.*, model.Author, model.Genre, model.Book, model.URL"%>
+	import="java.util.*, java.text.*, model.Author, model.Genre, model.Book, model.URL, model.Status"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -97,138 +97,78 @@ input::placeholder {
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	//String error = (String) request.getAttribute("error");
-	//request.removeAttribute("error");
-	//String success = (String) request.getAttribute("success");
-	//request.removeAttribute("success");
-	//if (error != null) {
-	//	if (error.equals("invalid")) {
-	//		out.println("<script>alert('Invalid Request or Data!'); location='" + request.getContextPath()
-	//		+ "/admin/bookRegistration';</script>");
-	//	} else if (error.equals("serverError")) {
-	//		out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-	//		+ "/admin/bookRegistration';</script>");
-	//	} else if (error.equals("upload")) {
-	//		out.println("<script>alert('Error in uploading data!'); location='" + request.getContextPath()
-	//		+ "/admin/bookRegistration';</script>");
-	//		return;
-	//	} else if (error.equals("unauthorized")) {
-	//		out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-	//		+ "/signout.jsp';</script>");
-	//		return;
-	//	} else if (error.equals("authorError")) {
-	//		out.println(
-	//		"<script>alert('Error in linking author and book! Please try with edit function in bookList!'); location='"
-	//				+ request.getContextPath() + "/admin/bookRegistration';</script>");
-	//		return;
-	//	} else if (error.equals("genreError")) {
-	//		out.println(
-	//		"<script>alert('Error in linking genre and book! Please try with edit function in bookList!'); location='"
-	//				+ request.getContextPath() + "/admin/bookRegistration';</script>");
-	//		return;
-	//	} else if (error.equals("duplicate")) {
-	//		out.println("<script>alert('This book is already registered in database!'); location='"
-	//		+ request.getContextPath() + "/admin/bookRegistration';</script>");
-	//		return;
-	//	} else {
-	//		out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
-	//		+ "/admin/bookRegistration.jsp';</script>");
-	//		return;
-	//	}
-	//}
-	//if (success != null) {
-	//	if (success.equals("register")) {
-	//		out.println("<script>alert('Book data is successfully added!'); location='" + request.getContextPath()
-	//		+ "/admin/bookRegistration';</script>");
-	//		return;
-	//	}
-	//	if (success.equals("update")) {
-	//		out.println("<script>alert('Book data is successfully updated!'); location='" + request.getContextPath()
-	//		+ "/admin/books';</script>");
-	//		return;
-	//	}
-	//}
-
-	String status = (String) request.getAttribute("status");
-	request.removeAttribute("status");
-	if(status != null) {
-		if(status.equals("servererror")) {
-			out.println("<script>alert('Server error!'); location='" + request.getContextPath()	+ URL.adminHomePage + "';</script>");
-			return;
-		}
-		if(status.equals("invalid")) {
-			out.println("<script>alert('Invalid data or request!'); location='" + request.getContextPath()	+ URL.getBookRegistrationServlet + "';</script>");
-			return;
-		}
-		if(status.equals("duplicate")) {
-			out.println("<script>alert('The book is already stored in database!'); location='" + request.getContextPath()	+ URL.getBookRegistrationServlet + "';</script>");
-			return;
-		}
-		if(status.equals("insertsuccess")) {
-			out.println("<script>alert('The book is successfully saved in database!'); location='" + request.getContextPath()	+ URL.getBookRegistrationServlet + "';</script>");
-			return;
-		}
-	}
-	
-	String servlet = (String) request.getAttribute("servlet");
-	if (servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + URL.getBookRegistrationServlet + "';</script>");
-		return;
-	}
-	
-	
-	Book book = null;
-	String description = "";
-	ArrayList<Author> bookAuthorList = new ArrayList<Author>();
-	ArrayList<Genre> bookGenreList = new ArrayList<Genre>();
-	
-	String update = (String) request.getAttribute("update");
-	if(update != null) {
-		if(update.equals("true")) {
-			book = (Book) request.getAttribute("book");
-			bookAuthorList = book.getAuthors();
-			bookGenreList = book.getGenres();
-			description = book.getDescription();
-			if(description == null) {
-				description = "";
+		String status = (String) request.getAttribute("status");
+		request.removeAttribute("status");
+		
+		if(status != null) {
+			if(status.equals(Status.serverError)) {
+				out.println("<script>alert('Server error!');</script>");
+				out.println("<script>location='" + request.getContextPath()	+ URL.adminHomePage + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.invalidData)) {
+				out.println("<script>alert('Invalid data!');</script>"); 
+				out.println("<script>location='" + request.getContextPath()	+ URL.getBookRegistrationServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.duplicateData)) {
+				out.println("<script>alert('The book is already stored in database!');</script>");
+				out.println("<script>location='" + request.getContextPath()	+ URL.getBookRegistrationServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.insertSuccess)) {
+				out.println("<script>alert('The book is successfully saved in database!');</script>");
+				out.println("<script>location='" + request.getContextPath()	+ URL.getBookRegistrationServlet + "';</script>");
+				return;
+			}
+			else if(!status.equals(Status.servletStatus)) {
+				out.println("<script>location='" + request.getContextPath() + URL.getBookRegistrationServlet + "';</script>");
+				return;
+			}
+		}	
+		
+		Book book = null;
+		String description = "";
+		ArrayList<Author> bookAuthorList = new ArrayList<Author>();
+		ArrayList<Genre> bookGenreList = new ArrayList<Genre>();
+		
+		String update = (String) request.getAttribute("update");
+		if(update != null) {
+			if(update.equals("true")) {
+				book = (Book) request.getAttribute("book");
+				bookAuthorList = book.getAuthors();
+				bookGenreList = book.getGenres();
+				description = book.getDescription();
+				if(description == null) {
+					description = "";
+				}
+			}
+			else {
+				out.println("<script>location='" + request.getContextPath() + URL.getBookRegistrationServlet + "';</script>");
+				return;
 			}
 		}
 		else {
 			update = "";
 		}
-	}
-	else {
-		update = "";
-	}
-
-	//if (status == null) {
-	//	status = "register";
-	//} else {
-	//	if (status.equals("update")) {
-	//		book = (Book) request.getAttribute("book");
-	//		request.removeAttribute("book");
-	//		bookAuthorList = (ArrayList<Author>) request.getAttribute("bookAuthorList");
-	//		request.removeAttribute("bookAuthorList");
-	//		bookGenreList = (ArrayList<Genre>) request.getAttribute("bookGenreList");
-	//		request.removeAttribute("bookGenreList");
-	//	} else {
-	//		out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
-	//		+ "/signout.jsp';</script>");
-	//		return;
-	//	}
-	//}
-
-	ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
-	ArrayList<Genre> genreList = (ArrayList<Genre>) request.getAttribute("genreList");
-	request.removeAttribute("authorList");
-	request.removeAttribute("genreList");
-
-	Calendar calendar = Calendar.getInstance();
-	calendar.setTime(new Date());
-	calendar.add(Calendar.YEAR, 1);
-	Date date = calendar.getTime();
-	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-	String dateStr = formatter.format(date);
+	
+		ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
+		ArrayList<Genre> genreList = (ArrayList<Genre>) request.getAttribute("genreList");
+		request.removeAttribute("authorList");
+		request.removeAttribute("genreList");
+		
+		if(authorList == null || genreList == null) {
+			out.println("<script>alert('Server error!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
+			return;
+		}
+	
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		calendar.add(Calendar.YEAR, 1);
+		Date date = calendar.getTime();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String dateStr = formatter.format(date);
 	%>
 
 	<main id="main" class="main">
@@ -438,8 +378,8 @@ input::placeholder {
 					return true;
 				}
 			});
-			//$('#description').on("input", checkDescription);
-			//$('#isbn').on("input", checkISBN);
+			$('#description').on("input", checkDescription);
+			$('#isbn').on("input", checkISBN);
 		})
 
 		function checkISBN() {

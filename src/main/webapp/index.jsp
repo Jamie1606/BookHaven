@@ -9,7 +9,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="controller.Authentication, model.URL" %>
+<%@ page import="model.URL" %>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -110,31 +110,13 @@
 
 	<script>
 		$(document).ready(function() {
-			//fetch('/books/latest',
-			//{
-			//	method: 'GET'
-			//})
-			//.then(response => response.json())
-			//.then(data => {
-			//	var list = data.list;
-			//	var status = data.status;
-			//	if(status == "serverError") {
-			//		alert('Error in retrieving latest book!');
-			//	}
-			//	else {
-			//		if(list != undefined) {
-			//			for(let i = 0; i < list.length; i++) {
-			//				
-			//			}
-			//		}
-			//	}
-			//});
-			fetch('<%= URL.baseURL + URL.getLatestBook %>6', {
+			
+			fetch('<%= URL.baseURL + URL.getLatestBook %>9', {
 				method: 'GET'
 			})
 			.then(response => response.json())
 			.then(data => {
-				console.log(data);
+
 				let htmlStr = "";
 				if(data != undefined) {
 					for(let i = 0; i < data.length; i++) {
@@ -162,7 +144,7 @@
 					$('#latest-book-image').html('<img class="img-fluid" src="' + data[0].image3D + '" alt="">');
 				}
 				else {
-					
+					alert("Error in retrieving book data!");
 				}
 			})
 		})

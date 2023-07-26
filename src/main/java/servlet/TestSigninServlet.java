@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.ws.rs.client.Client;
@@ -23,12 +24,9 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
-import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import model.Admin;
-import model.Member;
+import model.Status;
 import model.URL;
 import model.UserCredentials;
 
@@ -44,63 +42,78 @@ public class TestSigninServlet extends HttpServlet {
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		HttpSession session = request.getSession();
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		String status = "";
 		boolean condition = true;
 		String url = URL.signIn;
-		HttpSession session = request.getSession();
 		UserCredentials userCredentials = new UserCredentials();
+		String token = null;
 		
-		try {
-			userCredentials.setEmail(email.trim());
-			userCredentials.setPassword(password.trim());
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			status = "invalid";
-			condition = false;
-			System.out.println("..... Invalid email and password in SignIn servlet .....");
+		if(session != null) {
+			token = (String) session.getAttribute("token");
 		}
 		
-		if(condition) {
-			Client client = ClientBuilder.newClient();
-			WebTarget target = client.target(URL.baseURL).path("userlogin");
-			Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
-			Response resp = invocationBuilder.post(Entity.json(userCredentials));
+		if(token == null || token.isEmpty()) {
+			try {
+				userCredentials.setEmail(email.trim());
+				userCredentials.setPassword(password.trim());
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+				status = Status.invalidData;
+				condition = false;
+				System.out.println("..... Invalid email and password in SignIn servlet .....");
+			}
 			
-			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
+			if(condition) {
 				
-				userCredentials = resp.readEntity(new GenericType<UserCredentials>() {});
-				if(userCredentials == null) {
-					status = "invalid";
-				}
-				else {
-					condition = false;
-					session.setAttribute("email", userCredentials.getEmail());
-					session.setAttribute("role", userCredentials.getRole());
-					session.setAttribute("token", userCredentials.getToken());
-					session.setMaxInactiveInterval(2 * 60 * 60);
+				Client client = ClientBuilder.newClient();
+				WebTarget target = client.target(URL.baseURL).path("userlogin");
+				Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+				ObjectMapper obj = new ObjectMapper();
+				String json = obj.writeValueAsString(userCredentials);
+				Response resp = invocationBuilder.post(Entity.json(json));
+				
+				if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
 					
-					if(userCredentials.getRole().equals("ROLE_ADMIN")) {
-						response.sendRedirect(request.getContextPath() + URL.adminHomePage);
-						return;
-					}
-					else if(userCredentials.getRole().equals("ROLE_MEMBER")) {
-						response.sendRedirect(request.getContextPath() + URL.homePage);
-						return;
+					json = resp.readEntity(String.class);
+					userCredentials = obj.readValue(json, new TypeReference<UserCredentials>() {});
+					
+					if(userCredentials == null) {
+						status = Status.invalidData;
 					}
 					else {
-						session.invalidate();
-						status = "invalid";
+						session.setAttribute("role", userCredentials.getRole());
+						session.setAttribute("token", userCredentials.getToken());
+						session.setMaxInactiveInterval(2 * 60 * 60);
+						
+						if(userCredentials.getRole().equals("ROLE_ADMIN")) {
+							response.sendRedirect(request.getContextPath() + URL.adminHomePage);
+							return;
+						}
+						else if(userCredentials.getRole().equals("ROLE_MEMBER")) {
+							response.sendRedirect(request.getContextPath() + URL.homePage);
+							return;
+						}
+						else {
+							status = Status.unauthorized;
+							url = URL.signOut;
+						}
 					}
 				}
+				else {
+					status = Status.serverError;
+					condition = false;
+					System.out.println("..... Error in SigninServlet .....");
+				}
 			}
-			else {
-				status = "fail";
-				condition = false;
-				System.out.println("..... Error in TestSigninServlet .....");
-			}
+		}
+		else {
+			status = Status.unauthorized;
+			url = URL.signOut;
 		}
 		
 		request.setAttribute("status", status);

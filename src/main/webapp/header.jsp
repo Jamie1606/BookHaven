@@ -1,4 +1,5 @@
-<%@ page import="model.URL" %>
+<%@ page import="model.URL, model.Status" %>
+
 <header id="header">
 	<div class="container">
 		<div class="row align-items-center justify-content-between d-flex">
@@ -13,10 +14,9 @@
 					<li><a href="<%= request.getContextPath() %>/bookGenre.jsp">Genre</a></li>
 					<%
 						if(session != null) {
-							String email = (String) session.getAttribute("email");
 							String role = (String) session.getAttribute("role");
 							String token = (String) session.getAttribute("token");
-							if(email != null && role != null && token != null) {
+							if(role != null && token != null) {
 								if(role.equals("ROLE_MEMBER")) {
 									out.println("<li><a href='" + request.getContextPath() + URL.profile + "'>Profile</a></li>");
 									out.println("<li><a href='" + request.getContextPath() + URL.cart + "'>Cart</a></li>");
@@ -27,6 +27,7 @@
 									return;
 								}
 								else {
+									request.setAttribute("status", Status.unauthorized);
 									out.println("<script>location = '" + request.getContextPath() + URL.signOut + "';</script>");
 									return;
 								}
