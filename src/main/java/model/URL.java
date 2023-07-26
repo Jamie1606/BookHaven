@@ -31,7 +31,7 @@ public class URL {
 	
 	
 	// authentication servlets
-	public static final String signInServlet = "/SigninServlet";
+	public static final String signInServlet = "/Signin";
 	
 	
 	
@@ -56,6 +56,12 @@ public class URL {
 	
 	
 	
+	// cart servlets
+	public static final String addToCartServlet = "/AddtoCart/";
+	public static final String removeFromCartServlet = "/RemovefromCart/";
+	
+	
+	
 	// customer jsp pages
 	public static final String homePage = "/index.jsp";
 	public static final String bookDetail = "/bookDetail.jsp";
@@ -63,6 +69,7 @@ public class URL {
 	public static final String signIn = "/signin.jsp";
 	public static final String profile = "/profile.jsp";
 	public static final String cart = "/cart.jsp";
+	public static final String authorDetail = "/authorDetail.jsp";
 	public static final String signUp = "/signup.jsp";
 	public static final String header = "/header.jsp";
 	public static final String footer = "/footer.jsp";

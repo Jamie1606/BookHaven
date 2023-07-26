@@ -10,7 +10,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="model.URL, model.Status" %>
+<%@ page import="model.*" %>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -104,7 +104,7 @@
 		}
 	%>
 
-	<form id="signinForm" action="<%=request.getContextPath()%>/TestSigninServlet" method="post" style="padding: 100px 0px; display: flex; flex-direction: column; align-items: center;">
+	<form id="signinForm" action="<%=request.getContextPath() + URL.signInServlet%>" method="post" style="padding: 100px 0px; display: flex; flex-direction: column; align-items: center;">
 		<h2>SIGN IN FORM</h2>
 		<input style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" type="email" placeholder="&#x2709; Email" name="email" required />
 		<input style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" type="password" placeholder ="&#x1F511; Password" name="password" required />

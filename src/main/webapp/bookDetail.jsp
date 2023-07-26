@@ -476,26 +476,30 @@
 			$('#btn-cart').prop('disabled', true);
 			$('#btn-cart').html('Loading...');
 			let qty = Number(document.getElementById('buy-qty').innerHTML);
-			fetch('<%=request.getContextPath()%>/book/qty/<%=id%>/' + qty, {
+			fetch('<%=request.getContextPath() + URL.addToCartServlet + id %>/' + qty, {
 				method: 'GET'
 			})
 			.then(response => response.json())
 			.then(data => {
+				console.log(data);
 				$('#btn-cart').prop('disabled', false);
 				$('#btn-cart').html('<i style="padding: 0px 8px; font-size: 16px;" class="fa fa-shopping-cart"></i> Add to cart');
 				let status = data.status;
-				if(status == "invalid") {
-					alert('Invalid request!');
+				if(status == "<%= Status.invalidData %>") {
+					alert('Invalid data!');
+					location.reload();
 				}
-				else if(status == "full") {
-					alert('You have reached the maximum quantity for this book!');
+				else if(status == "<%= Status.maxProduct %>") {
+					alert('You have reached maximum quantity for this book!');
+					location.reload();
 				}
-				else if(status == "ok") {
+				else if(status == "<%= Status.ok %>") {
 					alert('Successfully added to cart!');
-					location = 'cart.jsp';
+					location = '<%= request.getContextPath() + URL.cart %>';
 				}
 				else {
 					alert('Server Error! Please try again later!');
+					location.reload();
 				}
 			})
 		}
