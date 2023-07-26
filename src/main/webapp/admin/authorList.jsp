@@ -7,7 +7,7 @@
 // Description	: author list page
 %>
 
-<%@ page import="java.util.ArrayList, java.util.Date, model.Author, model.URL"%>
+<%@ page import="java.util.ArrayList, java.util.Date, model.Author, model.URL, model.Status"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -71,47 +71,44 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	String status = (String) request.getAttribute("status");
-	request.removeAttribute("status");
-	if(status != null) {
-		if(status.equals("servererror")) {
-			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
-			return;
+		String status = (String) request.getAttribute("status");
+		request.removeAttribute("status");
+		
+		if(status != null) {
+			if(status.equals(Status.serverError)) {
+				out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.invalidData)) {
+				out.println("<script>alert('Invalid data!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.invalidRequest)) {
+				out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.updateSuccess)) {
+				out.println("<script>alert('Author is successfully updated!');</script>"); 
+				out.println("<script>location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.deleteSuccess)) {
+				out.println("<script>alert('Author is successfully deleted!');</script>");
+				out.println("<script>location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
+				return;
+			}
+			else if(!status.equals(Status.servletStatus)) {
+				out.println("<script>location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
+				return;
+			}
 		}
-		if(status.equals("invalid")) {
-			out.println("<script>alert('Invalid data or request!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
-			return;
-		}
-		if(status.equals("updatesuccess")) {
-			out.println("<script>alert('Author is successfully updated!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
-			return;
-		}
-		if(status.equals("deletesuccess")) {
-			out.println("<script>alert('Author is successfully deleted!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
-			return;
-		}
-		if(status.equals("deleteservererror")) {
-			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
-			return;
-		}
-		if(status.equals("updateservererror")) {
-			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
-			return;
-		}
-	}
-	
-	String servlet = (String)request.getAttribute("servlet");
-	request.removeAttribute("servlet");
-	if(servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
-		return;
-	}
 
-	ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
-	if(authorList == null) {
-		out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
-		return;
-	}
+		ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
+		if(authorList == null) {
+			out.println("<script>alert('Server error!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
+			return;
+		}
 	%>
 
 	<main id="main" class="main">
@@ -151,6 +148,8 @@
 								<tbody>
 									<%
 									for (int i = 0; i < authorList.size(); i++) {
+										
+										String contextPath = request.getContextPath();
 										int authorID = authorList.get(i).getAuthorID();
 										String name = authorList.get(i).getName();
 										Date birthDate = authorList.get(i).getBirthDate();
@@ -174,9 +173,12 @@
 											out.println("<td>" + birthDate.toString() + "</td>");
 										}
 										
-										
-										out.println("<td><a href='" + request.getContextPath() + URL.getAuthorByIDServlet + authorID + "'>Edit</a>" 
-										+ " | <a class='deleteLink' href='" + request.getContextPath() + URL.deleteAuthorServlet + authorID + "'>Delete</a></td>");
+										out.println("<td>");
+										out.println("<a href='" + contextPath + URL.getAuthorByIDServlet + authorID + "'>Edit</a>");
+										out.println(" | ");
+										out.println("<a data-author-name='" + name + "' class='delLink' href='" + contextPath 
+												+ URL.deleteAuthorServlet + authorID + "'>Delete</a>");
+										out.println("</td>");
 										out.println("</tr>");
 									}
 									%>
@@ -214,7 +216,7 @@
 	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	      </div>
 	      <div class="modal-body">
-	        Are you sure you want to delete?
+	        Are you sure you want to delete <span id="authorNameDelete"></span>?
 	      </div>
 	      <div class="modal-footer">
 	      	<button type="button" class="btn btn-danger btnDelete">Delete</button>
@@ -266,10 +268,12 @@
 		document.addEventListener('click', function(event) {
 			let target = event.target;
 			
-			if(target.classList.contains("deleteLink")) {
+			if(target.classList.contains("delLink")) {
 				event.preventDefault();
 				
 				var deleteModal = new bootstrap.Modal(document.getElementById("exampleModal"));
+				let authorName = target.getAttribute('data-author-name');
+				document.getElementById("authorNameDelete").textContent = "\"" + authorName + "\"";
 				deleteModal.show();
 				
 				document.querySelector('#exampleModal .btnDelete').addEventListener('click', function() {

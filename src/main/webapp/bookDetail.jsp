@@ -12,7 +12,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page
-	import="controller.Authentication, javax.servlet.http.HttpSession,model.URL"%>
+	import="model.URL"%>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -118,7 +118,7 @@
 	<%
 	String id = request.getParameter("id");
 	if (id == null) {
-		out.println("<script>alert('Invalid book id!'); location='" + request.getContextPath() + "/index.jsp';</script>");
+		out.println("<script>alert('Invalid book id!'); location='" + request.getContextPath() + URL.homePage + "';</script>");
 		return;
 	}
 	%>
@@ -179,9 +179,9 @@
 						</div>
 						<%
 							if(session != null) {
-								String userid = (String) session.getAttribute("id");
 								String role = (String) session.getAttribute("role");
-								if (userid != null && role != null && role.equals("member")) {
+								String token = (String) session.getAttribute("token");
+								if (token != null && !token.isEmpty() && role != null && role.equals("ROLE_MEMBER")) {
 						%>
 						<div style="display: flex; align-items: center;" id="cart">
 							<label id="btn-minus" onclick="changeQty(-1)"

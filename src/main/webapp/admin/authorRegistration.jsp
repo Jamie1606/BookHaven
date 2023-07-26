@@ -9,7 +9,7 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="java.util.*, java.text.*, model.Author, model.URL"%>
+<%@ page import="java.util.*, java.text.*, model.Author, model.URL, model.Status"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -72,73 +72,64 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	// set default value for author data
-	Author author = null;
-	int authorid = 0;
-	String name = "";
-	String nationality = "";
-	String birthdate = "";
-	String biography = "";
-	String link = "";
-			
-	String status = (String) request.getAttribute("status");
-	if(status != null) {
-		if(status.equals("invalid")) {
-			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath()
-			+ URL.authorRegistration + "';</script>");
-			return;
+		Author author = null;
+		int authorid = 0;
+		String name = "";
+		String nationality = "";
+		String birthdate = "";
+		String biography = "";
+		String link = "";
+				
+		String status = (String) request.getAttribute("status");
+		if(status != null) {
+			if(status.equals(Status.invalidData)) {
+				out.println("<script>alert('Invalid data!'); location='" + request.getContextPath()
+				+ URL.authorRegistration + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.insertSuccess)) {
+				out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
+				+ URL.authorRegistration + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.serverError)) {
+				out.println("<script>alert('Server error!'); location='" + request.getContextPath()
+				+ URL.adminHomePage + "';</script>");
+				return;
+			}
 		}
-		else if(status.equals("insertsuccess")) {
-			out.println("<script>alert('Author data is successfully added!'); location='" + request.getContextPath()
-			+ URL.authorRegistration + "';</script>");
-			return;
-		}
-		else if(status.equals("servererror")) {
-			out.println("<script>alert('Server error!'); location='" + request.getContextPath()
-			+ URL.authorRegistration + "';</script>");
-			return;
-		}
-		else if(status.equals("retrievesuccess")) {
-			
-		}
-		else {
-			out.println("<script>alert('Unexpected error! Please contact IT team!'); location='" + request.getContextPath()
-			+ URL.authorRegistration + "';</script>");
-			return;
-		}
-	}
-	
-	String update = (String) request.getAttribute("update");
-	if(update != null) {
-		if(update.equals("true")) {
-			author = (Author) request.getAttribute("author");
-			request.removeAttribute("author");
-			authorid = author.getAuthorID();
-			name = author.formatNull(author.getName());
-			nationality = author.formatNull(author.getNationality());
-			biography = author.formatNull(author.getBiography());
-			link = author.formatNull(author.getLink());
-			if(author.getBirthDate() != null) {
-				birthdate = author.getBirthDate().toString();				
+		
+		String update = (String) request.getAttribute("update");
+		if(update != null) {
+			if(update.equals("true")) {
+				author = (Author) request.getAttribute("author");
+				request.removeAttribute("author");
+				authorid = author.getAuthorID();
+				name = author.formatNull(author.getName());
+				nationality = author.formatNull(author.getNationality());
+				biography = author.formatNull(author.getBiography());
+				link = author.formatNull(author.getLink());
+				if(author.getBirthDate() != null) {
+					birthdate = author.getBirthDate().toString();				
+				}
+			}
+			else {
+				out.println("<script>location='" + request.getContextPath()	+ URL.authorRegistration + "';</script>");
+				return;
 			}
 		}
 		else {
-			out.println("<script>location='" + request.getContextPath()	+ URL.authorRegistration + "';</script>");
-			return;
+			update = "";
 		}
-	}
-	else {
-		update = "";
-	}
-
-	// calendar for author birthdate
-	// author must be at least 5 years old
-	Calendar calendar = Calendar.getInstance();
-	calendar.setTime(new Date());
-	calendar.add(Calendar.YEAR, -5);
-	Date date = calendar.getTime();
-	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-	String date_str = formatter.format(date);
+	
+		// calendar for author birthdate
+		// author must be at least 5 years old
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		calendar.add(Calendar.YEAR, -5);
+		Date date = calendar.getTime();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String date_str = formatter.format(date);
 	%>
 
 	<main id="main" class="main">

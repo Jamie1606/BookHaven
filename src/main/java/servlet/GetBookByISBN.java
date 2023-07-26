@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +20,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import model.Book;
+import model.Status;
 import model.URL;
 
 /**
@@ -34,51 +36,70 @@ public class GetBookByISBN extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestURi = (String) request.getRequestURI();
-		String[] parts = requestURi.split("/");
+		
+		HttpSession session = request.getSession();
 		String url = URL.bookList;
 		boolean condition = true;
+		String status = "";
+		String isbn = "";
 		
-		if(parts.length == 0) {
-			System.out.println("..... Invalid data request in GetBookByISBN servlet .....");
-			request.setAttribute("status", "invalid");
-			condition = false;
-		}
-		
-		String isbn = parts[parts.length - 1];
-		if(isbn == null || isbn.isEmpty()) {
-			System.out.println("..... Invalid isbn in GetBookByISBN servlet .....");
-			request.setAttribute("status", "invalid");
-			condition = false;
-		}
-		
-		if(condition) {
-			Client client = ClientBuilder.newClient();
-			WebTarget target = client.target(URL.baseURL).path("getBook").path("details").path("{isbn}").resolveTemplate("isbn", isbn);
-			Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
-			Response resp = invocationBuilder.get();
+		if(session != null && !session.isNew()) {
+			String token = (String) session.getAttribute("token");
 			
-			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
-				String json = resp.readEntity(String.class);
-				ObjectMapper obj = new ObjectMapper();
-				Book book = obj.readValue(json, new TypeReference<Book>() {});
-				
-				if(book != null) {				
-					request.setAttribute("book", book);
-					request.setAttribute("update", "true");
-					url = URL.getBookRegistrationServlet;
-				}
-				else {
-					System.out.println("..... No book in GetBookByISBN servlet");
-					request.setAttribute("status", "invalid");
-				}
+			if(token == null || token.isEmpty()) {
+				status = Status.unauthorized;
+				url = URL.signOut;
 			}
 			else {
-				System.out.println("..... Error in GetBookByISBN servlet .....");
-				request.setAttribute("status", "updateservererror");
+				try {
+					String requestURi = (String) request.getRequestURI();
+					String[] parts = requestURi.split("/");
+					isbn = parts[parts.length - 1];
+					isbn = isbn.trim();
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+					System.out.println("..... Invalid isbn in GetBookByISBN servlet .....");
+					status = Status.invalidData;
+					condition = false;
+				}
+				
+				if(condition) {
+					
+					Client client = ClientBuilder.newClient();
+					WebTarget target = client.target(URL.baseURL).path("getBook").path("details").path("{isbn}").resolveTemplate("isbn", isbn);
+					Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+					Response resp = invocationBuilder.get();
+					
+					if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
+						
+						String json = resp.readEntity(String.class);
+						ObjectMapper obj = new ObjectMapper();
+						Book book = obj.readValue(json, new TypeReference<Book>() {});
+						
+						if(book != null) {				
+							request.setAttribute("book", book);
+							request.setAttribute("update", "true");
+							url = URL.getBookRegistrationServlet;
+						}
+						else {
+							System.out.println("..... No book in GetBookByISBN servlet");
+							status = Status.invalidData;
+						}
+					}
+					else {
+						System.out.println("..... Error in GetBookByISBN servlet .....");
+						status = Status.serverError;
+					}
+				}
 			}
 		}
+		else {
+			status = Status.unauthorized;
+			url = URL.signOut;
+		}
 		
+		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
