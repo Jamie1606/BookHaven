@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,19 +19,18 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
 import model.Book;
 import model.Status;
 import model.URL;
 
 /**
- * Servlet implementation class GetBookByISBN
+ * Servlet implementation class RemovefromCart
  */
-@WebServlet("/GetBookByISBN/*")
-public class GetBookByISBN extends HttpServlet {
+@WebServlet("/RemovefromCart/*")
+public class RemovefromCart extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public GetBookByISBN() {
+    public RemovefromCart() {
         super();
     }
 
@@ -38,9 +38,8 @@ public class GetBookByISBN extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		String url = URL.bookList;
-		boolean condition = true;
 		String status = "";
+		String url = URL.cart;
 		String isbn = "";
 		
 		if(session != null && !session.isNew()) {
@@ -56,41 +55,27 @@ public class GetBookByISBN extends HttpServlet {
 					String[] parts = requestURi.split("/");
 					isbn = parts[parts.length - 1];
 					isbn = isbn.trim();
+					ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
+					if(cart != null) {
+						for(int i = 0; i < cart.size(); i++) {
+							if(cart.get(i).getISBNNo().equals(isbn)) {
+								cart.remove(i);
+								break;
+							}
+						}
+						if(cart.size() == 0) {
+							session.removeAttribute("cart");
+						}
+						else {
+							session.setAttribute("cart", cart);
+						}
+					}
+					status = Status.deleteSuccess;
 				}
 				catch(Exception e) {
 					e.printStackTrace();
-					System.out.println("..... Invalid isbn in GetBookByISBN servlet .....");
 					status = Status.invalidData;
-					condition = false;
-				}
-				
-				if(condition) {
-					
-					Client client = ClientBuilder.newClient();
-					WebTarget target = client.target(URL.baseURL).path("getBook").path("details").path("{isbn}").resolveTemplate("isbn", isbn);
-					Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
-					Response resp = invocationBuilder.get();
-					
-					if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
-						
-						String json = resp.readEntity(String.class);
-						ObjectMapper obj = new ObjectMapper();
-						Book book = obj.readValue(json, new TypeReference<Book>() {});
-						
-						if(book != null) {				
-							request.setAttribute("book", book);
-							request.setAttribute("update", "true");
-							url = URL.getBookRegistrationServlet;
-						}
-						else {
-							System.out.println("..... No book in GetBookByISBN servlet .....");
-							status = Status.invalidData;
-						}
-					}
-					else {
-						System.out.println("..... Error in GetBookByISBN servlet .....");
-						status = Status.serverError;
-					}
+					System.out.println("..... Invalid request in RemovefromCart servlet .....");
 				}
 			}
 		}

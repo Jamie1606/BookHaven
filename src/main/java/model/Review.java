@@ -18,21 +18,6 @@ public class Review {
 	private String ISBNNo;
 	private int memberID;
 	private String status;
-	
-	
-	public Review(int reviewID, String title, String description, Date reviewDate, short rating, String iSBNNo,
-			int memberID, String status) {
-		super();
-		this.reviewID = reviewID;
-		this.title = title;
-		this.description = description;
-		this.reviewDate = reviewDate;
-		this.rating = rating;
-		ISBNNo = iSBNNo;
-		this.memberID = memberID;
-		this.status = status;
-	}
-
 
 	public int getReviewID() {
 		return reviewID;

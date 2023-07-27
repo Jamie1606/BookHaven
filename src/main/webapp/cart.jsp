@@ -1,17 +1,17 @@
 
 <%
-//Author: Zay Yar Tun
-//Admin No: 2235035
-// Class: DIT/FT/2A/02
-// Group: 10
-//Date: 17.6.2023
-//Description: shopping cart
-//cart layout design is referenced from https://cdn.dribbble.com/users/1569943/screenshots/6745363/cart.png
+// Author		: Zay Yar Tun
+// Admin No		: 2235035
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 17.6.2023
+// Description	: shopping cart
+// cart layout design is referenced from https://cdn.dribbble.com/users/1569943/screenshots/6745363/cart.png
 %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page
-	import="model.Book, java.util.ArrayList"%>
+	import="model.*, java.util.ArrayList"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -104,43 +104,133 @@
 	<%@ include file="header.jsp"%>
 
 	<%
-	//if (!auth.testMember(session)) {
-	//	out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
-	//	return;
-	//}
-
-	ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
-	if (cart == null) {
-		out.println("<script>alert('There is no item in cart!'); location='" + request.getContextPath() + "/index.jsp';</script>");
-		return;
-	}
-	else {
-		if(cart.size() == 0) {
-			out.println("<script>alert('There is no item in cart!'); location='" + request.getContextPath() + "/index.jsp';</script>");
+		if(session != null && !session.isNew()) {
+			String token = (String) session.getAttribute("token");
+			String role = (String) session.getAttribute("role");
+			
+			if(token == null || token.isEmpty() || role == null || !role.equals("ROLE_MEMBER")) {
+				request.setAttribute("status", Status.unauthorized);
+				request.getRequestDispatcher(URL.signOut).forward(request, response);
+				return;
+			}
+		}
+		else {
+			request.setAttribute("status", Status.unauthorized);
+			request.getRequestDispatcher(URL.signOut).forward(request, response);
 			return;
 		}
-	}
+		
+		String status = (String) request.getAttribute("status");
+		if(status != null) {
+			if(status.equals(Status.deleteSuccess)) {
+				out.println("<script>location = '" + request.getContextPath() + URL.cart + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.invalidData)) {
+				out.println("<script>alert('Invalid request!'); location = '" + request.getContextPath() + URL.cart + "';</script>");
+				return;
+			}
+		}
+	
+		int totalQty = 0;
+		double totalPrice = 0;
+	
+		ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
+		if (cart == null || cart.isEmpty()) {
+			out.println("<script>alert('There is no item in cart!'); location='" + request.getContextPath() + URL.homePage + "';</script>");
+			return;
+		}
+		else {
+			if(cart.size() == 0) {
+				session.removeAttribute("cart");
+				out.println("<script>alert('There is no item in cart!'); location='" + request.getContextPath() + URL.homePage + "';</script>");
+				return;
+			}
+		}
 	%>
 
-	<div
-		style="display: flex; flex-direction: row; justify-content: space-evenly; visibility: hidden; padding: 130px 100px;"
+	<div style="display: flex; flex-direction: row; justify-content: space-evenly; padding: 130px 100px;"
 		id="cart-info">
 		<div id="cart-book-info" style="display: flex; width: 70%: flex-direction: row;">
 			<div style="display: flex; flex-direction: column;">
-				<div
-					style="display: flex; flex-direction: row; justify-content: space-between;">
-					<h3>
-						Your Cart <span style="font-size: 16px; font-weight: normal;">(<%= (cart.size() > 1) ? cart.size() + " items" : cart.size() + " item" %>)
+				<div style="display: flex; flex-direction: row; justify-content: space-between;">
+					<h3>Your Cart <span style="font-size: 16px; font-weight: normal;">(<%= (cart.size() > 1) ? cart.size() + " items" : cart.size() + " item" %>)
 						</span>
 					</h3>
-					<a href="<%=request.getContextPath()%>/index.jsp">Continue
-						Shopping</a>
+					<a href="<%=request.getContextPath() + URL.homePage %>">Continue Shopping</a>
 				</div>
 
 				<div id="cart-detail" style="display: flex; flex-direction: column;">
+					<%
+						for(int i = 0; i < cart.size(); i++) {
+							String image = cart.get(i).getImage();
+							String title = cart.get(i).getTitle();
+							String isbn = cart.get(i).getISBNNo();
+							String authors = "";
+							
+							ArrayList<Author> authorList = cart.get(i).getAuthors();
+							for(int j = 0; j < authorList.size(); j++) {
+								int authorID = authorList.get(j).getAuthorID(); 
+										
+								if(j == authorList.size() -1) {
+									authors = "<a href='" + request.getContextPath() + URL.authorDetail + "?id=" + authorID + "'>" 
+										+ authorList.get(j).getName() + "</a>";
+								}
+								else {
+									authors = "<a href='" + request.getContextPath() + URL.authorDetail + "?id=" + authorID + "'>" 
+										+ authorList.get(j).getName() + "</a>, ";
+								}
+							}
+							
+							Double rating = cart.get(i).getRating();
+							int bookPage = cart.get(i).getPage();
+							int qty = cart.get(i).getQty();
+							double price = cart.get(i).getPrice();
+							totalQty += qty;
+							totalPrice += (price * qty);
+					%>
+							
+					<div style="display: flex; flex-direction: row; margin-top: 35px; justify-content: space-evenly;">
+					
+						<div style="margin-right: 25px;">
+							<img style="width: 150px; height: 220px; border-radius: 7px;" src="<%= image %>" />
+						</div>
+						
+						<div style="display: flex; flex-direction: column; margin-top: 15px; width: 30%;">
+							<a href="<%= request.getContextPath() + URL.bookDetail %>?id=<%= isbn %>">
+								<h4><%= title %></h4>
+							</a>
+							<label style="margin-top: 10px;">By <%= authors %></label>
+							
+							<div>
+								<span style="color: gold; font-size: 20px; vertical-align: middle;">&#9733;&#9734;</span>
+								<span style="margin-left: 10px; font-weight: bold; color: #777; vertical-align: middle; letter-spacing: 1.1px;">
+									<%= rating %>
+								</span>
+							</div>
+							
+							<label style="margin-top: 5px; color: black;"><%= bookPage %> pages</label>
+						</div>
+						
+						<div style="display: flex; align-items: center;" id="cart">
+							<label id="btn-minus" onclick="changeQty(-1, \'' + list[i].ISBNNo + '\')" style="font-size: 28px; font-weight: bold; color: #6c5dd4; margin: 5px 5px; vertical-align: middle; padding: 5px 10px; user-select: none;">-</label>
+							<label id="buy-qty" style="font-size: 18px; user-select: none; margin: 5px 15px; vertical-align: middle;">
+								<%= qty %>
+							</label>
+							<label id="btn-plus" onclick="changeQty(1, \'' + list[i].ISBNNo + '\')" style="font-size: 28px; font-weight: bold; color: #6c5dd4; margin: 5px 5px; vertical-align: middle; padding: 5px 10px; user-select: none;">+</label>
+						</div>
+						
+						<div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly;">
+							<label style="font-weight: bold; font-size: 18px; color: #222;">$<%= String.format("%.2f", (price * qty)) %></label>
+							<a href="<%= request.getContextPath() + URL.removeFromCartServlet + isbn %>" style="color: #555; margin-top: 20px; text-decoration: underline;">Remove</a>
+						</div>
+					</div>
+					
+					<%
+						}
+					%>
 
 				</div>
-
 			</div>
 		</div>
 		<div style="display: flex; flex-direction: column; background-color: #eee; height: 30%; padding: 4%;">
@@ -148,12 +238,12 @@
 			<div
 				style="display: flex; justify-content: space-between; color: #555; margin-top: 35px;">
 				<label style="font-weight: bold; font-size: 15px;">Qty</label> <label
-					style="font-weight: bold; font-size: 15px;" id="total-qty"></label>
+					style="font-weight: bold; font-size: 15px;" id="total-qty"><%= totalQty %></label>
 			</div>
 			<div
 				style="display: flex; justify-content: space-between; color: #555; margin-top: 15px;">
 				<label style="font-weight: bold; font-size: 15px;">Total</label> <label
-					style="font-weight: bold; font-size: 15px;" id="total-sum"></label>
+					style="font-weight: bold; font-size: 15px;" id="total-sum">$ <%= String.format("%.2f", totalPrice) %></label>
 			</div>
 			<button id="btncheckout">CHECKOUT</button>
 		</div>
@@ -180,81 +270,9 @@
 	<script src="<%=request.getContextPath()%>/js/parallax.min.js"></script>
 	<script src="<%=request.getContextPath()%>/js/waypoints.min.js"></script>
 	<script src="<%=request.getContextPath()%>/js/jquery.counterup.min.js"></script>
-	<script src="<%=request.getContextPath()%>/js/mail-script.js"></script>
 	<script src="<%=request.getContextPath()%>/js/main.js"></script>
 
-	<script>
-		$(document).ready(function() {
-			fetch('<%=request.getContextPath()%>/cart/bookdetail', {
-				method: 'GET'
-			})
-			.then(response => response.json())
-			.then(data => {
-				let list = data.list;
-				let status = data.status;
-				if(status == "serverError") {
-					alert('Error in retrieving cart details!');
-					location = 'index.jsp';
-				}
-				else {
-					let sum = 0;
-					let totalQty = 0;
-					let htmlStr = "";
-					for(let i = 0; i < list.length; i++) {
-						let authors = "";
-						for(let j = 0; j < list[i].authors.length; j++) {
-							if(j == list[i].authors.length - 1) {
-								authors += "<a style='color: #777;' href='<%= request.getContextPath() %>/authorDetail.jsp?id=" + list[i].authors[j].authorID + "'>" + list[i].authors[j].name + "</a>";
-							}
-							else {
-								authors += "<a style='color: #777;' href='<%= request.getContextPath() %>/authorDetail.jsp?id=" + list[i].authors[j].authorID + "'>" + list[i].authors[j].name + "</a>, ";
-							}
-						}
-						htmlStr += '<div style="display: flex; flex-direction: row; margin-top: 35px; justify-content: space-evenly;">';
-						htmlStr += '<div style="margin-right: 25px;"><img style="width: 150px; height: 220px; border-radius: 7px;" src="<%= request.getContextPath() %>'+list[i].image+' " /></div>';
-						
-						htmlStr += '<div style="display: flex; flex-direction: column; margin-top: 15px; width: 30%;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + list[i].ISBNNo + '"><h4>' + list[i].title + '</h4></a><label style="margin-top: 10px;">By ' + authors + '</label><div><span style="color: gold; font-size: 20px; vertical-align: middle;">';
-						if(list[i].rating > 0) {
-							htmlStr += '&#9733;';						
-						}
-						else {
-							htmlStr += '&#9734;';
-						}
-							
-						htmlStr += '</span><span style="margin-left: 10px; font-weight: bold; color: #777; vertical-align: middle; letter-spacing: 1.1px;">' + list[i].rating.toFixed(1) + '</span></div><label style="margin-top: 5px; color: black;">' + list[i].page + ' pages</label></div>';
-						
-						totalQty += list[i].qty;
-						sum += (list[i].qty * list[i].price);
-						
-						htmlStr += '<div style="display: flex; align-items: center;" id="cart"><label id="btn-minus" onclick="changeQty(-1, \'' + list[i].ISBNNo + '\')" style="font-size: 28px; font-weight: bold; color: #6c5dd4; margin: 5px 5px; vertical-align: middle; padding: 5px 10px; user-select: none;">-</label><label id="buy-qty" style="font-size: 18px; user-select: none; margin: 5px 15px; vertical-align: middle;">' + list[i].qty + '</label><label id="btn-plus" onclick="changeQty(1, \'' + list[i].ISBNNo + '\')" style="font-size: 28px; font-weight: bold; color: #6c5dd4; margin: 5px 5px; vertical-align: middle; padding: 5px 10px; user-select: none;">+</label></div>';
-							
-						htmlStr += '<div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly;"><label style="font-weight: bold; font-size: 18px; color: #222;">$' + (list[i].qty * list[i].price).toFixed(2) + '</label><a href="" onclick=\'removeItem("' + list[i].ISBNNo + '")\' style="color: #555; margin-top: 20px; text-decoration: underline;">Remove</a></div>';
-						
-						htmlStr += '</div>';
-					}
-					$('#total-sum').html("$" + sum.toFixed(2));
-					$('#total-qty').html(totalQty);
-					$('#total-price').html("Total Price: $" + sum.toFixed(2));
-					$('#cart-detail').html(htmlStr);
-					$('#cart-info').css({"visibility": "visible"});
-				}
-			})
-		})			
-		
-		function removeItem(isbn) {
-			fetch('<%=request.getContextPath()%>/cart/remove/' + isbn, {
-				method: 'GET'	
-			})
-			.then(response => response.json())
-			.then(data => {
-				let status = data.status;
-				if(status == "invalid") {
-					alert('Invalid Request!');
-				}
-				location = 'cart.jsp';
-			})
-		}
-		
+	<script>				
 		function changeQty(num, isbn) {
 			addtoCart(num, isbn);
 		}
