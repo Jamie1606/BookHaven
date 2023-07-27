@@ -75,6 +75,12 @@
 				</li>
 				
 				<li>
+					<a href=""> 
+						<i class="bi bi-circle"></i><span>Order List</span>
+					</a>
+				</li>
+				
+				<li>
 					<a href="<%= request.getContextPath() %>/admin/reviews"> 
 						<i class="bi bi-circle"></i><span>Review List</span>
 					</a>

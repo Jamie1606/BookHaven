@@ -103,6 +103,7 @@
 			}
 		}
 
+		@SuppressWarnings("unchecked")
 		ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
 		if(authorList == null) {
 			out.println("<script>alert('Server error!');</script>");

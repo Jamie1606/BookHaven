@@ -7,14 +7,14 @@
 		if(role != null && token != null) {
 			if(!role.equals("ROLE_ADMIN")) {
 				request.setAttribute("status", Status.unauthorized);
-				out.println("<script>location='" + request.getContextPath() + URL.signOut + "';</script>");
+				request.getRequestDispatcher(URL.signOut).forward(request, response);
 				return;
 			}
 		}
 	}
 	else {
 		request.setAttribute("status", Status.unauthorized);
-		out.println("<script>location='" + request.getContextPath() + URL.signOut + "';</script>");
+		request.getRequestDispatcher(URL.signOut).forward(request, response);
 		return;
 	}
 %>

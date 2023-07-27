@@ -1,14 +1,6 @@
-// Author		: Zay Yar Tun
-// Admin No		: 2235035
-// Class		: DIT/FT/2A/02
-// Group		: 10
-// Date			: 11.7.2023
-// Description	: this is to store admin data from database
-
 package servlet;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,18 +23,19 @@ import model.URL;
 import model.UserCredentials;
 
 /**
- * Servlet implementation class TestSigninServlet
+ * Servlet implementation class Signin
  */
-@WebServlet("/TestSigninServlet")
-public class TestSigninServlet extends HttpServlet {
+@WebServlet("/Signin")
+public class Signin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-    public TestSigninServlet() {
+       
+    public Signin() {
         super();
     }
 
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+
 		HttpSession session = request.getSession();
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
