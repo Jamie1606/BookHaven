@@ -10,7 +10,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="controller.Authentication" %>
+<%@ page import="model.URL, model.Status" %>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -91,12 +91,13 @@
 	<%
 		String status = (String) request.getAttribute("status");
 		request.removeAttribute("status");
+		
 		if(status != null) {
-			if(status.equals("invalid")) {
+			if(status.equals(Status.invalidData)) {
 				out.println("<script>alert('Invalid email and password!'); location = 'signin.jsp';</script>");
 				return;
 			}
-			if(status.equals("fail")) {
+			else if(status.equals(Status.serverError)) {
 				out.println("<script>alert('Server error!'); location = 'signin.jsp';</script>");
 				return;
 			}

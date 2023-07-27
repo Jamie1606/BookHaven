@@ -8,7 +8,7 @@
 // Description	: book list page
 %>
 
-<%@ page import="java.util.ArrayList, java.util.Date, model.Book"%>
+<%@ page import="java.util.ArrayList, java.util.Date, model.Book, model.Status, model.URL"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -71,63 +71,45 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	//String error = (String) request.getAttribute("error");
-	//request.removeAttribute("error");
-	//String success = (String) request.getAttribute("success");
-	//request.removeAttribute("success");
-	//if (error != null) {
-	//	if (error.equals("invalid")) {
-	//		out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath()
-	//		+ "/admin/books';</script>");
-	//	} else if (error.equals("serverError")) {
-	//		out.println(
-	//		"<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/books';</script>");
-	//	} else if (error.equals("serverRetrieveError")) {
-	//		out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-	//		+ "/admin/adminHomePage.jsp';</script>");
-	//		return;
-	//	} else if (error.equals("unauthorized")) {
-	//		out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-	//		+ "/signout.jsp';</script>");
-	//		return;
-	//	} else {
-	//		out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-	//		+ "/signout.jsp';</script>");
-	//		return;
-	//	}
-	//}
-	//if (success != null) {
-	//	if (success.equals("delete")) {
-	//		out.println("<script>alert('The book is successfully deleted!'); location='" + request.getContextPath()
-	//		+ "/admin/books';</script>");
-	//		return;
-	//	}
-	//}
 	
-	String status = (String) request.getAttribute("status");
-	if(status != null) {
-		if(status.equals("invalid")) {
-			out.println("<script>alert('Invalid data or request!'); location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
+		String status = (String) request.getAttribute("status");
+		if(status != null) {
+			if(status.equals(Status.invalidData)) {
+				out.println("<script>alert('Invalid data!');</script>"); 
+				out.println("<script>location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.invalidRequest)) {
+				out.println("<script>alert('Invalid request!');</script>");
+				out.println("<script>location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.deleteSuccess)) {
+				out.println("<script>alert('Book is successfully deleted!');</script>"); 
+				out.println("<script>location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.updateSuccess)) {
+				out.println("<script>alert('Book is successfully updated!');</script>"); 
+				out.println("<script>location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.serverError)) {
+				out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
+				return;
+			}
+			else if(!status.equals(Status.servletStatus)) {
+				out.println("<script>location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
+				return;
+			}
+		}
+	
+		ArrayList<Book> bookList = (ArrayList<Book>) request.getAttribute("bookList");
+		if(bookList == null) {
+			out.println("<script>alert('Server error!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
 			return;
 		}
-		else if(status.equals("deletesuccess")) {
-			out.println("<script>alert('Book is successfully deleted!'); location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
-			return;
-		}
-		else if(status.equals("updatesuccess")) {
-			out.println("<script>alert('Book is successfully updated!'); location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
-			return;
-		}
-	}
-
-	String servlet = (String) request.getAttribute("servlet");
-	request.removeAttribute("servlet");
-	if (servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
-		return;
-	}
-
-	ArrayList<Book> bookList = (ArrayList<Book>) request.getAttribute("bookList");
 	%>
 
 	<main id="main" class="main">
@@ -186,8 +168,9 @@
 										out.println("<td>" + bookList.get(i).getQty() + "</td>");
 										out.println("<td>" + bookList.get(i).getRating() + "</td>");
 										out.println("<td><a href='" + request.getContextPath() + URL.getBookByISBNServlet
-										+ bookList.get(i).getISBNNo() + "'>Edit</a> | <a class='deleteLink' href='" + request.getContextPath()
-										+ URL.deleteBookServlet + bookList.get(i).getISBNNo() + "'>Delete</a></td>");
+										+ bookList.get(i).getISBNNo() + "'>Edit</a> | <a data-book-title='" + bookList.get(i).getTitle() 
+										+ "' class='deleteLink' href='" + request.getContextPath() + URL.deleteBookServlet 
+										+ bookList.get(i).getISBNNo() + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
 									%>
@@ -201,9 +184,6 @@
 				</div>
 			</div>
 		</section>
-
-		<p id="test-info"></p>
-
 	</main>
 	<!-- End #main -->
 	
@@ -216,7 +196,7 @@
 	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	      </div>
 	      <div class="modal-body">
-	        Are you sure you want to delete?
+	        	Are you sure you want to delete <span id="bookTitleDelete"></span>?
 	      </div>
 	      <div class="modal-footer">
 	      	<button type="button" class="btn btn-danger btnDelete">Delete</button>
@@ -272,7 +252,9 @@
 			if(target.classList.contains("deleteLink")) {
 				event.preventDefault();
 				
-				var deleteModal = new bootstrap.Modal(document.getElementById("exampleModal"));
+				let deleteModal = new bootstrap.Modal(document.getElementById("exampleModal"));
+				let bookTitle = target.getAttribute('data-book-title');
+				document.getElementById("bookTitleDelete").textContent = "\"" + bookTitle + "\"";
 				deleteModal.show();
 				
 				document.querySelector('#exampleModal .btnDelete').addEventListener('click', function() {

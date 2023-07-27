@@ -1,10 +1,29 @@
-<%@ page import="controller.Authentication"%>
+<%@page import="model.URL, model.Status"%>
+<%
+	if(session != null) {
+		String role = (String) session.getAttribute("role");
+		String token = (String) session.getAttribute("token");
+		
+		if(role != null && token != null) {
+			if(!role.equals("ROLE_ADMIN")) {
+				request.setAttribute("status", Status.unauthorized);
+				out.println("<script>location='" + request.getContextPath() + URL.signOut + "';</script>");
+				return;
+			}
+		}
+	}
+	else {
+		request.setAttribute("status", Status.unauthorized);
+		out.println("<script>location='" + request.getContextPath() + URL.signOut + "';</script>");
+		return;
+	}
+%>
 
 <!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">
 
 	<div class="d-flex align-items-center justify-content-between">
-		<a href="<%=request.getContextPath()%>/admin/adminHomePage.jsp"
+		<a href="<%=request.getContextPath() + URL.adminHomePage %>"
 			class="logo d-flex align-items-center"> <img
 			src="<%= request.getContextPath() %>/img/logo.png" alt=""> <span class="d-none d-lg-block">BookHaven</span>
 		</a> <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -32,7 +51,7 @@
 					</li>
 
 					<li><a class="dropdown-item d-flex align-items-center"
-						href="<%=request.getContextPath()%>/signout.jsp"> <i
+						href="<%=request.getContextPath() + URL.signOut %>"> <i
 							class="bi bi-box-arrow-right"></i> <span>Sign Out</span>
 					</a></li>
 

@@ -17,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -25,12 +26,14 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 
 import model.Author;
 import model.Book;
 import model.Functions;
 import model.Genre;
+import model.Status;
 import model.URL;
 
 /**
@@ -48,8 +51,7 @@ public class CreateBook extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		final String defaultNormalImage = "book/normal/defaultBookHavenImage_normal.png";
-		final String default3DImage = "book/3d/defaultBookHavenImage_3d.png";
+		HttpSession session = request.getSession();
 		Book book = null;
 		ArrayList<Author> authorList = new ArrayList<Author>();
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
@@ -57,116 +59,132 @@ public class CreateBook extends HttpServlet {
 		String status = "";
 		String url = URL.bookRegistration;
 		
-		
-		String isbn = request.getParameter("isbn");
-		String title = request.getParameter("title");
-		String page = request.getParameter("page");
-		String price = request.getParameter("price");
-		String qty = request.getParameter("qty");
-		String publisher = request.getParameter("publisher");
-		String publicationdate = request.getParameter("publicationdate");
-		String description = request.getParameter("description");
-		String[] authors = request.getParameterValues("author");
-		String[] genres = request.getParameterValues("genre");
-		String image = "";
-		String image3d = "";
-
-
-		try {
-			isbn = isbn.trim();
-			title = title.trim();
-			page = page.trim();
-			price = price.trim();
-			qty = qty.trim();
-			publisher = publisher.trim();
-			publicationdate = publicationdate.trim();
+		if(session != null && !session.isNew()) {
+			String token = (String) session.getAttribute("token");
 			
-			if(description != null) {
-				description = description.trim();
-			}
-			
-			if(Functions.checkISBN13(isbn)) {
-				image = Functions.uploadImage(title, isbn, "booknormal", request.getPart("image"));
-				if(image == null) {
-					image = defaultNormalImage;
-				}
-				
-				image3d = Functions.uploadImage(title, isbn, "book3d", request.getPart("image3d"));
-				if(image3d == null) {
-					image3d = default3DImage;
-				}
-				
-				for (int i = 0; i < authors.length; i++) {
-					Author author = new Author();
-					author.setAuthorID(Integer.parseInt(authors[i]));
-					authorList.add(author);
-				}
-				
-				for (int i = 0; i < genres.length; i++) {
-					Genre genre = new Genre();
-					genre.setGenreID(Integer.parseInt(genres[i]));
-					genreList.add(genre);
-				}
-				
-				book = new Book();
-				book.setISBNNo(isbn);
-				book.setTitle(title);
-				book.setPage(Integer.parseInt(page));
-				book.setQty(Integer.parseInt(qty));
-				book.setPrice(Double.parseDouble(price));
-				book.setRating(0);
-				book.setPublisher(publisher);
-				book.setPublicationDate(Date.valueOf(publicationdate));
-				book.setImage(image);
-				book.setImage3D(image3d);
-				book.setAuthors(authorList);
-				book.setGenres(genreList);
-				
-				if(book.getQty() <= 0) {
-					book.setStatus("unavailable");
-				}
-				else {
-					book.setStatus("available");
-				}
+			if(token == null || token.isEmpty()) {
+				status = Status.unauthorized;
+				url = URL.signOut;
 			}
 			else {
-				throw new Error();
-			}
-		}
-		catch(Exception e) {
-			status = "invalid";
-			e.printStackTrace();
-			System.out.println("..... Invalid book data in CreateBook servlet .....");
-			condition = false;
-		}
+				String isbn = request.getParameter("isbn");
+				String title = request.getParameter("title");
+				String page = request.getParameter("page");
+				String price = request.getParameter("price");
+				String qty = request.getParameter("qty");
+				String publisher = request.getParameter("publisher");
+				String publicationdate = request.getParameter("publicationdate");
+				String description = request.getParameter("description");
+				String[] authors = request.getParameterValues("author");
+				String[] genres = request.getParameterValues("genre");
+				String image = "";
+				String image3d = "";
 		
-		if (condition) {
-			Client client = ClientBuilder.newClient();
-			WebTarget target = client.target(URL.baseURL).path("createBook");
-			Invocation.Builder invocationBuilder = target.request();
-			ObjectMapper obj = new ObjectMapper();
-			String jsonBook = obj.writeValueAsString(book);
-			Response resp = invocationBuilder.post(Entity.json(jsonBook));
-
-			if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
-				Integer row = resp.readEntity(Integer.class);
-				if (row == 1) {
-					status = "insertsuccess";
-				} else if (row == -1) {
-					System.out.println("..... Duplicate author data in CreateAuthor servlet .....");
-					status = "duplicate";
-				} else {
-					// current deleteImage may be wrong
-					//deleteImage(image);
-					//deleteImage(image3d);
-					System.out.println("..... Invalid author data in CreateAuthor servlet .....");
-					status = "invalid";
+		
+				try {
+					book = new Book();
+					book.setISBNNo(isbn.trim());
+					
+					if(Functions.checkISBN13(book.getISBNNo())) {
+						
+						book.setTitle(title.trim());
+						book.setPage(Integer.parseInt(page.trim()));
+						book.setQty(Integer.parseInt(qty.trim()));
+						book.setPrice(Double.parseDouble(price.trim()));
+						book.setRating(0);
+						book.setPublisher(publisher.trim());
+						book.setPublicationDate(Date.valueOf(publicationdate.trim()));
+						if(description != null) {
+							book.setDescription(description.trim());
+						}
+						
+						if(book.getQty() <= 0) {
+							book.setStatus("unavailable");
+						}
+						else {
+							book.setStatus("available");
+						}
+						
+						
+						image = Functions.uploadImage(book.getTitle(), book.getISBNNo(), "booknormal", request.getPart("image"), token);
+						if(image == null) {
+							image = URL.s3ImageLink + URL.defaultBookNormalImage;
+						}
+						
+						image3d = Functions.uploadImage(book.getTitle(), book.getISBNNo(), "book3d", request.getPart("image3d"), token);
+						if(image3d == null) {
+							image3d = URL.s3ImageLink + URL.defaultBook3DImage;
+						}
+						
+						for (int i = 0; i < authors.length; i++) {
+							Author author = new Author();
+							author.setAuthorID(Integer.parseInt(authors[i]));
+							authorList.add(author);
+						}
+						
+						for (int i = 0; i < genres.length; i++) {
+							Genre genre = new Genre();
+							genre.setGenreID(Integer.parseInt(genres[i]));
+							genreList.add(genre);
+						}
+						
+						book.setImage(image.trim());
+						book.setImage3D(image3d.trim());			
+						book.setAuthors(authorList);
+						book.setGenres(genreList);
+					}
+					else {
+						throw new Error();
+					}
 				}
-			} else {
-				System.out.println("..... Error in CreateAuthor servlet .....");
-				status = "servererror";
-			}
+				catch(Exception e) {
+					status = Status.invalidData;
+					e.printStackTrace();
+					System.out.println("..... Invalid book data in CreateBook servlet .....");
+					condition = false;
+				}
+				
+				if (condition) {
+					
+					Client client = ClientBuilder.newClient();
+					WebTarget target = client.target(URL.baseURL).path("createBook");
+					Invocation.Builder invocationBuilder = target.request();
+					invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+					
+					ObjectMapper obj = new ObjectMapper();
+					String json = obj.writeValueAsString(book);
+					Response resp = invocationBuilder.post(Entity.json(json));
+		
+					if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
+						Integer row = resp.readEntity(Integer.class);
+						if (row == 1) {
+							status = Status.insertSuccess;
+						} else if (row == -1) {
+							System.out.println("..... Duplicate book data in CreateBook servlet .....");
+							status = Status.duplicateData;
+						} else {
+							// current deleteImage may be wrong
+							//deleteImage(image);
+							//deleteImage(image3d);
+							System.out.println("..... Invalid book data in CreateBook servlet .....");
+							status = Status.invalidData;
+						}
+					} 
+					else if(resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
+						status = Status.unauthorized;
+						url = URL.signOut;
+					}
+					else {
+						System.out.println("..... Error in CreateBook servlet .....");
+						status = Status.serverError;
+					}
+				}
+			}	
 		}
+		else {
+			status = Status.unauthorized;
+			url = URL.signOut;
+		}	
 
 		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);

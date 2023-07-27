@@ -11,7 +11,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page
-	import="controller.Authentication, model.Book, java.util.ArrayList"%>
+	import="model.Book, java.util.ArrayList"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -104,10 +104,10 @@
 	<%@ include file="header.jsp"%>
 
 	<%
-	if (!auth.testMember(session)) {
-		out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
-		return;
-	}
+	//if (!auth.testMember(session)) {
+	//	out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
+	//	return;
+	//}
 
 	ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
 	if (cart == null) {

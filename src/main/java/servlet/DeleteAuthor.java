@@ -14,13 +14,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
-
+import model.Status;
 import model.URL;
 
 /**
@@ -36,45 +38,67 @@ public class DeleteAuthor extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		HttpSession session = request.getSession();
 		String url = URL.authorList;
 		boolean condition = true;
 		String status = "";
 		String id = "";
 		
-		try {
-			String requestURi = (String) request.getRequestURI();
-			String[] parts = requestURi.split("/");
-			id = parts[parts.length - 1];
-			id = id.trim();
-			Integer.parseInt(id);
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			condition = false;
-			status = "invalid";
-			System.out.println("..... Invalid delete request in DeleteAuthor servlet .....");
-		}
-		
-		if(condition) {
-			Client client = ClientBuilder.newClient();
-			WebTarget target = client.target(URL.baseURL).path("deleteAuthor").path("{id}").resolveTemplate("id", id);
-			Invocation.Builder invocationBuilder = target.request();
-			Response resp = invocationBuilder.delete();
+		if(session != null && !session.isNew()) {
+			String token = (String) session.getAttribute("token");
 			
-			if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
-				Integer row = resp.readEntity(Integer.class);	
-				if(row == 1) {
-					status = "deletesuccess";
-				}
-				else {
-					System.out.println("..... Author not deleted in DeleteAuthor servlet .....");
-					status = "invalid";
-				}
+			if(token == null || token.isEmpty()) {
+				status = Status.unauthorized;
+				url = URL.signOut;
 			}
 			else {
-				System.out.println("..... Error in DeleteAuthor servlet .....");
-				status = "deleteservererror";
+				try {
+					String requestURi = (String) request.getRequestURI();
+					String[] parts = requestURi.split("/");
+					id = parts[parts.length - 1];
+					id = id.trim();
+					Integer.parseInt(id);
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+					condition = false;
+					status = Status.invalidRequest;
+					System.out.println("..... Invalid delete request in DeleteAuthor servlet .....");
+				}
+				
+				if(condition) {
+					
+					Client client = ClientBuilder.newClient();
+					WebTarget target = client.target(URL.baseURL).path("deleteAuthor").path("{id}").resolveTemplate("id", id);
+					Invocation.Builder invocationBuilder = target.request();
+					invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+					Response resp = invocationBuilder.delete();
+					
+					if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
+						Integer row = resp.readEntity(Integer.class);	
+						if(row == 1) {
+							status = Status.deleteSuccess;
+						}
+						else {
+							System.out.println("..... Author not deleted in DeleteAuthor servlet .....");
+							status = Status.invalidData;
+						}
+					}
+					else if(resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
+						status = Status.unauthorized;
+						url = URL.signOut;
+					}
+					else {
+						System.out.println("..... Error in DeleteAuthor servlet .....");
+						status = Status.serverError;
+					}
+				}
 			}
+		}
+		else {
+			status = Status.unauthorized;
+			url = URL.signOut;
 		}
 			
 		request.setAttribute("status", status);

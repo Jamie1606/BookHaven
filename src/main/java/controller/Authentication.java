@@ -56,6 +56,7 @@ public class Authentication {
 		if(session == null || session.isNew()) {
 			return false;
 		}
+//		return true;
 		String memberID = (String)session.getAttribute("id");
 		String role = (String)session.getAttribute("role");
 		MemberDatabase member_db = new MemberDatabase();
