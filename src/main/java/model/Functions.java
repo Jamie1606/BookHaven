@@ -1,9 +1,9 @@
-// Author: Zay Yar Tun
-// Admin No: 2235035
-// Class: DIT/FT/2A/02
-// Group: 10
-// Date: 4.6.2023
-// Description: to store book data from database 
+// Author		: Zay Yar Tun
+// Admin No		: 2235035
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 27.6.2023
+// Description	: function collections
 
 package model;
 
@@ -61,7 +61,7 @@ public class Functions {
 	 * Upload image to S3
 	 * 
 	 * @param fileName is the name of the file after uploaded
-	 * @param id will be added to the fileName, e.g. hello_12345
+	 * @param id will be added to the fileName, e.g. hello_12345. It should be unique, e.g. datetime
 	 * @param type 3 types are available: booknormal, book3d, member
 	 * @param filePart is the file you want to upload to s3
 	 * @param token must be provided

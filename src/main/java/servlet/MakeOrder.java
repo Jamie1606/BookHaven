@@ -2,15 +2,13 @@
 // Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 27.7.2023
-// Description	: create new author
+// Date			: 29.7.2023
+// Description	: make new order
 
 package servlet;
 
 import java.io.IOException;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,19 +26,20 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
-
-import model.Author;
+import model.Book;
+import model.Order;
+import model.OrderItem;
 import model.Status;
 import model.URL;
 
 /**
- * Servlet implementation class CreateAuthor
+ * Servlet implementation class MakeOrder
  */
-@WebServlet("/CreateAuthor")
-public class CreateAuthor extends HttpServlet {
+@WebServlet("/MakeOrder")
+public class MakeOrder extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public CreateAuthor() {
+    public MakeOrder() {
         super();
     }
 
@@ -48,104 +47,102 @@ public class CreateAuthor extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		String status = "";
-		String url = URL.authorRegistration;
 		boolean condition = true;
-		Author author = new Author();
+		String url = URL.cart;
+		String status = "";
+		Order order = null;
 		
 		if(session != null && !session.isNew()) {
 			String token = (String) session.getAttribute("token");
 			
 			if(token == null || token.isEmpty()) {
-				status = Status.unauthorized;
 				url = URL.signOut;
+				status = Status.unauthorized;
 			}
 			else {
-				String name = request.getParameter("name");
-				String nationality = request.getParameter("nationality");
-				String birthDate = request.getParameter("birthdate");
-				String biography = request.getParameter("biography");
-				String link = request.getParameter("link");
+				String stripeToken = request.getParameter("stripeToken");	
+				String deliveryAddress = request.getParameter("delivery-address");
 				
 				try {
-					author.setName(name.trim());
+					order = new Order();
+					order.setToken(stripeToken.trim());
+					order.setDeliveryaddress(deliveryAddress);
 					
-					if(birthDate != null && !birthDate.isEmpty()) {
-						Date tmpBirthDate = Date.valueOf(LocalDate.parse(birthDate));
-						LocalDate testBirthDate = tmpBirthDate.toLocalDate();
-						long diff = ChronoUnit.DAYS.between(testBirthDate, LocalDate.now()) / 365;
-						if(diff < 5) {
-							throw new Error();
-						}
-						else {
-							author.setBirthDate(tmpBirthDate);
-						}
-					}
-					else {
-						author.setBirthDate(null);
+					ArrayList<Integer> cartQty = (ArrayList<Integer>) session.getAttribute("cart-qty");
+					ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
+					
+					if(cart == null || cartQty == null || cart.isEmpty() || cartQty.isEmpty()) {
+						throw new Error();
 					}
 					
-					if(nationality != null && !nationality.isEmpty()) {
-						author.setNationality(nationality.trim());
+					double total = 0;
+					ArrayList<OrderItem> orderitems = new ArrayList<OrderItem>();
+					for(int i = 0; i < cart.size(); i++) {
+						double price = cart.get(i).getPrice() * cartQty.get(i);
+						total += price;
+						OrderItem item = new OrderItem();
+						item.setIsbnno(cart.get(i).getISBNNo());
+						item.setAmount(price);
+						item.setQty(cartQty.get(i));
+						item.setStatus("pending");
+						orderitems.add(item);
 					}
-					
-					if(biography != null && !biography.isEmpty()) {
-						author.setBiography(biography.trim());
-					}
-					
-					if(link != null && !link.isEmpty()) {
-						author.setLink(link.trim());
-					}
-						
+					order.setOrderitems(orderitems);
+					order.setAmount(total);
+					order.setGst(8);
+					order.setTotalamount((total * 0.08) + total);
+					order.setOrderstatus("pending");
 				}
 				catch(Exception e) {
 					e.printStackTrace();
+					System.out.println("..... Invalid payment in MakeOrder servlet .....");
 					condition = false;
 					status = Status.invalidData;
-					System.out.println("..... Invalid author data in CreateAuthor servlet .....");
 				}
-				
 				
 				if(condition) {
 					
 					Client client = ClientBuilder.newClient();
-					WebTarget target = client.target(URL.baseURL).path("createAuthor");
+					WebTarget target = client.target(URL.baseURL).path("makeOrder");
 					Invocation.Builder invocationBuilder = target.request();
 					invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 					
 					ObjectMapper obj = new ObjectMapper();
-					String json = obj.writeValueAsString(author);
+					String json = obj.writeValueAsString(order);
 					Response resp = invocationBuilder.post(Entity.json(json));
-					
-					if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
+		
+					if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
 						Integer row = resp.readEntity(Integer.class);
-						if(row == 1) {
+						if (row == 1) {
 							status = Status.insertSuccess;
-						}
-						else {
-							System.out.println("..... Invalid author data in CreateAuthor servlet .....");
+							session.removeAttribute("cart");
+							session.removeAttribute("cart-qty");
+						} else if (row == -1) {
+							System.out.println("..... Payment failure in MakeOrder servlet .....");
+							status = Status.fail;
+						} else {
+							System.out.println("..... Invalid order data in MakeOrder servlet .....");
 							status = Status.invalidData;
 						}
-					}
+					} 
 					else if(resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
 						status = Status.unauthorized;
 						url = URL.signOut;
 					}
 					else {
-						System.out.println("..... Error in CreateAuthor servlet .....");
+						System.out.println("..... Error in MakeOrder servlet .....");
 						status = Status.serverError;
 					}
 				}
 			}
 		}
 		else {
-			status = Status.unauthorized;
 			url = URL.signOut;
+			status = Status.unauthorized;
 		}
 		
 		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
-
 }

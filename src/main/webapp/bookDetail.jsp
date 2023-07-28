@@ -2,9 +2,9 @@
 <%
 // Author		: Zay Yar Tun
 // Admin No		: 2235035
-// Date			: 11.7.2023
 // Class		: DIT/FT/2A/02
 // Group		: 10
+// Date			: 29.7.2023
 // Description	: book detail page
 // book detail layout design is referenced from https://s3.envato.com/files/311567532/Image%20Preview%20Set%20Figma/05_BookDetail-Description.jpg
 %>
@@ -499,8 +499,12 @@
 				}
 				else {
 					alert('Server error! Please try again later!');
-					location.reload();
+					location = '<%= request.getContextPath() + URL.homePage %>';
 				}
+			})
+			.catch(error => {
+				alert('Server error!');
+				location = '<%= request.getContextPath() + URL.homePage %>';
 			})
 		}
 	</script>

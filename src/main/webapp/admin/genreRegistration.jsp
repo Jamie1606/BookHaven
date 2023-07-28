@@ -1,10 +1,10 @@
 <%
-//Author 	  : Thu Htet San
-//Admin No    : 2235022
-//Class       : DIT/FT/2A/02
-// Group: 10
-//Date		  : 7.6.2023
-//Description : genre registration page(admin side)
+// Author 	  	: Thu Htet San
+// Admin No    	: 2235022
+// Class       	: DIT/FT/2A/02
+// Group		: 10
+// Date		  	: 7.6.2023
+// Description 	: genre registration page(admin side)
 %>
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"

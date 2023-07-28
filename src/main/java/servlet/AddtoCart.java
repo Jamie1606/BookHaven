@@ -1,3 +1,10 @@
+// Author		: Zay Yar Tun
+// Admin No		: 2235035
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 29.7.2023
+// Description	: add items to cart
+
 package servlet;
 
 import java.io.IOException;

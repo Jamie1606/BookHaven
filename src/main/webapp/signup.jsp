@@ -1,11 +1,11 @@
 
 <%
-//Author 	  : Thu Htet San
-//Admin No    : 2235022
-//Class       : DIT/FT/2A/02
-// Group: 10
-//Date        : 6.6.2023
-//Description : sign up page
+// Author 	  	: Thu Htet San
+// Admin No    	: 2235022
+// Class       	: DIT/FT/2A/02
+// Group		: 10
+// Date        	: 6.6.2023
+// Description 	: sign up page
 %>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"

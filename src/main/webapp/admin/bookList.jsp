@@ -4,7 +4,7 @@
 // Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 9.6.2023
+// Date			: 29.7.2023
 // Description	: book list page
 %>
 
@@ -175,6 +175,19 @@
 									}
 									%>
 								</tbody>
+								<tfoot>
+									<tr>
+										<th scope="col">ISBN</th>
+										<th scope="col">Title</th>
+										<th scope="col">Page</th>
+										<th scope="col">Price</th>
+										<th scope="col">Publisher</th>
+										<th scope="col">Publish Date</th>
+										<th scope="col">Qty</th>
+										<th scope="col">Rating</th>
+										<th scope="col">Action</th>
+									</tr>
+								</tfoot>
 							</table>
 							<!-- End Table with stripped rows -->
 

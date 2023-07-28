@@ -2,8 +2,8 @@
 // Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 11.7.2023
-// Description	: this is to store admin data from database
+// Date			: 27.7.2023
+// Description	: delete author
 
 package servlet;
 
