@@ -83,47 +83,67 @@ public class AddtoCart extends HttpServlet {
 						
 						if(book != null) {			
 							ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
-							if(cart == null || cart.isEmpty()) {
+							ArrayList<Integer> cartQty = (ArrayList<Integer>) session.getAttribute("cart-qty");
+							
+							if(cart != null && cartQty != null) {
+								if(cart.size() != cartQty.size() ) {
+									json = "{\"status\": \"" + Status.invalidData + "\"}";
+									session.removeAttribute("cart");
+									session.removeAttribute("cart-qty");
+								}
+								else {
+									int index = -1;
+									for(int i = 0; i < cart.size(); i++) {
+										if(cart.get(i).getISBNNo().equals(book.getISBNNo())) {
+											index = i;
+											break;
+										}
+									}
+									if(index == -1) {
+										if(book.getQty() >= intQty) {
+											cartQty.add(intQty);
+											cart.add(book);
+											session.setAttribute("cart-qty", cartQty);
+											session.setAttribute("cart", cart);
+											json = "{\"status\": \"" + Status.ok + "\"}";
+										}
+										else {
+											json = "{\"status\": \"" + Status.maxProduct + "\"}";
+										}
+									}
+									else {
+										int totalQty = intQty + cartQty.get(index);
+										if(book.getQty() >= totalQty) {
+											if(totalQty <= 0) {
+												cart.remove(index);
+												cartQty.remove(index);
+											}
+											else {
+												cartQty.set(index, totalQty);
+											}
+											
+											session.setAttribute("cart-qty", cartQty);
+											session.setAttribute("cart", cart);
+											json = "{\"status\": \"" + Status.ok + "\"}";
+										}
+										else {
+											json = "{\"status\": \"" + Status.maxProduct + "\"}";
+										}
+									}
+								}
+							}
+							else {
 								cart = new ArrayList<Book>();
+								cartQty = new ArrayList<Integer>();
 								if(book.getQty() >= intQty) {
-									book.setQty(intQty);
+									cartQty.add(intQty);
 									cart.add(book);
+									session.setAttribute("cart-qty", cartQty);
 									session.setAttribute("cart", cart);
 									json = "{\"status\": \"" + Status.ok + "\"}";
 								}
 								else {
 									json = "{\"status\": \"" + Status.maxProduct + "\"}";
-								}
-							}
-							else {
-								int index = -1;
-								for(int i = 0; i < cart.size(); i++) {
-									if(cart.get(i).getISBNNo().equals(book.getISBNNo())) {
-										index = i;
-										break;
-									}
-								}
-								if(index == -1) {
-									if(book.getQty() >= intQty) {
-										book.setQty(intQty);
-										cart.add(book);
-										session.setAttribute("cart", cart);
-										json = "{\"status\": \"" + Status.ok + "\"}";
-									}
-									else {
-										json = "{\"status\": \"" + Status.maxProduct + "\"}";
-									}
-								}
-								else {
-									int totalQty = intQty + cart.get(index).getQty();
-									if(book.getQty() >= totalQty) {
-										cart.get(index).setQty(totalQty);
-										session.setAttribute("cart", cart);
-										json = "{\"status\": \"" + Status.ok + "\"}";
-									}
-									else {
-										json = "{\"status\": \"" + Status.maxProduct + "\"}";
-									}
 								}
 							}
 						}

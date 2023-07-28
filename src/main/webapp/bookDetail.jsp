@@ -498,7 +498,7 @@
 					location = '<%= request.getContextPath() + URL.cart %>';
 				}
 				else {
-					alert('Server Error! Please try again later!');
+					alert('Server error! Please try again later!');
 					location.reload();
 				}
 			})
