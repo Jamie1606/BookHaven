@@ -136,13 +136,18 @@
 		double totalPrice = 0;
 	
 		ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
-		if (cart == null || cart.isEmpty()) {
+		ArrayList<Integer> cartQty = (ArrayList<Integer>) session.getAttribute("cart-qty");
+		
+		if (cart == null || cart.isEmpty() || cartQty == null || cartQty.isEmpty()) {
+			session.removeAttribute("cart");
+			session.removeAttribute("cart-qty");
 			out.println("<script>alert('There is no item in cart!'); location='" + request.getContextPath() + URL.homePage + "';</script>");
 			return;
 		}
 		else {
-			if(cart.size() == 0) {
+			if(cart.size() == 0 || cartQty.size() == 0) {
 				session.removeAttribute("cart");
+				session.removeAttribute("cart-qty");
 				out.println("<script>alert('There is no item in cart!'); location='" + request.getContextPath() + URL.homePage + "';</script>");
 				return;
 			}
@@ -152,15 +157,15 @@
 	<div style="display: flex; flex-direction: row; justify-content: space-evenly; padding: 130px 100px;"
 		id="cart-info">
 		<div id="cart-book-info" style="display: flex; width: 70%: flex-direction: row;">
-			<div style="display: flex; flex-direction: column;">
-				<div style="display: flex; flex-direction: row; justify-content: space-between;">
+
+				<div id="cart-detail" style="display: flex; flex-direction: column;">
+					<div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0px 8%;">
 					<h3>Your Cart <span style="font-size: 16px; font-weight: normal;">(<%= (cart.size() > 1) ? cart.size() + " items" : cart.size() + " item" %>)
 						</span>
 					</h3>
 					<a href="<%=request.getContextPath() + URL.homePage %>">Continue Shopping</a>
 				</div>
-
-				<div id="cart-detail" style="display: flex; flex-direction: column;">
+				
 					<%
 						for(int i = 0; i < cart.size(); i++) {
 							String image = cart.get(i).getImage();
@@ -184,16 +189,27 @@
 							
 							Double rating = cart.get(i).getRating();
 							int bookPage = cart.get(i).getPage();
-							int qty = cart.get(i).getQty();
+							int qty = cartQty.get(i);
 							double price = cart.get(i).getPrice();
 							totalQty += qty;
 							totalPrice += (price * qty);
+							int bookQty = cart.get(i).getQty();
 					%>
 							
 					<div style="display: flex; flex-direction: row; margin-top: 35px; justify-content: space-evenly;">
 					
-						<div style="margin-right: 25px;">
+						<div style="margin-right: 25px; position: relative;">
 							<img style="width: 150px; height: 220px; border-radius: 7px;" src="<%= image %>" />
+							<%
+								if(bookQty < 10) {
+									if(bookQty == 1 ){
+										out.println("<span style='position: absolute; background: rgba(130, 130, 130, 0.9); width: 150px; height: 35px; left: 0; z-index: 100; color: white; bottom: 0; border-radius: 7px; text-indent: 10px; line-height: 35px; user-select: none;'>" + bookQty + " item left</span>");		
+									}
+									else {
+										out.println("<span style='position: absolute; background: rgba(130, 130, 130, 0.9); width: 150px; height: 35px; left: 0; z-index: 100; color: white; bottom: 0; border-radius: 7px; text-indent: 10px; line-height: 35px; user-select: none;'>" + bookQty + " items left</span>");
+									}
+								}
+							%>
 						</div>
 						
 						<div style="display: flex; flex-direction: column; margin-top: 15px; width: 30%;">
@@ -203,7 +219,9 @@
 							<label style="margin-top: 10px;">By <%= authors %></label>
 							
 							<div>
-								<span style="color: gold; font-size: 20px; vertical-align: middle;">&#9733;&#9734;</span>
+								<span style="color: gold; font-size: 20px; vertical-align: middle;">
+									<%= (rating > 0)? "&#9733;" : "&#9734;" %>
+								</span>
 								<span style="margin-left: 10px; font-weight: bold; color: #777; vertical-align: middle; letter-spacing: 1.1px;">
 									<%= rating %>
 								</span>
@@ -213,11 +231,11 @@
 						</div>
 						
 						<div style="display: flex; align-items: center;" id="cart">
-							<label id="btn-minus" onclick="changeQty(-1, \'' + list[i].ISBNNo + '\')" style="font-size: 28px; font-weight: bold; color: #6c5dd4; margin: 5px 5px; vertical-align: middle; padding: 5px 10px; user-select: none;">-</label>
+							<label id="btn-minus" onclick="changeQty(-1, '<%= isbn %>')" style="font-size: 28px; font-weight: bold; color: #6c5dd4; margin: 5px 5px; vertical-align: middle; padding: 5px 10px; user-select: none;">-</label>
 							<label id="buy-qty" style="font-size: 18px; user-select: none; margin: 5px 15px; vertical-align: middle;">
 								<%= qty %>
 							</label>
-							<label id="btn-plus" onclick="changeQty(1, \'' + list[i].ISBNNo + '\')" style="font-size: 28px; font-weight: bold; color: #6c5dd4; margin: 5px 5px; vertical-align: middle; padding: 5px 10px; user-select: none;">+</label>
+							<label id="btn-plus" onclick="changeQty(1, '<%= isbn %>')" style="font-size: 28px; font-weight: bold; color: #6c5dd4; margin: 5px 5px; vertical-align: middle; padding: 5px 10px; user-select: none;">+</label>
 						</div>
 						
 						<div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly;">
@@ -231,7 +249,6 @@
 					%>
 
 				</div>
-			</div>
 		</div>
 		<div style="display: flex; flex-direction: column; background-color: #eee; height: 30%; padding: 4%;">
 			<h3 style="font-size: 22px; text-align: center;">Order Summary</h3>
@@ -278,22 +295,22 @@
 		}
 		
 		function addtoCart(qty, isbn) {
-			fetch('<%=request.getContextPath()%>/book/qty/' + isbn + '/' + qty, {
+			fetch('<%=request.getContextPath() + URL.addToCartServlet %>' + isbn + '/' + qty, {
 				method: 'GET'
 			})
 			.then(response => response.json())
 			.then(data => {
 				let status = data.status;
-				if(status == "invalid") {
-					alert('Invalid request!');
+				if(status == "<%= Status.invalidData %>") {
+					alert('Invalid data!');
 				}
-				else if(status == "full") {
-					alert('You have reached the maximum quantity for this book!');
+				else if(status == "<%= Status.maxProduct %>") {
+					alert('You have reached maximum quantity for this book!');
 				}
-				else if(status == "serverError") {
-					alert('Server Error! Please try again later!');
+				else if(status == "<%= Status.serverError %>") {
+					alert('Server error!');
 				}
-				location = 'cart.jsp';
+				location.reload();
 			})
 		}
 	</script>

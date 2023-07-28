@@ -10,15 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Invocation;
-import jakarta.ws.rs.client.WebTarget;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import model.Book;
 import model.Status;
 import model.URL;
@@ -56,18 +47,23 @@ public class RemovefromCart extends HttpServlet {
 					isbn = parts[parts.length - 1];
 					isbn = isbn.trim();
 					ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
-					if(cart != null) {
+					ArrayList<Integer> cartQty = (ArrayList<Integer>) session.getAttribute("cart-qty");
+					
+					if(cart != null && cartQty != null) {
 						for(int i = 0; i < cart.size(); i++) {
 							if(cart.get(i).getISBNNo().equals(isbn)) {
 								cart.remove(i);
+								cartQty.remove(i);
 								break;
 							}
 						}
 						if(cart.size() == 0) {
 							session.removeAttribute("cart");
+							session.removeAttribute("cart-qty");
 						}
 						else {
 							session.setAttribute("cart", cart);
+							session.setAttribute("cart-qty", cartQty);
 						}
 					}
 					status = Status.deleteSuccess;
