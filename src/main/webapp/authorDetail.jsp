@@ -1,15 +1,15 @@
 <%
-//Author 	  : Thu Htet San
-//Admin No    : 2235022
-//Class       : DIT/FT/2A/02
-// Group: 10
-//Date		  : 15.6.2023
-//Description : Search Books by Title/Authors
+// Author 	  	: Thu Htet San
+// Admin No    	: 2235022
+// Class       	: DIT/FT/2A/02
+// Group		: 10
+// Date		  	: 15.6.2023
+// Description 	: Search Books by Title/Authors
 %>
 
 <!-- [IMPORT] -->
 <%@ page
-	import="java.util.ArrayList, model.Genre, model.Book, controller.Authentication,model.TestReg"%>
+	import="java.util.ArrayList, model.*"%>
 
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
@@ -50,14 +50,8 @@
 	<%
 	String id = request.getParameter("id");
 	if (id == null) {
-		out.println("<script>alert('Invalid author id!'); location='" + request.getContextPath() + "/index.jsp';</script>");
+		out.println("<script>alert('Invalid author id!'); location='" + request.getContextPath() + URL.homePage + "';</script>");
 		return;
-	}
-	else {
-		if(!TestReg.matchInteger(id)) {
-			out.println("<script>alert('Invalid author id!'); location='" + request.getContextPath() + "/index.jsp';</script>");
-			return;
-		}
 	}
 	%>
 
@@ -107,8 +101,6 @@
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
 		crossorigin="anonymous"></script>
 	<script src="js/vendor/bootstrap.min.js"></script>
-	<script type="text/javascript"
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
 	<script src="js/easing.min.js"></script>
 	<script src="js/hoverIntent.js"></script>
 	<script src="js/superfish.min.js"></script>
@@ -120,47 +112,49 @@
 	<script src="js/parallax.min.js"></script>
 	<script src="js/waypoints.min.js"></script>
 	<script src="js/jquery.counterup.min.js"></script>
-	<script src="js/mail-script.js"></script>
 	<script src="js/main.js"></script>
 
 
 	<script>
 	$(document).ready(function() {
 		//sends a GET request to the URL
-		fetch('<%=request.getContextPath()%>/author/<%=id%>', {
-		method: 'GET'
+		
+		fetch('<%= URL.baseURL + URL.getAuthor + id %>', {
+			method: 'GET'
 		})
 		.then(response => response.json())
 		.then(data => {
-			var status=data.status;
-	    	var bookList=data.list;
-	    	var authorList=data.authorList;
-	    	console.log(authorList);
-	    	console.log(bookList);
-	    	if(status=="success"){
-
-				document.getElementById('name').innerHTML = authorList[0].name;
-				document.getElementById('book-count').innerHTML = bookList.length+" Book &#128213;";
-				document.getElementById('nationality').innerHTML = authorList[0].nationality;
-				document.getElementById('birthdate').innerHTML = (authorList[0].birthDate==null)? "":authorList[0].birthDate + " &#128198 ";
-				document.getElementById('description').innerHTML = authorList[0].biography;
-				if(authorList[0].link!=null && authorList!=""){
-				document.getElementById('link').innerHTML="More about me &#x2192;";
+			if(data != undefined && data != null) {
+				document.getElementById('name').innerHTML = data.name;
+				document.getElementById('nationality').innerHTML = data.nationality;
+				document.getElementById('birthdate').innerHTML = (data.birthDate==null)? "":data.birthDate + " &#128198 ";
+				document.getElementById('description').innerHTML = data.biography;
+				if(data.link != null){
+					document.getElementById('link').innerHTML = "More about me &#x2192;";
 				}
-				document.getElementById('link').href=authorList[0].link;
-	    		var htmlString="";
-	    		for(let i = 0; i < bookList.length; i++) {
-	    			htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a><p></p></div></div>';
+				document.getElementById('link').href = data.link;
+			}
+		});
+		
+		fetch('<%= URL.baseURL + URL.getBookByAuthorID + id %>', {
+			method: 'GET'
+		})
+		.then(response => response.json())
+		.then(data => {
+			if(data != undefined && data != null) {
+				document.getElementById('book-count').innerHTML = data.length + " Book &#128213;";
+				var htmlString = "";
+				for(let i = 0; i < data.length; i++) {
+	    			htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="' + data[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + data[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() + URL.bookDetail  %>?id=' + data[i].isbnno + '"><h4>' + data[i].title + '</h4></a><p></p></div></div>';
 		    	}
-				if(bookList.length==0){
-					htmlString+="<p>No Books Yet</p>";
+				if(data.length == 0) {
+					htmlString += "<p>No Books Yet</p>";
 				}
 				$('#bookResultList').html(htmlString);
-	    	}else if(status == "serverError"){
-	    		alert('Server Error!');
-	    	}else if(status == "invalid"){
-	    		alert('Invalid Request or Data!');
-	    	}
+			}
+			else {
+				alert("Server error!");
+			}
 		})
 	});
 	</script>

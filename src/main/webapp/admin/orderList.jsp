@@ -4,7 +4,7 @@
 // Class		: DIT/FT/2A/02
 // Group		: 10
 // Date			: 29.7.2023
-// Description	: author list page
+// Description	: order list page
 %>
 
 <%@ page import="java.util.ArrayList, java.util.Date, model.Author, model.URL, model.Status"%>

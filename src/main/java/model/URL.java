@@ -2,8 +2,8 @@
 // Admin No		: 2235035, 2235022
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 15.7.2023
-// Description	: url
+// Date			: 27.7.2023
+// Description	: url collections
 
 package model;
 
@@ -18,6 +18,10 @@ public class URL {
 	public static final String s3ImageLink = "http://s3.amazonaws.com/bookhavenjad10/";
 	public static final String getOneBookDetail = "/getBook/details/";
 	public static final String getRelatedBook = "/getRelated/";
+	public static final String getBookByAuthorID = "/getBookByAuthorID/";
+	public static final String getAuthor = "/getAuthor/";
+	public static final String getBestSeller = "/getBestSeller/";
+	public static final String getTopRated = "/getTopRated/";
 	
 	
 	
@@ -41,6 +45,7 @@ public class URL {
 	public static final String getAuthorByIDServlet = "/GetAuthorByID/";
 	public static final String createAuthorServlet = "/CreateAuthor";
 	public static final String updateAuthorServlet = "/UpdateAuthor";
+	public static final String getAuthorDetailServlet = "/GetAuthorDetail/";
 	
 	
 	
@@ -59,6 +64,12 @@ public class URL {
 	// cart servlets
 	public static final String addToCartServlet = "/AddtoCart/";
 	public static final String removeFromCartServlet = "/RemovefromCart/";
+	
+	
+	
+	// order servlets
+	public static final String makeOrderServlet = "/MakeOrder";
+	public static final String getOrderListServlet = "/GetOrderList";
 	
 	
 	
