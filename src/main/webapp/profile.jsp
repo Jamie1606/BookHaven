@@ -1,10 +1,10 @@
 <%
-//Author 	  : Thu Htet San
-//Admin No    : 2235022
-//Class       : DIT/FT/2A/02
-// Group: 10
-//Date		  : 15.6.2023
-//Description : Show user profile
+// Author 	  	: Thu Htet San
+// Admin No    	: 2235022
+// Class       	: DIT/FT/2A/02
+// Group		: 10
+// Date		  	: 15.6.2023
+// Description 	: Show user profile
 %>
 
 <%@page import="java.time.LocalDate"%>

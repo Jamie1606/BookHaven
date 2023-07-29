@@ -1,9 +1,9 @@
-// Author: Zay Yar Tun
-// Admin No: 2235035
-// Class: DIT/FT/2A/02
-// Group: 10
-// Date: 8.6.2023
-// Description: database functions related to admin
+// Author		: Zay Yar Tun
+// Admin No		: 2235035
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 8.6.2023
+// Description	: admin related database functions
 
 package model;
 

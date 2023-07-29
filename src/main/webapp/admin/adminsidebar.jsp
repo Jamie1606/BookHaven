@@ -75,7 +75,7 @@
 				</li>
 				
 				<li>
-					<a href=""> 
+					<a href="<%= request.getContextPath() + URL.getOrderListServlet %>"> 
 						<i class="bi bi-circle"></i><span>Order List</span>
 					</a>
 				</li>

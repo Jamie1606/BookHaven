@@ -10,13 +10,6 @@ package model;
 import java.util.ArrayList;
 import java.util.regex.*;
 
-/**
- * 
- * Test Reg will be removed
- * 
- * @deprecated
- * 
- */
 public class TestReg {
 	private static final String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 	private static final String passwordPattern = "^.{8,16}$";

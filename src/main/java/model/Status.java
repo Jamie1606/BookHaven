@@ -1,3 +1,10 @@
+// Author		: Zay Yar Tun, Thu Htet San
+// Admin No		: 2235035
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 27.7.2023
+// Description	: status message collection
+
 package model;
 
 public class Status {
@@ -9,6 +16,7 @@ public class Status {
 	public static final String serverError = "servererror";
 	public static final String duplicateData = "duplicate";
 	public static final String maxProduct = "max";
+	public static final String fail = "fail";
 	
 	
 	// success status

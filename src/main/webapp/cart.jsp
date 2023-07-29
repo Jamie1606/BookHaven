@@ -4,7 +4,7 @@
 // Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 17.6.2023
+// Date			: 29.7.2023
 // Description	: shopping cart
 // cart layout design is referenced from https://cdn.dribbble.com/users/1569943/screenshots/6745363/cart.png
 %>
@@ -127,7 +127,19 @@
 				return;
 			}
 			else if(status.equals(Status.invalidData)) {
-				out.println("<script>alert('Invalid request!'); location = '" + request.getContextPath() + URL.cart + "';</script>");
+				out.println("<script>alert('Invalid data!'); location = '" + request.getContextPath() + URL.cart + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.insertSuccess)) {
+				out.println("<script>alert('Order success!'); location = '" + request.getContextPath() + URL.cart + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.serverError)) {
+				out.println("<script>alert('Server error!'); location = '" + request.getContextPath() + URL.homePage + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.fail)) {
+				out.println("<script>alert('Payment failure!'); location = '" + request.getContextPath() + URL.cart + "';</script>");
 				return;
 			}
 		}
@@ -154,9 +166,8 @@
 		}
 	%>
 
-	<div style="display: flex; flex-direction: row; justify-content: space-evenly; padding: 130px 100px;"
-		id="cart-info">
-		<div id="cart-book-info" style="display: flex; width: 70%: flex-direction: row;">
+	<div style="display: flex; flex-direction: row; justify-content: space-evenly; padding: 130px 25px;" id="cart-info">
+		<div id="cart-book-info" style="display: flex; width: 65%: flex-direction: row;">
 
 				<div id="cart-detail" style="display: flex; flex-direction: column;">
 					<div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0px 8%;">
@@ -250,7 +261,7 @@
 
 				</div>
 		</div>
-		<div style="display: flex; flex-direction: column; background-color: #eee; height: 30%; padding: 4%;">
+		<div style="display: flex; flex-direction: column; background-color: #eee; border-radius: 15px; height: 30%; width: 25%; padding: 3%;">
 			<h3 style="font-size: 22px; text-align: center;">Order Summary</h3>
 			<div
 				style="display: flex; justify-content: space-between; color: #555; margin-top: 35px;">
@@ -259,11 +270,64 @@
 			</div>
 			<div
 				style="display: flex; justify-content: space-between; color: #555; margin-top: 15px;">
-				<label style="font-weight: bold; font-size: 15px;">Total</label> <label
-					style="font-weight: bold; font-size: 15px;" id="total-sum">$ <%= String.format("%.2f", totalPrice) %></label>
+				<label style="font-weight: bold; font-size: 15px;">Sub total</label> <label
+					style="font-weight: bold; font-size: 15px;" id="sub-total-sum">$ <%= String.format("%.2f", totalPrice) %></label>
 			</div>
-			<button id="btncheckout">CHECKOUT</button>
+			<div
+				style="display: flex; justify-content: space-between; color: #555; margin-top: 15px;">
+				<label style="font-weight: bold; font-size: 15px;">GST</label> <label
+					style="font-weight: bold; font-size: 15px;">8 %</label>
+			</div>
+			<div
+				style="display: flex; justify-content: space-between; color: #555; margin-top: 15px;">
+				<label style="font-weight: bold; font-size: 15px;">Total</label> <label
+					style="font-weight: bold; font-size: 15px;" id="total-amount">$ <%= String.format("%.2f", (totalPrice * 0.08) + totalPrice) %></label>
+			</div>
+			<form id="payment-form" action="<%= request.getContextPath() + URL.makeOrderServlet %>" method="post">
+				<div id="card-element" style="margin-top: 20px;">
+					 <div class="form-group">
+					    <label for="card-number">Card Number</label>
+					    <input type="text" id="card-number" name="card-number" required>
+					  </div>
+					  <div class="form-group">
+					    <label for="expiry-date">Expiry Date</label>
+					    <input type="text" id="expiry-date" name="expiry-date" required>
+					  </div>
+					  <div class="form-group">
+					    <label for="cvv">CVV</label>
+					    <input type="text" id="cvv" name="cvv" required>
+					  </div>
+				</div>
+				<div style="display: flex; flex-direction: column; justify-content: space-between; color: #555; margin-top: 25px;">
+					<label style="font-weight: bold; font-size: 15px;">Delivery Address</label>
+					<input style="padding: 8px 10px; margin-top: 15px; letter-spacing: 1.1px;" type="text" id="delivery-address" placeholder="Address" />
+				</div>
+				<div style="display: flex; color: #555; margin-top: 25px;">
+					<input type="checkbox" id="address-check" onclick="checkAddress()">&nbsp;<label style="margin-bottom: 0px;" for="address-check">Use my address</label>	
+				</div>
+			</form>
+			<button id="btncheckout" onclick="formsubmit()">CHECKOUT</button>
 		</div>
+	</div>
+	
+	
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        	Please confirm your cart before you check out!
+	      </div>
+	      <div class="modal-footer">
+	      	<button type="button" class="btn btn-danger btnConfirm">Confirm</button>
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>	        
+	      </div>
+	    </div>
+	  </div>
 	</div>
 
 	<%@ include file="footer.jsp"%>
@@ -279,6 +343,8 @@
 	<script src="<%=request.getContextPath()%>/js/superfish.min.js"></script>
 	<script src="<%=request.getContextPath()%>/js/jquery.ajaxchimp.min.js"></script>
 	<script
+		src="<%=request.getContextPath()%>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script
 		src="<%=request.getContextPath()%>/js/jquery.magnific-popup.min.js"></script>
 	<script src="<%=request.getContextPath()%>/js/owl.carousel.min.js"></script>
 	<script src="<%=request.getContextPath()%>/js/jquery.sticky.js"></script>
@@ -288,8 +354,63 @@
 	<script src="<%=request.getContextPath()%>/js/waypoints.min.js"></script>
 	<script src="<%=request.getContextPath()%>/js/jquery.counterup.min.js"></script>
 	<script src="<%=request.getContextPath()%>/js/main.js"></script>
+	<script src="https://js.stripe.com/v3/"></script>
 
 	<script>				
+	
+		function checkAddress() {
+			let addressCheck = document.getElementById("address-check");
+			document.getElementById("delivery-address").disabled = addressCheck.checked;
+			document.getElementById("delivery-address").focus();
+		}
+		
+		const stripe = Stripe('pk_test_51NYV9WEOz0583OXtxJahhDSkt5M7ODWQMxfkFON63SgRHoD2ZLYRW7JI8Pz1hvLjjIRX7DxXh5jFY2xVyz9ywCLX00WAHJR7Au');
+		const elements = stripe.elements();
+		
+		const style = {
+			base: {
+		      fontSize: '16px',
+		      color: '#32325d',
+		      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+		      '::placeholder': {
+		        color: '#aab7c4',
+		      },
+		    },
+	    	invalid: {
+		      color: '#fa755a',
+		      iconColor: '#fa755a',
+		    }
+		};
+		
+		const card = elements.create('card', {style: style});
+		card.mount('#card-element');
+	
+		async function formsubmit() {
+			const form = document.getElementById('payment-form');
+			
+			const { token, error } = await stripe.createToken(card);
+			
+			if(error) {
+				alert(error.message);
+			}
+			else {
+				let confirmModal = new bootstrap.Modal(document.getElementById("exampleModal"));
+				confirmModal.show();
+				
+				document.querySelector('#exampleModal .btnConfirm').addEventListener('click', function() {
+					const tokenInput = document.createElement('input');
+					tokenInput.type = 'hidden';
+					tokenInput.name = 'stripeToken';
+					tokenInput.value = token.id;
+					console.log(tokenInput);
+					form.appendChild(tokenInput);
+					
+					form.submit();					
+					confirmModal.hide();
+				})
+			}
+		}
+	
 		function changeQty(num, isbn) {
 			addtoCart(num, isbn);
 		}

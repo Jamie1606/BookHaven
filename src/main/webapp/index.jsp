@@ -1,10 +1,11 @@
 <%
-//Author		: Zay Yar Tun
-//Admin No		: 2235035
+// Author		: Zay Yar Tun
+// Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
-//Date			: 7.7.2023
-//Description	: home page
+// Date			: 29.7.2023
+// Description	: home page
+// layout taken from https://www.lightnovelworld.com/hub_14072106
 %>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -69,23 +70,31 @@
 		</div>
 	</section>
 	<!-- End banner Area -->
-
-	<!-- Start course Area -->
-	<section class="course-area section-gap" id="course">
-		<div class="container">
-			<div class="row d-flex justify-content-center">
-				<div class="menu-content pb-60 col-lg-9">
-					<div class="title text-center">
-						<h1 class="mb-10">Latest Releases</h1>
-						<p>Who are in extremely love with books.</p>
-					</div>
-				</div>
-			</div>
-			<div class="row" style="margin-bottom: 0px;" id="latest-release">
-			</div>
+	
+	
+	<div style="padding: 100px 0; width: 1200px; margin: auto;">
+		<!-- Latest Releases -->
+		<div style="display: flex; flex-direction: column; margin-bottom: 35px;">
+			<h1 style="margin-bottom: 35px;">Latest Releases</h1>
+			<div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 20px;" id="latest-release"></div>
 		</div>
-	</section>
-	<!-- End course Area -->
+		<!-- Latest Releases -->
+		
+		<!-- Top Sellers -->
+		<div style="display: flex; flex-direction: column; margin-bottom: 35px;">
+			<h1 style="margin-bottom: 35px;">Best Sellers</h1>
+			<div style="display: flex; flex-direction: row; justify-content: space-between;" id="best-sellers"></div>
+		</div>
+		<!-- Top Sellers -->
+		
+		<!-- Top Rated -->
+		<div style="display: flex; flex-direction: column;">
+			<h1 style="margin-bottom: 35px;">Top Rated</h1>
+			<div style="display: flex; flex-direction: row; justify-content: space-between;" id="top-rated"></div>
+		</div>
+		<!-- Top Rated -->
+	</div>
+
 
 	<%@ include file="footer.jsp"%>
 
@@ -111,28 +120,24 @@
 	<script>
 		$(document).ready(function() {
 			
-			fetch('<%= URL.baseURL + URL.getLatestBook %>9', {
+			fetch('<%= URL.baseURL + URL.getLatestBook %>7', {
 				method: 'GET'
 			})
 			.then(response => response.json())
 			.then(data => {
 
 				let htmlStr = "";
-				if(data != undefined) {
-					for(let i = 0; i < data.length; i++) {
-						htmlStr += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;">';
-						htmlStr += '<div style="position: relative;">';
-						htmlStr += '<img style="width: 250px; height: 300px;" class="img-fluid" src="' + data[i].image + '" alt="">';
-						let qty = data[i].qty;
-						if(qty < 10) {
-							htmlStr += '<p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + data[i].qty + ' items left </p></div>';
-						}
-						else {
-							htmlStr += '<p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + data[i].status + '</p></div>';
-						}
-						htmlStr += '<div style="margin-top: 10px;"><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[i].isbnno + '"><h4>' + data[i].title + '</h4></a><p></p></div></div>';
-				}
+				if(data != undefined) {					
+					for(let i = 0; i < data.length; i++) {	
+						htmlStr += '<div style="display: flex; flex-direction: column;" onclick="goto(\'' + data[i].isbnno +'\')">';
+						
+						htmlStr += '<div style="position: relative;"><img style="width: 150px; cursor: pointer; border-radius: 7px; height: 200px;" src="' + data[i].image + '"><span style="position: absolute; bottom: 0; z-index: 100; left: 0; letter-spacing: 1.1px; cursor: default; user-select: none; background: #333; border-top-right-radius: 8px; padding: 2px 8px; color: white;"><span style="font-weight: bold;">&#9733;</span> ' + data[i].rating.toFixed(1) + '</span></div>';
+						
+						htmlStr += '<label style="max-width: 150px; cursor: pointer; margin-top: 10px; font-size: 15px; color: #333;">' + data[i].title + '</label>';
+						htmlStr += '</div>';
+					}
 					$('#latest-release').html(htmlStr);
+					
 					let description = data[0].description;
 					if(description == null) {
 						$('#latest-book').html('<h5 class="text-white text-uppercase"></h5><h1 class="text-uppercase" style="font-size: 45px;">' + data[0].title + '</h1><p class="text-white pt-20 pb-20">No information available</p><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[0].isbnno + '" class="primary-btn text-uppercase">View More</a>');
@@ -147,7 +152,71 @@
 					alert("Error in retrieving book data!");
 				}
 			})
+			.catch(error => {
+				console.log(error);
+				alert("Server error!");
+			})
+			
+			
+			fetch('<%= URL.baseURL + URL.getBestSeller %>7', {
+				method: 'GET'
+			})
+			.then(response => response.json())
+			.then(data => {
+
+				let htmlStr = "";
+				if(data != undefined) {				
+					for(let i = 0; i < data.length; i++) {	
+						htmlStr += '<div style="display: flex; flex-direction: column;" onclick="goto(\'' + data[i].isbnno +'\')">';
+						
+						htmlStr += '<div style="position: relative;"><img style="width: 150px; cursor: pointer; border-radius: 7px; height: 200px;" src="' + data[i].image + '"><span style="position: absolute; bottom: 0; z-index: 100; left: 0; letter-spacing: 1.1px; cursor: default; user-select: none; background: #333; border-top-right-radius: 8px; padding: 2px 8px; color: white;"><span style="font-weight: bold;">&#9733;</span> ' + data[i].rating.toFixed(1) + '</span></div>';
+						
+						htmlStr += '<label style="max-width: 150px; cursor: pointer; margin-top: 10px; font-size: 15px; color: #333;">' + data[i].title + '</label>';
+						htmlStr += '</div>';
+					}
+					$('#best-sellers').html(htmlStr);
+				}
+				else {
+					alert("Error in retrieving book data!");
+				}
+			})
+			.catch(error => {
+				console.log(error);
+				alert("Server error!");
+			})
+			
+			
+			fetch('<%= URL.baseURL + URL.getTopRated %>7', {
+				method: 'GET'
+			})
+			.then(response => response.json())
+			.then(data => {
+
+				let htmlStr = "";
+				if(data != undefined) {					
+					for(let i = 0; i < data.length; i++) {	
+						htmlStr += '<div style="display: flex; flex-direction: column;" onclick="goto(\'' + data[i].isbnno +'\')">';
+						
+						htmlStr += '<div style="position: relative;"><img style="width: 150px; cursor: pointer; border-radius: 7px; height: 200px;" src="' + data[i].image + '"><span style="position: absolute; bottom: 0; z-index: 100; left: 0; letter-spacing: 1.1px; cursor: default; user-select: none; background: #333; border-top-right-radius: 8px; padding: 2px 8px; color: white;"><span style="font-weight: bold;">&#9733;</span> ' + data[i].rating.toFixed(1) + '</span></div>';
+						
+						htmlStr += '<label style="max-width: 150px; cursor: pointer; margin-top: 10px; font-size: 15px; color: #333;">' + data[i].title + '</label>';
+						htmlStr += '</div>';
+					}
+					$('#top-rated').html(htmlStr);
+				}
+				else {
+					alert("Error in retrieving book data!");
+				}
+			})
+			.catch(error => {
+				console.log(error);
+				alert("Server error!");
+			})
 		})
+		
+		function goto(isbn) {
+			location = '<%= request.getContextPath() + URL.bookDetail %>?id=' + isbn;
+		}
 	</script>
 </body>
 

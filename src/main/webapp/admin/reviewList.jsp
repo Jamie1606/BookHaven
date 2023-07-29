@@ -1,11 +1,11 @@
 
 <%
-//Author: Zay Yar Tun
-//Admin No: 2235035
-// Class: DIT/FT/2A/02
-// Group: 10
-//Date: 8.6.2023
-//Description: review list page
+// Author		: Zay Yar Tun
+// Admin No		: 2235035
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 29.7.2023
+// Description	: review list page
 %>
 
 <%@ page import="java.util.ArrayList, java.util.Date, model.Review"%>
