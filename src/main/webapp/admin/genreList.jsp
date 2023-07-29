@@ -179,7 +179,46 @@
 	<a href="#"
 		class="back-to-top d-flex align-items-center justify-content-center"><i
 		class="bi bi-arrow-up-short"></i></a>
+		
+		<script>
+        // Function to fetch genre data and update the table
+        function updateGenreTable() {
+            var xhr = new XMLHttpRequest();
 
+            // Configure the request to call the GetGenreList servlet
+            xhr.open("GET", "<%=request.getContextPath()%>/GetGenreList", true);
+
+            // Set up a callback function to handle the response
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var responseData = JSON.parse(xhr.responseText);
+
+                    // Update the table with the retrieved genre data
+                    var tableBody = document.getElementById("genreTableBody");
+                    tableBody.innerHTML = ""; // Clear the existing table body
+
+                    for (var i = 0; i < responseData.length; i++) {
+                        var genre = responseData[i].genre;
+                        var row = "<tr><td>" + (i + 1) + ".</td><td>" + genre +
+                            "</td><td><a href='<%=request.getContextPath()%>/admin/genreUpdate/" +
+                            responseData[i].genreID + "'>Edit</a> | <a href='<%=request.getContextPath()%>/admin/genreDelete/" +
+                            responseData[i].genreID + "'>Delete</a></td></tr>";
+
+                        tableBody.innerHTML += row;
+                    }
+                }
+            };
+
+            // Send the request
+            xhr.send();
+        }
+
+        // Call the function to populate the table when the page is loaded
+        window.onload = function() {
+            updateGenreTable();
+        };
+    </script>
+    
 	<script src="https://code.jquery.com/jquery-3.7.0.js"
 		integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
 		crossorigin="anonymous"></script>
