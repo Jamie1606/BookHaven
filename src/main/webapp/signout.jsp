@@ -3,10 +3,10 @@
 // Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 29.7.2023
+// Date			: 1.8.2023
 // Description	: sign out and destroy session
 %>
-<%@ page import="javax.servlet.http.HttpSession, model.*" %>
+<%@ page import="model.*" %>
 <%
 	session.invalidate();
 	String status = (String) request.getAttribute("status");

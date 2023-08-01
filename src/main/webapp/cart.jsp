@@ -4,7 +4,7 @@
 // Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 29.7.2023
+// Date			: 1.8.2023
 // Description	: shopping cart
 // cart layout design is referenced from https://cdn.dribbble.com/users/1569943/screenshots/6745363/cart.png
 %>
@@ -131,7 +131,7 @@
 				return;
 			}
 			else if(status.equals(Status.insertSuccess)) {
-				out.println("<script>alert('Order success!'); location = '" + request.getContextPath() + URL.cart + "';</script>");
+				out.println("<script>alert('Order success!'); location = '" + request.getContextPath() + URL.history + "';</script>");
 				return;
 			}
 			else if(status.equals(Status.serverError)) {

@@ -1,10 +1,19 @@
+<%
+// Author		: Zay Yar Tun, Thu Htet San
+// Admin No		: 2235035, 2235022
+// Class		: DIT/FT/2A/02
+// Group		: 10
+// Date			: 1.8.2023
+// Description	: header
+%>
+
 <%@ page import="model.URL, model.Status" %>
 
 <header id="header">
 	<div class="container">
 		<div class="row align-items-center justify-content-between d-flex">
 			<div id="logo">
-				<a href="<%= request.getContextPath() %>/index.jsp"><span
+				<a href="<%= request.getContextPath() + URL.homePage %>"><span
 					style="font-size: 30px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.2px; color: white;">BookHaven</span></a>
 			</div>
 			<nav id="nav-menu-container">
@@ -19,6 +28,7 @@
 							if(role != null && token != null) {
 								if(role.equals("ROLE_MEMBER")) {
 									out.println("<li><a href='" + request.getContextPath() + URL.profile + "'>Profile</a></li>");
+									out.println("<li><a href='" + request.getContextPath() + URL.history + "'>History</a></li>");
 									out.println("<li><a href='" + request.getContextPath() + URL.cart + "'>Cart</a></li>");
 									out.println("<li><a href='" + request.getContextPath() + URL.signOut + "'>Sign Out</a></li>");
 								}

@@ -2,7 +2,7 @@
 // Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 27.7.2023
+// Date			: 1.8.2023
 // Description	: create new book
 
 package servlet;
@@ -28,7 +28,6 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
-
 import model.Author;
 import model.Book;
 import model.Functions;
@@ -40,16 +39,15 @@ import model.URL;
  * Servlet implementation class CreateBook
  */
 @WebServlet("/CreateBook")
-@MultipartConfig(location = "/tmp", maxFileSize = 20971520, maxRequestSize = 41943040, fileSizeThreshold = 1048576)
+@MultipartConfig(location = "", maxFileSize = 10485760, maxRequestSize = 20971520, fileSizeThreshold = 1048576)
 public class CreateBook extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+       
+    public CreateBook() {
+        super();
+    }
 
-	public CreateBook() {
-		super();
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
 		Book book = null;
@@ -105,15 +103,14 @@ public class CreateBook extends HttpServlet {
 							book.setStatus("available");
 						}
 						
-						
 						image = Functions.uploadImage(book.getTitle(), book.getISBNNo(), "booknormal", request.getPart("image"), token);
 						if(image == null) {
-							image = URL.s3ImageLink + URL.defaultBookNormalImage;
+							image = URL.defaultBookNormalImage;
 						}
 						
 						image3d = Functions.uploadImage(book.getTitle(), book.getISBNNo(), "book3d", request.getPart("image3d"), token);
 						if(image3d == null) {
-							image3d = URL.s3ImageLink + URL.defaultBook3DImage;
+							image3d = URL.defaultBook3DImage;
 						}
 						
 						for (int i = 0; i < authors.length; i++) {
@@ -190,23 +187,23 @@ public class CreateBook extends HttpServlet {
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
-
+	
 //	private boolean deleteImage(String image) {
-//		boolean condition = false;
+//	boolean condition = false;
 //
-//		Client client = ClientBuilder.newClient();
-//		WebTarget target = client.target(URL.baseURL).path("deleteImage").path("{image}").resolveTemplate("image",
-//				image);
-//		Invocation.Builder invocationBuilder = target.request();
-//		Response resp = invocationBuilder.delete();
+//	Client client = ClientBuilder.newClient();
+//	WebTarget target = client.target(URL.baseURL).path("deleteImage").path("{image}").resolveTemplate("image",
+//			image);
+//	Invocation.Builder invocationBuilder = target.request();
+//	Response resp = invocationBuilder.delete();
 //
-//		if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
-//			condition = resp.readEntity(Boolean.class);
-//		} else {
-//			System.out.println("..... Error in deleteImage in CreateBook servlet .....");
-//			return false;
-//		}
-//
-//		return condition;
+//	if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
+//		condition = resp.readEntity(Boolean.class);
+//	} else {
+//		System.out.println("..... Error in deleteImage in CreateBook servlet .....");
+//		return false;
 //	}
+//
+//	return condition;
+//}
 }
