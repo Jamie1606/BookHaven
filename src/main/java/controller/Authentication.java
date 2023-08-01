@@ -10,7 +10,6 @@ package controller;
 import java.sql.ResultSet;
 
 import javax.servlet.http.HttpSession;
-
 import model.AdminDatabase;
 import model.MemberDatabase;
 import model.TestReg;

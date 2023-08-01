@@ -12,17 +12,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.apache.commons.text.StringEscapeUtils;
+
+import com.google.gson.Gson;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.text.StringEscapeUtils;
-
-import com.google.gson.Gson;
-
 //[IMPORT FROM MODEL]
 import model.Book;
 import model.BookDatabase;

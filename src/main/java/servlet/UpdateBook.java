@@ -2,7 +2,7 @@
 // Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 29.7.2023
+// Date			: 1.8.2023
 // Description	: update book
 
 package servlet;
@@ -39,7 +39,7 @@ import model.URL;
  * Servlet implementation class UpdateBook
  */
 @WebServlet("/UpdateBook/*")
-@MultipartConfig(location = "/tmp", maxFileSize = 20971520, maxRequestSize = 41943040, fileSizeThreshold = 1048576)
+@MultipartConfig(location = "", maxFileSize = 20971520, maxRequestSize = 41943040, fileSizeThreshold = 1048576)
 public class UpdateBook extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -106,7 +106,7 @@ public class UpdateBook extends HttpServlet {
 						image = Functions.uploadImage(title, isbn, "booknormal", request.getPart("image"), token);
 						if(image == null) {
 							if(oldimage == null || oldimage.isEmpty()) {
-								image = URL.s3ImageLink + URL.defaultBookNormalImage;
+								image = URL.defaultBookNormalImage;
 							}
 							else {
 								image = oldimage.trim();
@@ -116,7 +116,7 @@ public class UpdateBook extends HttpServlet {
 						image3d = Functions.uploadImage(title, isbn, "book3d", request.getPart("image3d"), token);
 						if(image3d == null) {
 							if(oldimage3d == null || oldimage3d.isEmpty()) {
-								image3d = URL.s3ImageLink + URL.defaultBook3DImage;
+								image3d = URL.defaultBook3DImage;
 							}
 							else {
 								image3d = oldimage3d.trim();
