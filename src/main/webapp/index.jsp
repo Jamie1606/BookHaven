@@ -3,7 +3,7 @@
 // Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 29.7.2023
+// Date			: 1.8.2023
 // Description	: home page
 // layout taken from https://www.lightnovelworld.com/hub_14072106
 %>
@@ -44,6 +44,7 @@
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/owl.carousel.css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/main.css">
 <link rel="icon" type="image/png" href="<%= request.getContextPath() %>/img/logo.png">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/custom-css/style.css">
 
 <style>
 	.latest-release h4:hover {
@@ -72,25 +73,27 @@
 	<!-- End banner Area -->
 	
 	
-	<div style="padding: 100px 0; width: 1200px; margin: auto;">
+	<div class="homepage-section">
 		<!-- Latest Releases -->
-		<div style="display: flex; flex-direction: column; margin-bottom: 35px;">
-			<h1 style="margin-bottom: 35px;">Latest Releases</h1>
-			<div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 20px;" id="latest-release"></div>
+		<div>
+			<h1>Latest Releases</h1>
+			<div class="book-div" id="latest-release"></div>
 		</div>
 		<!-- Latest Releases -->
 		
+		
 		<!-- Top Sellers -->
-		<div style="display: flex; flex-direction: column; margin-bottom: 35px;">
-			<h1 style="margin-bottom: 35px;">Best Sellers</h1>
-			<div style="display: flex; flex-direction: row; justify-content: space-between;" id="best-sellers"></div>
+		<div>
+			<h1>Best Sellers</h1>
+			<div class="book-div" id="best-sellers"></div>
 		</div>
 		<!-- Top Sellers -->
+		
 		
 		<!-- Top Rated -->
-		<div style="display: flex; flex-direction: column;">
-			<h1 style="margin-bottom: 35px;">Top Rated</h1>
-			<div style="display: flex; flex-direction: row; justify-content: space-between;" id="top-rated"></div>
+		<div>
+			<h1>Top Rated</h1>
+			<div class="book-div" id="top-rated"></div>
 		</div>
 		<!-- Top Rated -->
 	</div>
@@ -125,15 +128,20 @@
 			})
 			.then(response => response.json())
 			.then(data => {
-
+				console.log(data);
 				let htmlStr = "";
 				if(data != undefined) {					
 					for(let i = 0; i < data.length; i++) {	
-						htmlStr += '<div style="display: flex; flex-direction: column;" onclick="goto(\'' + data[i].isbnno +'\')">';
+						htmlStr += '<div>';
 						
-						htmlStr += '<div style="position: relative;"><img style="width: 150px; cursor: pointer; border-radius: 7px; height: 200px;" src="' + data[i].image + '"><span style="position: absolute; bottom: 0; z-index: 100; left: 0; letter-spacing: 1.1px; cursor: default; user-select: none; background: #333; border-top-right-radius: 8px; padding: 2px 8px; color: white;"><span style="font-weight: bold;">&#9733;</span> ' + data[i].rating.toFixed(1) + '</span></div>';
+						htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="' + data[i].image + '"><span class="rating">';
+						htmlStr += '<span class="full-star"></span> ' + data[i].rating.toFixed(1) + '</span></div>';
 						
-						htmlStr += '<label style="max-width: 150px; cursor: pointer; margin-top: 10px; font-size: 15px; color: #333;">' + data[i].title + '</label>';
+						title = data[i].title;
+						if(title.length > 30) {
+							title = title.slice(0, 25) + "...";							
+						}
+						htmlStr += '<label class="book-title" onclick="goto(\'' + data[i].isbnno +'\')">' + title + '</label>';
 						htmlStr += '</div>';
 					}
 					$('#latest-release').html(htmlStr);
@@ -143,7 +151,9 @@
 						$('#latest-book').html('<h5 class="text-white text-uppercase"></h5><h1 class="text-uppercase" style="font-size: 45px;">' + data[0].title + '</h1><p class="text-white pt-20 pb-20">No information available</p><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[0].isbnno + '" class="primary-btn text-uppercase">View More</a>');
 					}
 					else {
-						$('#latest-book').html('<h5 class="text-white text-uppercase"></h5><h1 class="text-uppercase" style="font-size: 45px;">' + data[0].title + '</h1><p class="text-white pt-20 pb-20">' + data[0].description + '</p><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[0].isbnno + '" class="primary-btn text-uppercase">View More</a>');
+						// taken from https://blog.logrocket.com/ways-truncate-text-css/
+						description = description.slice(0, 450) + "...";
+						$('#latest-book').html('<h5 class="text-white text-uppercase"></h5><h1 class="text-uppercase" style="font-size: 45px;">' + data[0].title + '</h1><p class="text-white pt-20 pb-20">' + description + '</p><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[0].isbnno + '" class="primary-btn text-uppercase">View More</a>');
 					}
 					
 					$('#latest-book-image').html('<img class="img-fluid" src="' + data[0].image3D + '" alt="">');
@@ -167,11 +177,16 @@
 				let htmlStr = "";
 				if(data != undefined) {				
 					for(let i = 0; i < data.length; i++) {	
-						htmlStr += '<div style="display: flex; flex-direction: column;" onclick="goto(\'' + data[i].isbnno +'\')">';
+						htmlStr += '<div onclick="goto(\'' + data[i].isbnno +'\')">';
 						
-						htmlStr += '<div style="position: relative;"><img style="width: 150px; cursor: pointer; border-radius: 7px; height: 200px;" src="' + data[i].image + '"><span style="position: absolute; bottom: 0; z-index: 100; left: 0; letter-spacing: 1.1px; cursor: default; user-select: none; background: #333; border-top-right-radius: 8px; padding: 2px 8px; color: white;"><span style="font-weight: bold;">&#9733;</span> ' + data[i].rating.toFixed(1) + '</span></div>';
+						htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="' + data[i].image + '"><span class="rating">';
+						htmlStr += '<span class="full-star"></span> ' + data[i].rating.toFixed(1) + '</span></div>';
 						
-						htmlStr += '<label style="max-width: 150px; cursor: pointer; margin-top: 10px; font-size: 15px; color: #333;">' + data[i].title + '</label>';
+						title = data[i].title;
+						if(title.length > 30) {
+							title = title.slice(0, 25) + "...";							
+						}
+						htmlStr += '<label class="book-title" onclick="goto(\'' + data[i].isbnno +'\')">' + title + '</label>';
 						htmlStr += '</div>';
 					}
 					$('#best-sellers').html(htmlStr);
@@ -195,11 +210,16 @@
 				let htmlStr = "";
 				if(data != undefined) {					
 					for(let i = 0; i < data.length; i++) {	
-						htmlStr += '<div style="display: flex; flex-direction: column;" onclick="goto(\'' + data[i].isbnno +'\')">';
+						htmlStr += '<div onclick="goto(\'' + data[i].isbnno +'\')">';
 						
-						htmlStr += '<div style="position: relative;"><img style="width: 150px; cursor: pointer; border-radius: 7px; height: 200px;" src="' + data[i].image + '"><span style="position: absolute; bottom: 0; z-index: 100; left: 0; letter-spacing: 1.1px; cursor: default; user-select: none; background: #333; border-top-right-radius: 8px; padding: 2px 8px; color: white;"><span style="font-weight: bold;">&#9733;</span> ' + data[i].rating.toFixed(1) + '</span></div>';
+						htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="' + data[i].image + '"><span class="rating">';
+						htmlStr += '<span class="full-star"></span> ' + data[i].rating.toFixed(1) + '</span></div>';
 						
-						htmlStr += '<label style="max-width: 150px; cursor: pointer; margin-top: 10px; font-size: 15px; color: #333;">' + data[i].title + '</label>';
+						title = data[i].title;
+						if(title.length > 30) {
+							title = title.slice(0, 25) + "...";							
+						}
+						htmlStr += '<label class="book-title" onclick="goto(\'' + data[i].isbnno +'\')">' + title + '</label>';
 						htmlStr += '</div>';
 					}
 					$('#top-rated').html(htmlStr);

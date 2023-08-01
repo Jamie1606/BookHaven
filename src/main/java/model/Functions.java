@@ -2,7 +2,7 @@
 // Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 27.6.2023
+// Date			: 1.8.2023
 // Description	: function collections
 
 package model;
@@ -124,7 +124,7 @@ public class Functions {
 				String responseStr = EntityUtils.toString(httpEntity);
 				boolean condition = Boolean.parseBoolean(responseStr);
 				if(condition) {
-					returnStr = URL.s3ImageLink + imagepath + fileName;
+					returnStr = imagepath + fileName;
 				}
 				// Image uploaded successfully
 				// Handle the response if needed
