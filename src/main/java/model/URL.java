@@ -31,6 +31,8 @@ public class URL {
 	public static final String authorRegistration = "/admin/authorRegistration.jsp";
 	public static final String bookRegistration = "/admin/bookRegistration.jsp";
 	public static final String bookList = "/admin/bookList.jsp";
+	public static final String genreList = "/admin/genreList.jsp";
+	public static final String memberList = "/admin/memberList.jsp";
 	
 	
 	

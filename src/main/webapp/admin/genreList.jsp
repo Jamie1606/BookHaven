@@ -74,49 +74,40 @@
 
 	<%			
 	System.out.println("......in genreList.jsp ..");
-	String error = (String) request.getAttribute("error");
-	request.removeAttribute("error");
-	String success = (String) request.getAttribute("success");
-	request.removeAttribute("success");
-	if (error != null) {
-		if (error.equals("invalid")) {
-			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath()
-			+ URL.getGenreListServlet +";</script>");
-			return;
-		} else if (error.equals("serverError")) {
-			out.println(
-			"<script>alert('Server Error!'); location='" + request.getContextPath()  + URL.getGenreListServlet +";</script>");
-			return;
-		} else if (error.equals("serverRetrieveError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-			+ "/admin/adminHomePage.jsp';</script>");
-			return;
-		} else if (error.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
-			return;
-		} else {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signin.jsp';</script>");
+	String status = (String) request.getAttribute("status");
+	request.removeAttribute("status");
+	
+	if(status != null) {
+		if(status.equals(Status.serverError)) {
+			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
 			return;
 		}
-	}
-	if (success != null) {
-		if (success.equals("delete")) {
-			out.println("<script>alert('The genre is successfully deleted!'); location='" + request.getContextPath()
-			+ URL.getGenreListServlet +";</script>");
+		else if(status.equals(Status.invalidData)) {
+			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
 			return;
 		}
-	}
+		else if(status.equals(Status.invalidRequest)) {
+			out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
+			return;
+		}
+		else if(status.equals(Status.updateSuccess)) {
+			out.println("<script>alert('Genre is successfully updated!');</script>"); 
+			out.println("<script>location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
+			return;
+		}
+		else if(status.equals(Status.deleteSuccess)) {
+			out.println("<script>alert('Genre is successfully deleted!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
+			return;
 
-	String servlet = (String) request.getAttribute("servlet");
-	request.removeAttribute("servlet");
-	if (servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + URL.getGenreListServlet +";</script>");
-		return;
 	}
 
 	ArrayList<Genre> genreList = (ArrayList<Genre>) request.getAttribute("genreList");
+	if(genreList == null) {
+		out.println("<script>alert('Server error!');</script>");
+		out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
+		return;
+	}
 	%>
 
 	<main id="main" class="main">
