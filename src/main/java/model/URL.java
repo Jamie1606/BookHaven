@@ -87,4 +87,12 @@ public class URL {
 	public static final String signUp = "/signup.jsp";
 	public static final String header = "/header.jsp";
 	public static final String footer = "/footer.jsp";
+	
+	
+	//genre servlets
+	public static final String getGenreListServlet = "/GetGenreList";
+	
+	//member servlets
+	public static final String getMemberListServlet = "/GetMemberList";
+	
 }

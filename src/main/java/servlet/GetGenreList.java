@@ -70,7 +70,7 @@ public class GetGenreList extends HttpServlet {
 		}else {
 			System.out.println("failed");
 			String url = "admin/genreList.jsp";
-			request.setAttribute("err","NotFound");
+			request.setAttribute("error","NotFound");
 			RequestDispatcher rd=request.getRequestDispatcher(url);
 			rd.forward(request, response);
 		}

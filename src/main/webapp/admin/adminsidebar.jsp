@@ -63,13 +63,13 @@
 				</li>
 				
 				<li>
-					<a href="<%= request.getContextPath() %>/admin/genres"> 
+					<a href="<%= request.getContextPath() + URL.getGenreListServlet %>"> 
 						<i class="bi bi-circle"></i><span>Genre List</span>
 					</a>
 				</li>
 				
 				<li>
-					<a href="<%= request.getContextPath() %>/admin/members"> 
+					<a href="<%= request.getContextPath() %>"> 
 						<i class="bi bi-circle"></i><span>Member List</span>
 					</a>
 				</li>

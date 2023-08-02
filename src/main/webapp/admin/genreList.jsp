@@ -1,3 +1,4 @@
+
 <%
 // Author		: Thu Htet San
 // Admin No		: 2235022
@@ -10,6 +11,7 @@
 <%@ page import="java.util.ArrayList, java.util.Date, model.Genre"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@page import="model.URL" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -70,44 +72,47 @@
 	<%@ include file="adminheader.jsp"%>
 	<%@ include file="adminsidebar.jsp"%>
 
-	<%
+	<%			
+	System.out.println("......in genreList.jsp ..");
 	String error = (String) request.getAttribute("error");
 	request.removeAttribute("error");
 	String success = (String) request.getAttribute("success");
 	request.removeAttribute("success");
 	if (error != null) {
 		if (error.equals("invalid")) {
-			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath() + "/admin/genres';</script>");
+			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath()
+			+ URL.getGenreListServlet +";</script>");
 			return;
-		}
-		else if (error.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/genres';</script>");
+		} else if (error.equals("serverError")) {
+			out.println(
+			"<script>alert('Server Error!'); location='" + request.getContextPath()  + URL.getGenreListServlet +";</script>");
 			return;
-		}
-		else if (error.equals("serverRetrieveError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/adminHomePage.jsp';</script>");
+		} else if (error.equals("serverRetrieveError")) {
+			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
+			+ "/admin/adminHomePage.jsp';</script>");
 			return;
-		}
-		else if (error.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
+		} else if (error.equals("unauthorized")) {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
+			+ "/signout.jsp';</script>");
 			return;
-		}
-		else {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
-			return;
-		}
-	}
-	if(success != null) {
-		if(success.equals("delete")) {
-			out.println("<script>alert('The genre is successfully deleted!'); location='" + request.getContextPath() + "/admin/genres';</script>");
+		} else {
+			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
+			+ "/signin.jsp';</script>");
 			return;
 		}
 	}
-	
-	String servlet = (String)request.getAttribute("servlet");
-	 request.removeAttribute("servlet");
-	if(servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + "/admin/genres';</script>");
+	if (success != null) {
+		if (success.equals("delete")) {
+			out.println("<script>alert('The genre is successfully deleted!'); location='" + request.getContextPath()
+			+ URL.getGenreListServlet +";</script>");
+			return;
+		}
+	}
+
+	String servlet = (String) request.getAttribute("servlet");
+	request.removeAttribute("servlet");
+	if (servlet == null || !servlet.equals("true")) {
+		out.println("<script>location='" + request.getContextPath() + URL.getGenreListServlet +";</script>");
 		return;
 	}
 
@@ -152,9 +157,9 @@
 										out.println("<tr>");
 										out.println("<td>" + (i + 1) + ".</td>");
 										out.println("<td>" + genreList.get(i).getGenre() + "</td>");
-										out.println("<td><a href='" + request.getContextPath() + "/admin/genreUpdate/"
-										+ genreList.get(i).getGenreID() + " '>Edit</a> | <a href='" + request.getContextPath()
-										+ "/admin/genreDelete/" + genreList.get(i).getGenreID()  + "'>Delete</a></td>");
+										out.println("<td><a href='" + request.getContextPath() + "/admin/genreUpdate/" + genreList.get(i).getGenreID()
+										+ " '>Edit</a> | <a href='" + request.getContextPath() + "/admin/genreDelete/"
+										+ genreList.get(i).getGenreID() + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
 									%>
@@ -179,46 +184,7 @@
 	<a href="#"
 		class="back-to-top d-flex align-items-center justify-content-center"><i
 		class="bi bi-arrow-up-short"></i></a>
-		
-		<script>
-        // Function to fetch genre data and update the table
-        function updateGenreTable() {
-            var xhr = new XMLHttpRequest();
 
-            // Configure the request to call the GetGenreList servlet
-            xhr.open("GET", "<%=request.getContextPath()%>/GetGenreList", true);
-
-            // Set up a callback function to handle the response
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var responseData = JSON.parse(xhr.responseText);
-
-                    // Update the table with the retrieved genre data
-                    var tableBody = document.getElementById("genreTableBody");
-                    tableBody.innerHTML = ""; // Clear the existing table body
-
-                    for (var i = 0; i < responseData.length; i++) {
-                        var genre = responseData[i].genre;
-                        var row = "<tr><td>" + (i + 1) + ".</td><td>" + genre +
-                            "</td><td><a href='<%=request.getContextPath()%>/admin/genreUpdate/" +
-                            responseData[i].genreID + "'>Edit</a> | <a href='<%=request.getContextPath()%>/admin/genreDelete/" +
-                            responseData[i].genreID + "'>Delete</a></td></tr>";
-
-                        tableBody.innerHTML += row;
-                    }
-                }
-            };
-
-            // Send the request
-            xhr.send();
-        }
-
-        // Call the function to populate the table when the page is loaded
-        window.onload = function() {
-            updateGenreTable();
-        };
-    </script>
-    
 	<script src="https://code.jquery.com/jquery-3.7.0.js"
 		integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
 		crossorigin="anonymous"></script>
