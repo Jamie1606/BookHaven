@@ -4,14 +4,14 @@
 // Admin No		: 2235022
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 12.6.2023
+// Date			: 3.8.2023
 // Description	: genre list page
 %>
 
 <%@ page import="java.util.ArrayList, java.util.Date, model.Genre"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@page import="model.URL" %>
+<%@page import="model.URL"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -76,7 +76,6 @@
 	System.out.println("......in genreList.jsp ..");
 	String status = (String) request.getAttribute("status");
 	request.removeAttribute("status");
-	
 	if(status != null) {
 		if(status.equals(Status.serverError)) {
 			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
@@ -99,7 +98,7 @@
 			out.println("<script>alert('Genre is successfully deleted!');</script>");
 			out.println("<script>location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
 			return;
-
+		}
 	}
 
 	ArrayList<Genre> genreList = (ArrayList<Genre>) request.getAttribute("genreList");
@@ -198,7 +197,7 @@
 		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
 
 	<!-- Template Main JS File -->
-	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
+	<script src="<%= request.getContextPath()%>/assets/js/main.js"></script>
 
 </body>
 

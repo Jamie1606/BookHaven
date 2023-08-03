@@ -33,6 +33,8 @@ public class URL {
 	public static final String bookList = "/admin/bookList.jsp";
 	public static final String genreList = "/admin/genreList.jsp";
 	public static final String memberList = "/admin/memberList.jsp";
+	public static final String genreRegistration = "/admin/genreRegistration.jsp";
+	public static final String memberRegistration = "/admin/memberRegistration.jsp";
 	
 	
 	
@@ -93,8 +95,12 @@ public class URL {
 	
 	//genre servlets
 	public static final String getGenreListServlet = "/GetGenreList";
+	public static final String createGenreServlet = "/CreateGenre";
+	public static final String updateGenreServlet = "/UpdateGenre";
 	
 	//member servlets
 	public static final String getMemberListServlet = "/GetMemberList";
+	public static final String createMemberServlet = "/CreateMember";
+	public static final String updateMemberServlet = "/UpdateMember";
 	
 }

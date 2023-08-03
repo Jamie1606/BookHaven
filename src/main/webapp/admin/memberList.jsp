@@ -72,49 +72,43 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	String error = (String) request.getAttribute("error");
-	request.removeAttribute("error");
-	String success = (String) request.getAttribute("success");
-	request.removeAttribute("success");
-	if (error != null) {
-		if (error.equals("invalid")) {
-			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath()
-			+ "/admin/members';</script>");
+	
+	System.out.println("......in memberList.jsp ..");
+	String status = (String) request.getAttribute("status");
+	request.removeAttribute("status");
+	if(status != null) {
+		if(status.equals(Status.serverError)) {
+			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
 			return;
-		} else if (error.equals("serverError")) {
-			out.println(
-			"<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/members';</script>");
+		}
+		else if(status.equals(Status.invalidData)) {
+			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath() + URL.getMemberListServlet + "';</script>");
 			return;
-		} else if (error.equals("serverRetrieveError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-			+ "/admin/adminHomePage.jsp';</script>");
+		}
+		else if(status.equals(Status.invalidRequest)) {
+			out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
 			return;
-		} else if (error.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
+		}
+		else if(status.equals(Status.updateSuccess)) {
+			out.println("<script>alert('Member is successfully updated!');</script>"); 
+			out.println("<script>location='" + request.getContextPath() + URL.getMemberListServlet + "';</script>");
 			return;
-		} else {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
+		}
+		else if(status.equals(Status.deleteSuccess)) {
+			out.println("<script>alert('Member is successfully deleted!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.getMemberListServlet + "';</script>");
 			return;
 		}
 	}
-	if (success != null) {
-		if (success.equals("delete")) {
-			out.println("<script>alert('The member is successfully deleted!'); location='" + request.getContextPath()
-			+ "/admin/members';</script>");
-			return;
-		}
-	}
-
-	String servlet = (String) request.getAttribute("servlet");
-	request.removeAttribute("servlet");
-	if (servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + "/admin/members';</script>");
+	
+	
+	ArrayList<Member> memberList = (ArrayList<Member>) request.getAttribute("memberList");
+	if(memberList == null) {
+		out.println("<script>alert('Server error!');</script>");
+		out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
 		return;
 	}
-
-	ArrayList<Member> memberList = (ArrayList<Member>) request.getAttribute("memberList");
+	
 	%>
 
 	<main id="main" class="main">

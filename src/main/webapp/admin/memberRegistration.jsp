@@ -1,9 +1,10 @@
+
 <%
 // Author 	  	: Thu Htet San
 // Admin No    	: 2235022
 // Class       	: DIT/FT/2A/02
 // Group		: 10
-// Date		  	: 7.6.2023
+// Date		  	: 3.8.2023
 // Description 	: member registration page(admin side)
 %>
 
@@ -92,78 +93,67 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	String status = "register";
 	Member member = null;
+	
+	int memberID=0;
+	String name = "";
+	String email="";
+	String phone="";
+	String birthDate = "";
+	char gender='N';
 	String postalCode = "";
 	String address = "";
 	// show error and success for registration
-	String errCode = (String) request.getAttribute("errCode");
-	if (errCode != null) {
-		if (errCode.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-			+ "/admin/memberRegistration.jsp';</script>");
+	String status = (String) request.getAttribute("status");
+	if (status != null) {
+		if (status.equals(Status.invalidData)) {
+			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath() + URL.memberRegistration
+			+ "';</script>");
 			return;
-		} else if (errCode.equals("invalid")) {
-			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
-			+ "/admin/memberRegistration.jsp';</script>");
+		} else if (status.equals(Status.insertSuccess)) {
+			out.println("<script>alert('Member data is successfully added!'); location='" + request.getContextPath()
+			+ URL.memberRegistration + "';</script>");
 			return;
-		} else if (errCode.equals("invalidEmail")) {
-			out.println("<script>alert('Invalid Email!'); location='" + request.getContextPath()
-			+ "/admin/memberRegistration.jsp';</script>");
+		} else if (status.equals(Status.serverError)) {
+			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage
+			+ "';</script>");
 			return;
-		} else if (errCode.equals("upload")) {
-			out.println("<script>alert('Error in uploading data!'); location='" + request.getContextPath()
-			+ "/admin/memberRegistration.jsp';</script>");
-			return;
-		} else if (errCode.equals("unauthorized")) {
-			out.println("<script>alert('Unauthorized!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
-			return;
-		} else {
-			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
-			+ "/admin/memberRegistration.jsp';</script>");
-			return;
-		}
-	} else {
-		String success = (String) request.getAttribute("success");
-		if (success != null) {
-			if (success.equals("register")) {
-		out.println("<script>alert('Member data is successfully added!'); location='" + request.getContextPath()
-				+ "/admin/memberRegistration.jsp';</script>");
-		return;
-			}
-			if (success.equals("update")) {
-		out.println("<script>alert('Member data is successfully updated!'); location='" + request.getContextPath()
-				+ "/admin/members';</script>");
-		return;
-			}
 		}
 	}
 
-	// check whether it is to update author data
-	status = (String) request.getAttribute("status");
-	request.removeAttribute("status");
-	if (status == null) {
-		status = "register";
+
+	String update = (String) request.getAttribute("update");
+	request.removeAttribute("update");
+	if (update == null) {
+		update = "";
 	} else {
-		if (status.equals("update")) {
+		if (update.equals("true")) {
 			member = (Member) request.getAttribute("member");
 			request.removeAttribute("member");
+
+			memberID = member.getMemberID();
+			name = member.getName();
+			email = member.getEmail();
+			phone = member.getPhone();
+			gender = member.getGender();
+			if(member.getBirthDate()!=null){
+			birthDate = member.getBirthDate().toString();
+			}
 			String[] addressArr = member.getAddress().split("\\|");
 			if (addressArr.length == 2) {
-		address = addressArr[0];
-		postalCode = addressArr[1];
+				address = addressArr[0];
+				postalCode = addressArr[1];
 			}
 			if (addressArr.length == 1) {
-		address = addressArr[0];
+				address = addressArr[0];
 			}
+
 		} else {
-			out.println("<script>alert('Unauthorized! Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
-			return;
+			out.println("<script>location='"+request.getContextPath()+URL.genreRegistration+"';</script>");
 		}
 
 	}
+
 	%>
 
 	<main id="main" class="main">
@@ -189,23 +179,18 @@
 
 							<!-- Member Registration Form -->
 							<form id="memberRegistrationForm" class="row g-3"
-								action="<%=request.getContextPath()%>/admin/members"
+								action="<%= request.getContextPath() + ((update.equals("true"))?  URL.updateMemberServlet:URL.createMemberServlet)%>"
 								method="post" enctype="multipart/form-data">
 
-								<!-- formName -->
-								<input type="hidden" name="formName"
-									value="memberRegistrationForm" />
 								<input type="hidden"
-									name="status" value="<%=status%>" />
-								<input
-									type="hidden" name="MemberID"
-									value="<%=(status.equals("update")) ? member.getMemberID() : ""%>" />
+									name="MemberID"
+									value="<%=(update.equals("true")) ? memberID: ""%>" />
 
 								<!-- Name input -->
 								<div class="col-12">
 									<label for="nameID" class="form-label">Name</label> <input
 										type="text" class="form-control" name="name" id="nameID"
-										value="<%=(status.equals("update")) ? member.getName() : ""%>"
+										value="<%=(update.equals("true")) ? member.getName() : ""%>"
 										required>
 								</div>
 
@@ -213,8 +198,8 @@
 								<div class="col-12">
 									<label for="emailID" class="form-label">Email</label> <input
 										type="email" class="form-control" name="email" id="emailID"
-										value="<%=(status.equals("update")) ? member.getEmail() : ""%>"
-										required <%=(status.equals("update")) ? "readonly" : ""%>>
+										value="<%=(update.equals("true")) ? member.getEmail() : ""%>"
+										required <%=(update.equals("true")) ? "readonly" : ""%>>
 								</div>
 
 								<!-- Password input -->
@@ -229,7 +214,7 @@
 								<div class="col-8">
 									<label for="addressID" class="form-label">Address</label> <input
 										type="text" class="form-control" name="address" id="addressID"
-										value="<%=(status.equals("update")) ? address : ""%>" required>
+										value="<%=(update.equals("true")) ? address : ""%>" required>
 								</div>
 
 								<!-- Postal input -->
@@ -237,7 +222,7 @@
 									<label for="postalCodeID" class="form-label">Postal
 										Code</label> <input type="number" class="form-control"
 										name="postalCode" id="postalCodeID"
-										value="<%=(status.equals("update")) ? postalCode : ""%>"
+										value="<%=(update.equals("true")) ? postalCode : ""%>"
 										required>
 								</div>
 
@@ -245,7 +230,7 @@
 								<div class="col-md-4">
 									<label for="phoneID" class="form-label">Phone</label> <input
 										type="number" class="form-control" name="phone" id="phoneID"
-										value="<%=(status.equals("update")) ? member.getPhone() : ""%>">
+										value="<%=(update.equals("true")) ? member.getPhone() : ""%>">
 								</div>
 
 								<!-- Birth Date input -->
@@ -253,19 +238,21 @@
 									<label for="birthDateID" class="form-label">Birth Date</label>
 									<input type="date" class="form-control" name="birthDate"
 										id="birthDateID" max="<%=LocalDate.now()%>"
-										value="<%=(status.equals("update")) ? member.getBirthDate() : ""%>">
+										value="<%=(update.equals("true")) ? member.getBirthDate() : ""%>">
 								</div>
 
 								<!-- Gender input -->
 								<div class="col-md-4">
 									<label for="genderID" class="form-label">Gender</label> <select
 										name="gender" id="genderID" class="form-control" required>
-										<option <%= (status.equals("update") && member.getGender() == 'N') ? "selected" : "" %>>Not Selected</option>
 										<option
-											<%=(status.equals("update") && member.getGender() == 'F') ? "selected" : ""%>
+											<%=(update.equals("true") && member.getGender() == 'N') ? "selected" : ""%>>Not
+											Selected</option>
+										<option
+											<%=(update.equals("true") && member.getGender() == 'F') ? "selected" : ""%>
 											value="F">Female</option>
 										<option
-											<%=(status.equals("update") && member.getGender() == 'M') ? "selected" : ""%>
+											<%=(update.equals("true") && member.getGender() == 'M') ? "selected" : ""%>
 											value="M">Male</option>
 									</select>
 								</div>
@@ -274,14 +261,14 @@
 								<div class="col-12">
 									<label for="imageID" class="form-label">Image</label> <input
 										type="hidden" name="oldimage"
-										value="<%=(status.equals("update")) ? member.getImage() : ""%>">
+										value="<%=(update.equals("true")) ? member.getImage() : ""%>">
 									<input type="file" class="form-control" id="imageID"
 										name="image">
 								</div>
 
 								<!-- Submit button -->
 								<div class="text-center">
-									<button id="btnSave" type="submit" class="btn btn-primary"><%=(status.equals("update")) ? "Update" : "Save"%></button>
+									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update.equals("true")) ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Member Registration Form -->

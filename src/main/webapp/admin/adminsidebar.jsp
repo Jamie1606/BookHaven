@@ -30,12 +30,12 @@
 					</a>
 				</li>
 				<li>
-					<a href="<%= request.getContextPath() %>/admin/genreRegistration.jsp"> 
+					<a href="<%= request.getContextPath() + URL.genreRegistration %>"> 
 						<i class="bi bi-circle"></i><span>Genre	Registration</span>
 					</a>
 				</li>
 				<li>
-					<a href="<%= request.getContextPath() %>/admin/memberRegistration.jsp"> 
+					<a href="<%= request.getContextPath() + URL.memberRegistration %>"> 
 						<i class="bi bi-circle"></i><span>Member Registration</span>
 					</a>
 				</li>
@@ -69,7 +69,7 @@
 				</li>
 				
 				<li>
-					<a href="<%= request.getContextPath() %>"> 
+					<a href="<%= request.getContextPath() + URL.getMemberListServlet %>"> 
 						<i class="bi bi-circle"></i><span>Member List</span>
 					</a>
 				</li>
