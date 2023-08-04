@@ -10,7 +10,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="model.URL" %>
+<%@ page import="model.*" %>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -134,7 +134,7 @@
 					for(let i = 0; i < data.length; i++) {	
 						htmlStr += '<div>';
 						
-						htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="' + data[i].image + '"><span class="rating">';
+						htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="<%= URL.imageLink %>' + data[i].image + '"><span class="rating">';
 						htmlStr += '<span class="full-star"></span> ' + data[i].rating.toFixed(1) + '</span></div>';
 						
 						title = data[i].title;
@@ -156,7 +156,7 @@
 						$('#latest-book').html('<h5 class="text-white text-uppercase"></h5><h1 class="text-uppercase" style="font-size: 45px;">' + data[0].title + '</h1><p class="text-white pt-20 pb-20">' + description + '</p><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[0].isbnno + '" class="primary-btn text-uppercase">View More</a>');
 					}
 					
-					$('#latest-book-image').html('<img class="img-fluid" src="' + data[0].image3D + '" alt="">');
+					$('#latest-book-image').html('<img class="img-fluid" src="<%= URL.imageLink %>' + data[0].image3D + '" alt="">');
 				}
 				else {
 					alert("Error in retrieving book data!");
@@ -179,7 +179,7 @@
 					for(let i = 0; i < data.length; i++) {	
 						htmlStr += '<div onclick="goto(\'' + data[i].isbnno +'\')">';
 						
-						htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="' + data[i].image + '"><span class="rating">';
+						htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="<%= URL.imageLink %>' + data[i].image + '"><span class="rating">';
 						htmlStr += '<span class="full-star"></span> ' + data[i].rating.toFixed(1) + '</span></div>';
 						
 						title = data[i].title;
@@ -212,7 +212,7 @@
 					for(let i = 0; i < data.length; i++) {	
 						htmlStr += '<div onclick="goto(\'' + data[i].isbnno +'\')">';
 						
-						htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="' + data[i].image + '"><span class="rating">';
+						htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="<%= URL.imageLink %>' + data[i].image + '"><span class="rating">';
 						htmlStr += '<span class="full-star"></span> ' + data[i].rating.toFixed(1) + '</span></div>';
 						
 						title = data[i].title;

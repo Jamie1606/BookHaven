@@ -1,10 +1,3 @@
-// Author		: Zay Yar Tun
-// Admin No		: 2235035
-// Class		: DIT/FT/2A/02
-// Group		: 10
-// Date			: 27.7.2023
-// Description	: get author list
-
 package servlet;
 
 import java.io.IOException;
@@ -17,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpHeaders;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,26 +22,25 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import model.Author;
+import model.Member;
 import model.Status;
 import model.URL;
 
 /**
- * Servlet implementation class GetAuthorList
+ * Servlet implementation class GetMemberList
  */
-@WebServlet("/GetAuthorList")
-public class GetAuthorList extends HttpServlet {
+@WebServlet("/GetMemberList")
+public class GetMemberList extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public GetAuthorList() {
+    public GetMemberList() {
         super();
     }
-
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		String url = URL.authorList;
+		String url = URL.memberList;
 		String status = "";
 		
 		if(session != null && !session.isNew()) {
@@ -58,26 +52,31 @@ public class GetAuthorList extends HttpServlet {
 			}
 			else {
 				Client client = ClientBuilder.newClient();
-				WebTarget target = client.target(URL.baseURL).path("getAllAuthor");
+				WebTarget target = client.target(URL.baseURL).path("getAllMember");
 				Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+				invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 				Response resp = invocationBuilder.get();
 				
-				if(resp.getStatus() == Response.Status.OK.getStatusCode()) {		
+				if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
 					
 					String json = resp.readEntity(String.class);
 					ObjectMapper obj = new ObjectMapper();
-					ArrayList<Author> authorList = obj.readValue(json, new TypeReference<ArrayList<Author>>() {});
+					ArrayList<Member> memberList = obj.readValue(json, new TypeReference<ArrayList<Member>>() {});
 					
-					if(authorList == null) {
-						System.out.println("..... Server error in GetAuthorList servlet .....");
+					if(memberList == null || memberList.isEmpty()) {
+						System.out.println("..... Server error in GetMemberList servlet .....");
 						status = Status.serverError;
 					}
 					else {
-						request.setAttribute("authorList", authorList);
+						request.setAttribute("memberList", memberList);
 					}
 				}
+				else if(resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
+					status = Status.unauthorized;
+					url = URL.signOut;
+				}
 				else {
-					System.out.println("..... Error in GetAuthorList servlet .....");
+					System.out.println("..... Error in GetMemberList servlet .....");
 					status = Status.serverError;
 				}
 			}
