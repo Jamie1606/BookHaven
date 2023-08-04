@@ -3,7 +3,7 @@
 // Admin No    	: 2235022
 // Class       	: DIT/FT/2A/02
 // Group		: 10
-// Date		  	: 7.6.2023
+// Date		  	: 3.8.2023
 // Description 	: genre registration page(admin side)
 %>
 
@@ -94,59 +94,45 @@
 	<%
 	
 	// set default value for status
-	String status = "register";
 	Genre genre=null;
+	int genreID = 0;
+	String genreName = "";
 			
 	// show error and success for registration
-	String errCode = request.getParameter("errCode");
-	if (errCode != null) {
-		if (errCode.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-			+ "/admin/genreRegistration.jsp';</script>");
-			return;
-		} else if (errCode.equals("invalid")) {
-			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
-			+ "/admin/genreRegistration.jsp';</script>");
-			return;
-		} 
-		else if (errCode.equals("unauthorized")) {
-			out.println("<script>alert('Unauthorized!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
-			return;
-		} else {
-			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
-			+ "/admin/genreRegistration.jsp';</script>");
+	String status = (String) request.getAttribute("status");
+	if(status != null) {
+		if(status.equals(Status.invalidData)) {
+			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath()
+			+ URL.genreRegistration + "';</script>");
 			return;
 		}
-	} else {
-		String success = request.getParameter("success");
-		if (success != null) {
-			if (success.equals("register")) {
-		out.println("<script>alert('Genre data is successfully added!'); location='" + request.getContextPath()
-				+ "/admin/genreRegistration.jsp';</script>");
-		return;
-			}
-			if (success.equals("update")) {
-		out.println("<script>alert('Genre data is successfully updated!'); location='" + request.getContextPath()
-				+ "/admin/genres';</script>");
-		return;
-			}
+		else if(status.equals(Status.insertSuccess)) {
+			out.println("<script>alert('Genre data is successfully added!'); location='" + request.getContextPath()
+			+ URL.genreRegistration + "';</script>");
+			return;
+		}
+		else if(status.equals(Status.serverError)) {
+			out.println("<script>alert('Server error!'); location='" + request.getContextPath()
+			+ URL.adminHomePage + "';</script>");
+			return;
 		}
 	}
-	// check whether it is to update author data
-	status = (String) request.getAttribute("status");
-	request.removeAttribute("status");
-	if (status == null) {
-		status = "register";
+
+	String update = "";
+	//String update = (String) request.getAttribute("update");
+	request.removeAttribute("update");
+	if (update == null) {
+		update = "";
 	} else {
-		if(status.equals("update")) {
+		if(update.equals("true")) {
 			
 			//to retrieve data to the form [IF UPDATE]
 			genre = (Genre) request.getAttribute("genre");
 			request.removeAttribute("genre");
-		}
-		else {
-			
+			genreID = genre.getGenreID();
+			genreName = genre.getGenre();
+		}else{
+			out.println("<script>location='"+request.getContextPath()+URL.genreRegistration+"';</script>");
 		}
 		
 	}
@@ -175,20 +161,19 @@
 							<h5 class="card-title">Genre Information</h5>
 
 							<!-- Multi Columns Form -->
-							<form id="genreForm" class="row g-3" action="<%= request.getContextPath() %>/admin/genres" method="post">
-								<input type="hidden" name="status" value="<%=status%>">
-								<% if(status.equals("update")){ %>
+							<form id="genreForm" class="row g-3" action="<%= request.getContextPath() + ((update.equals("true"))?  URL.updateGenreServlet:URL.createGenreServlet)%>" method="post">
+								<% if(update.equals("true")){ %>
 								<div class="col-md-6">
 									<label for="genreID" class="form-label">ID</label> <input
-										type="text" class="form-control" name="genreID" id="genreID" value="<%= genre.getGenreID() %>" readonly>
+										type="text" class="form-control" name="genreID" id="genreID" value="<%= genreID %>" readonly>
 								</div>
 								<% } %>
-								<div class=<%= (status.equals("update"))? "col-md-6" : "col-md-12" %>>
+								<div class=<%= (update.equals("true"))? "col-md-6" : "col-md-12" %>>
 									<label for="genre" class="form-label">Genre</label> <input
-										type="text" class="form-control" name="genre" id="genre" value="<%=(status.equals("update")) ? genre.getGenre() : ""%>" required>
+										type="text" class="form-control" name="genre" id="genre" value="<%=(update.equals("true")) ? genreName : ""%>" required>
 								</div>
 								<div class="text-center">
-									<button id="btnSave" type="submit" class="btn btn-primary"><%=(status.equals("update")) ? "Update" : "Save"%></button>
+									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update.equals("true")) ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Multi Columns Form -->

@@ -17,6 +17,8 @@ public class Status {
 	public static final String duplicateData = "duplicate";
 	public static final String maxProduct = "max";
 	public static final String fail = "fail";
+	public static final String duplicateEmail = "duplicateemail";
+	
 	
 	
 	// success status

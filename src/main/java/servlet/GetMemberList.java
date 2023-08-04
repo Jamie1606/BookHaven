@@ -3,7 +3,7 @@
 // Class		: DIT/FT/2A/02
 // Group		: 10
 // Date			: 3.8.2023
-// Description	: get genre list
+// Description	: get member list
 
 package servlet;
 
@@ -26,21 +26,21 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import model.Genre;
+import model.Member;
 import model.Status;
 import model.URL;
 
 /**
- * Servlet implementation class GetGenreList
+ * Servlet implementation class GetMemberList
  */
-@WebServlet("/GetGenreList")
-public class GetGenreList extends HttpServlet {
+@WebServlet("/GetMemberList")
+public class GetMemberList extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public GetGenreList() {
+	public GetMemberList() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -52,10 +52,10 @@ public class GetGenreList extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
 		HttpSession session = request.getSession();
 		String status = "";
 		String url;
+
 		if (session != null && !session.isNew()) {
 			String token = (String) session.getAttribute("token");
 
@@ -64,7 +64,7 @@ public class GetGenreList extends HttpServlet {
 				url = URL.signOut;
 			} else {
 				Client client = ClientBuilder.newClient();
-				String restUrl = URL.baseURL + "/getAllGenre";
+				String restUrl = URL.baseURL + "/getAllMember";
 				WebTarget target = client.target(restUrl);
 				Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON); // media type as JSON
 																									// data
@@ -77,30 +77,23 @@ public class GetGenreList extends HttpServlet {
 
 					// https://www.logicbig.com/tutorials/java-ee-tutorial/jax-rs/generic-entity.html
 
-					ArrayList<Genre> genreList = resp.readEntity(new GenericType<ArrayList<Genre>>() {
+					ArrayList<Member> memberList = resp.readEntity(new GenericType<ArrayList<Member>>() {
 					});
-					if (genreList == null) {
+					if (memberList == null) {
 						status = Status.serverError;
 					} else {
-/*						System.out.println(genreList.size());
-						for (Genre genre : genreList) {
-							System.out.println(genre.getGenreID());
-							out.print("<br>GenreID: " + genre.getGenreID());
-							out.print("<br>Genre: " + genre.getGenre());
-						}
-*/
+
 						// write to request object for forwarding to target page
-						request.setAttribute("genreList", genreList);
+						request.setAttribute("memberList", memberList);
 					}
 					System.out.println("......requestObj set ... forwarding ..");
-					url = URL.genreList;
+					url = URL.memberList;
 
 				} else {
 					System.out.println("failed");
-					url = URL.genreList;
+					url = URL.memberList;
 					status = Status.serverError;
 				}
-
 			}
 		} else {
 			status = Status.unauthorized;
