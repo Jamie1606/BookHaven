@@ -226,7 +226,6 @@
 									<label for="addressID" class="form-label">Address</label> <input
 										type="text" class="form-control" name="address" id="addressID"
 										value="<%=(update.equals("true")) ? address : ""%>" required>
-										value="<%=(update.equals("true")) ? address : ""%>" required>
 								</div>
 
 								<!-- Postal input -->
@@ -278,7 +277,6 @@
 
 								<!-- Submit button -->
 								<div class="text-center">
-									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update.equals("true")) ? "Update" : "Save"%></button>
 									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update.equals("true")) ? "Update" : "Save"%></button>
 								</div>
 							</form>

@@ -136,12 +136,11 @@ public class CreateMember extends HttpServlet {
 						if (row == 1) {
 							status = Status.insertSuccess;
 						}
-						else if(row == -1) {
-							status = Status.duplicateData;
+						else if(row == 0) {
+							status = Status.invalidData;
 						}
 						else {
-							System.out.println("..... Invalid member id in CreateMember servlet .....");
-							status = Status.invalidData;
+							status = Status.duplicateEmail;
 						}
 					}
 					else if(resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {

@@ -3,7 +3,7 @@
 // Class		: DIT/FT/2A/02
 // Group		: 10
 // Date			: 4.8.2023
-// Description	: get member by ID
+// Description	: delete genre by ID
 
 package servlet;
 
@@ -25,21 +25,35 @@ import model.Status;
 import model.URL;
 
 /**
- * Servlet implementation class DeleteMember
+ * Servlet implementation class DeleteGenre
  */
-@WebServlet("/DeleteMember/*")
-public class DeleteMember extends HttpServlet {
+@WebServlet("/DeleteGenre/*")
+public class DeleteGenre extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public DeleteMember() {
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public DeleteGenre() {
         super();
+        // TODO Auto-generated constructor stub
     }
 
-
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("..... In delete mb servlet .....");
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
-		String url = URL.memberList;
+		String url = URL.genreList;
 		boolean condition = true;
 		String status = "";
 		String id = "";
@@ -50,8 +64,6 @@ public class DeleteMember extends HttpServlet {
 			if(token == null || token.isEmpty()) {
 				status = Status.unauthorized;
 				url = URL.signOut;
-
-				System.out.println("..... token .....");
 			}
 			else {
 				try {
@@ -65,7 +77,7 @@ public class DeleteMember extends HttpServlet {
 					e.printStackTrace();
 					condition = false;
 					status = Status.invalidRequest;
-					System.out.println("..... Invalid delete request in DeleteMember servlet .....");
+					System.out.println("..... Invalid delete request in DeleteGenre servlet .....");
 				}
 				
 				if(condition) {
@@ -82,18 +94,16 @@ public class DeleteMember extends HttpServlet {
 							status = Status.deleteSuccess;
 						}
 						else {
-							System.out.println("..... Member not deleted in DeleteMember servlet .....");
+							System.out.println("..... Genre not deleted in DeleteGenre servlet .....");
 							status = Status.invalidData;
 						}
 					}
 					else if(resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
 						status = Status.unauthorized;
 						url = URL.signOut;
-
-						System.out.println("..... forbitten .....");
 					}
 					else {
-						System.out.println("..... Error in DeleteMember servlet .....");
+						System.out.println("..... Error in DeleteGenre servlet .....");
 						status = Status.serverError;
 					}
 				}
@@ -102,11 +112,11 @@ public class DeleteMember extends HttpServlet {
 		else {
 			status = Status.unauthorized;
 			url = URL.signOut;
-			System.out.println("..... session .....");
 		}
 			
 		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
+
 }

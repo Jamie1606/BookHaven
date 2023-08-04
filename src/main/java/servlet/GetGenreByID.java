@@ -2,16 +2,12 @@
 // Admin No		: 2235022
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 3.8.2023
-// Description	: get genre list
+// Date			: 4.8.2023
+// Description	: get genre by ID
 
 package servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +24,6 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
-import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import model.Genre;
@@ -37,16 +32,16 @@ import model.Status;
 import model.URL;
 
 /**
- * Servlet implementation class GetGenreList
+ * Servlet implementation class GetGenreByID
  */
-@WebServlet("/GetGenreList")
-public class GetGenreList extends HttpServlet {
+@WebServlet("/GetGenreByID/*")
+public class GetGenreByID extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public GetGenreList() {
+	public GetGenreByID() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -60,55 +55,64 @@ public class GetGenreList extends HttpServlet {
 		// TODO Auto-generated method stub
 
 		HttpSession session = request.getSession();
+		String url = URL.genreList;
+		boolean condition = true;
 		String status = "";
-		String url;
+		String id = "";
+
 		if (session != null && !session.isNew()) {
 			String token = (String) session.getAttribute("token");
-
 			if (token == null || token.isEmpty()) {
 				status = Status.unauthorized;
 				url = URL.signOut;
 			} else {
-				Client client = ClientBuilder.newClient();
-				WebTarget target = client.target(URL.baseURL).path("getAllGenre");
-				Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON); 
-				invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-				
-				Response resp = invocationBuilder.get(); // perform HTTP GET method
-				System.out.println("status: " + resp.getStatus());
 
-				// https://stackoverflow.com/questions/18086621/read-response-body-in-jax-rs-client-from-a-post-request
-				if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
-					System.out.println("success");
-
-					// https://www.logicbig.com/tutorials/java-ee-tutorial/jax-rs/generic-entity.html
-					String json = resp.readEntity(String.class);
-					ObjectMapper obj = new ObjectMapper();
-					ArrayList<Genre> genreList = obj.readValue(json, new TypeReference<ArrayList<Genre>>() {});
-
-					if (genreList == null || genreList.isEmpty()) {
-						System.out.println("..... Server error in GetGenreList servlet .....");
-						status = Status.serverError;
-					} else {
-/*						System.out.println(genreList.size());
-						for (Genre genre : genreList) {
-							System.out.println(genre.getGenreID());
-							out.print("<br>GenreID: " + genre.getGenreID());
-							out.print("<br>Genre: " + genre.getGenre());
-						}
-*/
-						// write to request object for forwarding to target page
-						request.setAttribute("genreList", genreList);
-					}
-					System.out.println("......requestObj set ... forwarding ..");
-					url = URL.genreList;
-
-				} else {
-					System.out.println("failed");
-					url = URL.genreList;
-					status = Status.serverError;
+				try {
+					String requestURi = (String) request.getRequestURI();
+					String[] parts = requestURi.split("/");
+					id = parts[parts.length - 1];
+					id = id.trim();
+					Integer.parseInt(id);
+				} catch (Exception e) {
+					e.printStackTrace();
+					status = Status.invalidRequest;
+					condition = false;
+					System.out.println("..... Invalid data request in GetGenreByID servlet .....");
 				}
 
+				if (condition) {
+					Client client = ClientBuilder.newClient();
+					WebTarget target = client.target(URL.baseURL).path("getGenre").path("{id}").resolveTemplate("id",
+							id);
+					Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+					invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+					Response resp = invocationBuilder.get();
+
+					if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
+
+						String json = resp.readEntity(String.class);
+						ObjectMapper obj = new ObjectMapper();
+						Genre genre = obj.readValue(json, new TypeReference<Genre>() {
+						});
+
+						if (genre != null) {
+							request.setAttribute("genre", genre);
+							request.setAttribute("update", "true");
+							url = URL.genreRegistration;
+						} else {
+							System.out.println("..... No genre in GetGenreByID servlet");
+							status = Status.invalidData;
+						}
+					} else if (resp.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
+						status = Status.invalidData;
+					} else if (resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
+						status = Status.unauthorized;
+						url = URL.signOut;
+					} else {
+						System.out.println("..... Error in GetGenreByID servlet .....");
+						status = Status.serverError;
+					}
+				}
 			}
 		} else {
 			status = Status.unauthorized;

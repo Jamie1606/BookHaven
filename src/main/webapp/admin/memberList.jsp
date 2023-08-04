@@ -200,7 +200,7 @@
 										out.println("<td>" + lastActive + "</td>");
 										out.println("<td><a href='" + request.getContextPath() + URL.getMemberByIDServlet + memberID + "'>Edit</a> ");
 										out.println("|");
-										out.println("<a href='" + request.getContextPath() + "" + memberList.get(i).getMemberID() + "'>Delete</a></td>");
+										out.println("<a href='" + request.getContextPath() + URL.deleteMemberServlet + memberList.get(i).getMemberID() + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
 								%>
