@@ -88,6 +88,52 @@
 				
 			</ul>
 		</li>
+		<li class="nav-item">
+			<a class="nav-link collapsed" data-bs-target="#reports-nav" data-bs-toggle="collapse" href="#">
+				<i class="bi bi-layout-text-window-reverse"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
+			</a>
+			
+			<ul id="reports-nav" class="nav-content collapse "
+				data-bs-parent="#sidebar-nav">
+				
+				<li>
+					<a href="<%= request.getContextPath() + URL.getAuthorListServlet %>"> 
+						<i class="bi bi-circle"></i><span>Author List</span>
+					</a>
+				</li>
+				
+				<li>
+					<a href="<%= request.getContextPath() + URL.getBookListServlet %>"> 
+						<i class="bi bi-circle"></i><span>Book List</span>
+					</a>
+				</li>
+				
+				<li>
+					<a href="<%= request.getContextPath() %>/admin/genres"> 
+						<i class="bi bi-circle"></i><span>Genre List</span>
+					</a>
+				</li>
+				
+				<li>
+					<a href="<%= request.getContextPath() + URL.getMemberListServlet %>"> 
+						<i class="bi bi-circle"></i><span>Member List</span>
+					</a>
+				</li>
+				
+				<li>
+					<a href="<%= request.getContextPath() + URL.getOrderListServlet %>"> 
+						<i class="bi bi-circle"></i><span>Order List</span>
+					</a>
+				</li>
+				
+				<li>
+					<a href="<%= request.getContextPath() %>/admin/reviews"> 
+						<i class="bi bi-circle"></i><span>Review List</span>
+					</a>
+				</li>
+				
+			</ul>
+		</li>
 	</ul>
 </aside>
 <!-- End Sidebar-->

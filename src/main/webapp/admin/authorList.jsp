@@ -97,13 +97,8 @@
 				out.println("<script>location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
 				return;
 			}
-			else if(!status.equals(Status.servletStatus)) {
-				out.println("<script>location='" + request.getContextPath() + URL.getAuthorListServlet + "';</script>");
-				return;
-			}
 		}
 
-		@SuppressWarnings("unchecked")
 		ArrayList<Author> authorList = (ArrayList<Author>) request.getAttribute("authorList");
 		if(authorList == null) {
 			out.println("<script>alert('Server error!');</script>");
@@ -120,7 +115,7 @@
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item"><a
 						href="<%= request.getContextPath() + URL.adminHomePage %>">Home</a></li>
-					<li class="breadcrumb-item">Tables</li>
+					<li class="breadcrumb-item">Data List</li>
 					<li class="breadcrumb-item active">Author Data</li>
 				</ol>
 			</nav>

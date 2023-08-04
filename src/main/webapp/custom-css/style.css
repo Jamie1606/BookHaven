@@ -211,9 +211,6 @@
 	align-items: center;
 	margin-top: 35px;
 	overflow: hidden;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
-	border: 1px solid #ddd;
 }
 
 .order {
@@ -222,6 +219,9 @@
 	width: 100%;
 	margin-bottom: 50px;
 	overflow: hidden;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	border: 1px solid #ddd;
 }
 
 .order .order-header {

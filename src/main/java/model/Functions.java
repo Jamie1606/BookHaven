@@ -145,7 +145,6 @@ public class Functions {
 	
 	
 	/**
-	 * @deprecated
 	 * Delete image from s3 (cannot be used now)
 	 * 
 	 * @param image Image should include s3 path, where image is stored. e.g. book/image.jpg

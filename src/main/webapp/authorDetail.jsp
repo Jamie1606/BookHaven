@@ -145,7 +145,7 @@
 				document.getElementById('book-count').innerHTML = data.length + " Book &#128213;";
 				var htmlString = "";
 				for(let i = 0; i < data.length; i++) {
-	    			htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="' + data[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + data[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() + URL.bookDetail  %>?id=' + data[i].isbnno + '"><h4>' + data[i].title + '</h4></a><p></p></div></div>';
+	    			htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%= URL.imageLink %>' + data[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + data[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() + URL.bookDetail  %>?id=' + data[i].isbnno + '"><h4>' + data[i].title + '</h4></a><p></p></div></div>';
 		    	}
 				if(data.length == 0) {
 					htmlString += "<p>No Books Yet</p>";

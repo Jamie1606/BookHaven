@@ -179,7 +179,7 @@
 				
 					<%
 						for(int i = 0; i < cart.size(); i++) {
-							String image = cart.get(i).getImage();
+							String image = URL.imageLink + cart.get(i).getImage();
 							String title = cart.get(i).getTitle();
 							String isbn = cart.get(i).getISBNNo();
 							String authors = "";

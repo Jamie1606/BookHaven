@@ -67,7 +67,7 @@ public class GetAuthorByID extends HttpServlet {
 				}
 				catch(Exception e) {
 					e.printStackTrace();
-					status = Status.invalidData;
+					status = Status.invalidRequest;
 					condition = false;
 					System.out.println("..... Invalid data request in GetAuthorByID servlet .....");
 				}

@@ -22,6 +22,7 @@ public class URL {
 	public static final String getAuthor = "/getAuthor/";
 	public static final String getBestSeller = "/getBestSeller/";
 	public static final String getTopRated = "/getTopRated/";
+	public static final String imageLink = "http://s3.us-east-1.amazonaws.com/bookhavenjad10/";
 	
 	
 	
@@ -31,10 +32,12 @@ public class URL {
 	public static final String authorRegistration = "/admin/authorRegistration.jsp";
 	public static final String bookRegistration = "/admin/bookRegistration.jsp";
 	public static final String bookList = "/admin/bookList.jsp";
-	public static final String genreList = "/admin/genreList.jsp";
+	public static final String orderList = "/admin/orderList.jsp";
+	public static final String orderDetailList = "/admin/orderDetailList.jsp";
 	public static final String memberList = "/admin/memberList.jsp";
-	public static final String genreRegistration = "/admin/genreRegistration.jsp";
 	public static final String memberRegistration = "/admin/memberRegistration.jsp";
+	public static final String genreList = "/admin/genreList.jsp";
+	public static final String genreRegistration = "/admin/genreRegistration.jsp";
 	
 	
 	
@@ -65,6 +68,16 @@ public class URL {
 	
 	
 	
+	// member servlets
+	public static final String getMemberListServlet = "/GetMemberList";
+	public static final String defaultMemberImage = "member/defaultuser.png";
+	public static final String getMemberByIDServlet = "/GetMemberByID/";
+	public static final String updateMemberServlet = "/UpdateMember";
+	public static final String createMemberServlet = "/CreateMember";
+	public static final String deleteMemberServlet = "/DeleteMember";
+	
+	
+	
 	// cart servlets
 	public static final String addToCartServlet = "/AddtoCart/";
 	public static final String removeFromCartServlet = "/RemovefromCart/";
@@ -76,6 +89,9 @@ public class URL {
 	public static final String getOrderListServlet = "/GetOrderList";
 	public static final String getMemberOrderServlet = "/GetMemberOrder/";
 	public static final String cancelMemberOrderItemServlet = "/CancelMemberOrderItem/";
+	public static final String completeOrderServlet = "/CompleteOrder/";
+	public static final String cancelOrderServlet = "/CancelOrder/";
+	public static final String getOrderDetailListServlet = "/GetOrderDetailList/";
 	
 	
 	

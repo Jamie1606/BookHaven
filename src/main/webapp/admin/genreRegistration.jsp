@@ -146,7 +146,7 @@
 			<h1>Genre Registration</h1>
 			<nav>
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
+					<li class="breadcrumb-item"><a href="<%=request.getContextPath() + URL.adminHomePage%>">Home</a></li>
 					<li class="breadcrumb-item">Registration Forms</li>
 					<li class="breadcrumb-item active">Genre Registration</li>
 				</ol>

@@ -1,20 +1,14 @@
-// Author		: Zay Yar Tun
-// Admin No		: 2235035
-// Class		: DIT/FT/2A/02
-// Group		: 10
-// Date			: 27.7.2023
-// Description	: get book by isbn
-
 package servlet;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.http.HttpHeaders;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,29 +20,28 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import model.Book;
+import model.Member;
 import model.Status;
 import model.URL;
 
 /**
- * Servlet implementation class GetBookByISBN
+ * Servlet implementation class GetMemberByID
  */
-@WebServlet("/GetBookByISBN/*")
-public class GetBookByISBN extends HttpServlet {
+@WebServlet("/GetMemberByID/*")
+public class GetMemberByID extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public GetBookByISBN() {
+    public GetMemberByID() {
         super();
     }
-
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		String url = URL.bookList;
+		String url = URL.memberList;
 		boolean condition = true;
 		String status = "";
-		String isbn = "";
+		String id = "";
 		
 		if(session != null && !session.isNew()) {
 			String token = (String) session.getAttribute("token");
@@ -61,41 +54,47 @@ public class GetBookByISBN extends HttpServlet {
 				try {
 					String requestURi = (String) request.getRequestURI();
 					String[] parts = requestURi.split("/");
-					isbn = parts[parts.length - 1];
-					isbn = isbn.trim();
+					id = parts[parts.length - 1];
+					id = id.trim();
+					Integer.parseInt(id);
 				}
 				catch(Exception e) {
 					e.printStackTrace();
-					System.out.println("..... Invalid isbn in GetBookByISBN servlet .....");
 					status = Status.invalidRequest;
 					condition = false;
+					System.out.println("..... Invalid data request in GetMemberByID servlet .....");
 				}
 				
 				if(condition) {
 					
 					Client client = ClientBuilder.newClient();
-					WebTarget target = client.target(URL.baseURL).path("getBook").path("details").path("{isbn}").resolveTemplate("isbn", isbn);
+					WebTarget target = client.target(URL.baseURL).path("getMember").path("{id}").resolveTemplate("id", id);
 					Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+					invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 					Response resp = invocationBuilder.get();
 					
 					if(resp.getStatus() == Response.Status.OK.getStatusCode()) {
 						
 						String json = resp.readEntity(String.class);
 						ObjectMapper obj = new ObjectMapper();
-						Book book = obj.readValue(json, new TypeReference<Book>() {});
+						Member member = obj.readValue(json, new TypeReference<Member>() {});
 						
-						if(book != null) {				
-							request.setAttribute("book", book);
+						if(member != null) {				
+							request.setAttribute("member", member);
 							request.setAttribute("update", "true");
-							url = URL.getBookRegistrationServlet;
+							url = URL.memberRegistration;
 						}
 						else {
-							System.out.println("..... No book in GetBookByISBN servlet .....");
+							System.out.println("..... No member in GetMemberByID servlet");
 							status = Status.invalidData;
 						}
 					}
+					else if(resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
+						status = Status.unauthorized;
+						url = URL.signOut;
+					}
 					else {
-						System.out.println("..... Error in GetBookByISBN servlet .....");
+						System.out.println("..... Error in GetMemberByID servlet .....");
 						status = Status.serverError;
 					}
 				}

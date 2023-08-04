@@ -22,29 +22,31 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
+
 import model.Functions;
 import model.Member;
 import model.Status;
 import model.URL;
 
 /**
- * Servlet implementation class CreateMember
+ * Servlet implementation class UpdateMember
  */
-@WebServlet("/CreateMember")
+@WebServlet("/UpdateMember")
 @MultipartConfig(location = "", maxFileSize = 20971520, maxRequestSize = 41943040, fileSizeThreshold = 1048576)
-public class CreateMember extends HttpServlet {
+public class UpdateMember extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public CreateMember() {
+    public UpdateMember() {
         super();
     }
+
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
 		boolean condition = true;
 		String status = "";
-		String url = URL.memberRegistration;
+		String url = URL.memberList;
 		
 		if(session != null && !session.isNew()) {
 			String token = (String) session.getAttribute("token");
@@ -55,34 +57,41 @@ public class CreateMember extends HttpServlet {
 			}
 			else {				
 				Member member = null;
+				String memberid = request.getParameter("MemberID");
 				String name = request.getParameter("name");
 				String email = request.getParameter("email");
-				String password = request.getParameter("password");
 				String address = request.getParameter("address");
 				String postalCode = request.getParameter("postalCode");
 				String phone = request.getParameter("phone");
 				String birthDate = request.getParameter("birthDate");
 				String gender = request.getParameter("gender");
 				String image = "";
+				String oldimage = request.getParameter("oldimage");
 				
 				try {
 						
-					image = Functions.uploadImage(name, LocalDate.now().toString(), "member", request.getPart("image"), token);
+					if(oldimage != null && !oldimage.isEmpty() && !oldimage.equals(URL.defaultMemberImage)) {
+						if(!Functions.deleteImage(oldimage.trim())) {
+							System.out.println("..... Error in deleting old image in UpdateMember servlet .....");
+						}
+					}
+					image = Functions.uploadImage(name, LocalDate.now().toString() + "_" + memberid, "member", request.getPart("image"), token);
 					if(image == null) {
-						image = URL.defaultMemberImage;
+						if(oldimage == null || oldimage.isEmpty()) {
+							image = URL.defaultMemberImage;
+						}
+						else {
+							image = oldimage.trim();
+						}
 					}
 					
 					member = new Member();
+					member.setMemberID(Integer.parseInt(memberid));
 					member.setName(name.trim());
 					member.setEmail(email.trim());
-					member.setPassword(password.trim());
 					
 					address = address.trim() + " |" + postalCode.trim();
 					member.setAddress(address);
-					
-					if(phone.length() > 8) {
-						throw new Error();
-					}
 					member.setPhone(phone.trim());
 					
 					if(birthDate != null && !birthDate.isEmpty()) {
@@ -115,32 +124,28 @@ public class CreateMember extends HttpServlet {
 				catch(Exception e) {
 					e.printStackTrace();
 					status = Status.invalidData;
-					System.out.println("..... Invalid member data in CreateMember servlet .....");
+					System.out.println("..... Invalid member data in UpdateMember servlet .....");
 					condition = false;
 				}
 				
 				if(condition) {			
 					
 					Client client = ClientBuilder.newClient();
-					WebTarget target = client.target(URL.baseURL).path("createMember");
+					WebTarget target = client.target(URL.baseURL).path("updateMember");
 					Invocation.Builder invocationBuilder = target.request();
 					invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 					ObjectMapper obj = new ObjectMapper();
 					String json = obj.writeValueAsString(member);
-					Response resp = invocationBuilder.post(Entity.json(json));
+					Response resp = invocationBuilder.put(Entity.json(json));
 		
 					if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
 						
 						Integer row = resp.readEntity(Integer.class);
 						
 						if (row == 1) {
-							status = Status.insertSuccess;
-						}
-						else if(row == -1) {
-							status = Status.duplicateData;
-						}
-						else {
-							System.out.println("..... Invalid member id in CreateMember servlet .....");
+							status = Status.updateSuccess;
+						}  else {
+							System.out.println("..... Invalid member id in UpdateMember servlet .....");
 							status = Status.invalidData;
 						}
 					}
@@ -149,7 +154,7 @@ public class CreateMember extends HttpServlet {
 						url = URL.signOut;
 					}
 					else {
-						System.out.println("..... Error in CreateMember servlet .....");
+						System.out.println("..... Error in UpdateMember servlet .....");
 						status = Status.serverError;
 					}
 				}
@@ -164,5 +169,4 @@ public class CreateMember extends HttpServlet {
 		request.getRequestDispatcher(url).forward(request, response);
         return;
 	}
-
 }
