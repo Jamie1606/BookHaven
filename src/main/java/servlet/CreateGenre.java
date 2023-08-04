@@ -3,12 +3,11 @@
 // Class		: DIT/FT/2A/02
 // Group		: 10
 // Date			: 3.8.2023
-// Description	: get genre list
+// Description	: create genre
 
 package servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
@@ -21,6 +20,7 @@ import javax.servlet.http.HttpSession;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.GenericType;
@@ -31,16 +31,16 @@ import model.Status;
 import model.URL;
 
 /**
- * Servlet implementation class GetGenreList
+ * Servlet implementation class CreateGenre
  */
-@WebServlet("/GetGenreList")
-public class GetGenreList extends HttpServlet {
+@WebServlet("/CreateGenre")
+public class CreateGenre extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public GetGenreList() {
+	public CreateGenre() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -52,7 +52,16 @@ public class GetGenreList extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
 
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		String status = "";
 		String url;
@@ -63,12 +72,16 @@ public class GetGenreList extends HttpServlet {
 				status = Status.unauthorized;
 				url = URL.signOut;
 			} else {
+
+				Genre genre = new Genre();
+				genre.setGenre(request.getParameter("genre"));
+
 				Client client = ClientBuilder.newClient();
-				String restUrl = URL.baseURL + "/getAllGenre";
+				String restUrl = URL.baseURL + "/createGenre";
 				WebTarget target = client.target(restUrl);
 				Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON); // media type as JSON
 																									// data
-				Response resp = invocationBuilder.get(); // perform HTTP GET method
+				Response resp = invocationBuilder.post(Entity.json(genre)); // perform HTTP POST method
 				System.out.println("status: " + resp.getStatus());
 
 				// https://stackoverflow.com/questions/18086621/read-response-body-in-jax-rs-client-from-a-post-request
@@ -77,30 +90,23 @@ public class GetGenreList extends HttpServlet {
 
 					// https://www.logicbig.com/tutorials/java-ee-tutorial/jax-rs/generic-entity.html
 
-					ArrayList<Genre> genreList = resp.readEntity(new GenericType<ArrayList<Genre>>() {
-					});
-					if (genreList == null) {
+					Integer row = resp.readEntity(Integer.class);
+					if (row == -1) {
+						status = Status.duplicateEmail;
+					} else if (row == 0) {
 						status = Status.serverError;
 					} else {
-/*						System.out.println(genreList.size());
-						for (Genre genre : genreList) {
-							System.out.println(genre.getGenreID());
-							out.print("<br>GenreID: " + genre.getGenreID());
-							out.print("<br>Genre: " + genre.getGenre());
-						}
-*/
 						// write to request object for forwarding to target page
-						request.setAttribute("genreList", genreList);
+						status = Status.insertSuccess;
 					}
 					System.out.println("......requestObj set ... forwarding ..");
-					url = URL.genreList;
+					url = URL.genreRegistration;
 
 				} else {
 					System.out.println("failed");
-					url = URL.genreList;
+					url = URL.genreRegistration;
 					status = Status.serverError;
 				}
-
 			}
 		} else {
 			status = Status.unauthorized;
@@ -109,16 +115,6 @@ public class GetGenreList extends HttpServlet {
 		request.setAttribute("status", status);
 		RequestDispatcher rd = request.getRequestDispatcher(url);
 		rd.forward(request, response);
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
 	}
 
 }

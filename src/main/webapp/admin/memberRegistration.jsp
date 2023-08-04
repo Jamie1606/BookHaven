@@ -1,9 +1,10 @@
+
 <%
 // Author 	  	: Thu Htet San
 // Admin No    	: 2235022
 // Class       	: DIT/FT/2A/02
 // Group		: 10
-// Date		  	: 7.6.2023
+// Date		  	: 3.8.2023
 // Description 	: member registration page(admin side)
 %>
 
@@ -225,6 +226,7 @@
 									<label for="addressID" class="form-label">Address</label> <input
 										type="text" class="form-control" name="address" id="addressID"
 										value="<%=(update.equals("true")) ? address : ""%>" required>
+										value="<%=(update.equals("true")) ? address : ""%>" required>
 								</div>
 
 								<!-- Postal input -->
@@ -276,6 +278,7 @@
 
 								<!-- Submit button -->
 								<div class="text-center">
+									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update.equals("true")) ? "Update" : "Save"%></button>
 									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update.equals("true")) ? "Update" : "Save"%></button>
 								</div>
 							</form>
