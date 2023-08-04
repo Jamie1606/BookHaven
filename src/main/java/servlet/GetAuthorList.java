@@ -74,7 +74,6 @@ public class GetAuthorList extends HttpServlet {
 					}
 					else {
 						request.setAttribute("authorList", authorList);
-						status = Status.servletStatus;
 					}
 				}
 				else {

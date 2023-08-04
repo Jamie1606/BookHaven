@@ -8,11 +8,30 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.http.HttpHeaders;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+import model.Order;
+import model.Status;
+import model.URL;
 
 /**
  * Servlet implementation class GetOrderList
@@ -21,28 +40,64 @@ import javax.servlet.http.HttpServletResponse;
 public class GetOrderList extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+
     public GetOrderList() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		
+		HttpSession session = request.getSession();
+		String url = URL.orderList;
+		String status = "";
+		
+		if(session != null && !session.isNew()) {
+			String token = (String) session.getAttribute("token");
+			
+			if(token == null || token.isEmpty()) {
+				status = Status.unauthorized;
+				url = URL.signOut;
+			}
+			else {
+				Client client = ClientBuilder.newClient();
+				WebTarget target = client.target(URL.baseURL).path("getAllOrders");
+				Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+				invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+				Response resp = invocationBuilder.get();
+				
+				if(resp.getStatus() == Response.Status.OK.getStatusCode()) {		
+					
+					String json = resp.readEntity(String.class);
+					ObjectMapper obj = new ObjectMapper();
+					ArrayList<Order> orderList = obj.readValue(json, new TypeReference<ArrayList<Order>>() {});
+					
+					if(orderList == null) {
+						System.out.println("..... Server error in GetOrderList servlet .....");
+						status = Status.serverError;
+					}
+					else {
+						request.setAttribute("orderList", orderList);
+					}
+				}
+				else if(resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
+					status = Status.unauthorized;
+					url = URL.signOut;
+				}
+				else {
+					System.out.println("..... Error in GetOrderList servlet .....");
+					status = Status.serverError;
+				}
+			}
+		}
+		else {
+			status = Status.unauthorized;
+			url = URL.signOut;
+		}
+		
+		request.setAttribute("status", status);
+		request.getRequestDispatcher(url).forward(request, response);
+		return;
+		
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }

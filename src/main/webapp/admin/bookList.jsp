@@ -120,7 +120,7 @@
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item"><a
 						href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
-					<li class="breadcrumb-item">Tables</li>
+					<li class="breadcrumb-item">Data List</li>
 					<li class="breadcrumb-item active">Book Data</li>
 				</ol>
 			</nav>
@@ -157,7 +157,7 @@
 										out.println("<td>" + bookList.get(i).getISBNNo() + "</td>");
 										out.println("<td>" + bookList.get(i).getTitle() + "</td>");
 										out.println("<td>" + bookList.get(i).getPage() + "</td>");
-										out.println("<td>$" + bookList.get(i).getPrice() + "</td>");
+										out.println("<td>$" + String.format("%.2f", bookList.get(i).getPrice()) + "</td>");
 										out.println("<td>" + bookList.get(i).getPublisher() + "</td>");
 										Date publicationDate = bookList.get(i).getPublicationDate();
 										if (publicationDate == null) {

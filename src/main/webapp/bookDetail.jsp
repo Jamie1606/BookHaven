@@ -399,7 +399,7 @@
 					$('#book-publisher').html(data.publisher);
 					
 					$('#book-publicationdate').html(pubdate.getFullYear());
-					$('#book-image').attr("src", data.image);
+					$('#book-image').attr("src", '<%= URL.imageLink %>' + data.image);
 					let star = document.getElementsByClassName("star");
 					for(let i = 0; i < star.length; i++) {
 						if(i <= data.rating - 1) {
@@ -421,7 +421,7 @@
 						else {
 							for(let i = 0; i < data.length; i++) {
 								$('#related-book' + (i + 1)).css({"visibility": "visible"});
-								$('#book-related-image' + (i + 1)).attr("src", data[i].image);
+								$('#book-related-image' + (i + 1)).attr("src", '<%= URL.imageLink %>' + data[i].image);
 								$('#book-related-title' + (i + 1)).html(data[i].title);
 								$('#book-related-title' + (i + 1)).attr("href", "<%=request.getContextPath()%>/bookDetail.jsp?id=" + data[i].isbnno);
 								$('#book-related-ratingtext' + (i + 1)).html(data[i].rating.toFixed(1));

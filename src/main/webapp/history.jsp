@@ -203,7 +203,7 @@
 						if(items != undefined && items != null) {
 							for(let j = 0; j < items.length; j++) {
 								htmlStr += '<div class="order-items">';
-								htmlStr += '<img src="' + items[j].book.image + '" alt="Book Image">';
+								htmlStr += '<img src="<%= URL.imageLink %>' + items[j].book.image + '" alt="Book Image">';
 								htmlStr += '<div class="order-item-detail">';
 								htmlStr += "<a href='<%= request.getContextPath() + URL.bookDetail %>?id=" + items[j].book.isbnno + "'>" + items[j].book.title + "</a>";
 								htmlStr += '<label><span class="full-star" style="font-size: 16px;"></span> ' + items[j].book.rating.toFixed(1) + '&emsp;&emsp;Qty: ' + items[j].qty + '&emsp;&emsp;$' + (items[j].qty * items[j].book.price).toFixed(2) + '</label>';
@@ -213,10 +213,11 @@
 									htmlStr += '<button onclick="addtoCart(\'' + items[j].book.isbnno + '\')">Buy it again</button>';
 									htmlStr += '<button onclick="cancel(' + data[i].orderid + ', \'' + items[j].book.isbnno + '\')">Cancel</button>';
 								}
-								else if(items[j].status = "cancelled") {
+								else if(items[j].status == "cancelled") {
 									htmlStr += '<button onclick="addtoCart(\'' + items[j].book.isbnno + '\')">Buy it again</button>';
 								}
-								else if(items[j].status = "delivered") {
+								else if(items[j].status == "delivered") {
+									console.log(items[j].status);
 									htmlStr += '<button onclick="addtoCart(\'' + items[j].book.isbnno + '\')">Buy it again</button>';
 									htmlStr += '<button>Rate your item</button>';
 								}
