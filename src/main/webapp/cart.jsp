@@ -300,7 +300,7 @@
 				</div>
 				<div style="display: flex; flex-direction: column; justify-content: space-between; color: #555; margin-top: 25px;">
 					<label style="font-weight: bold; font-size: 15px;">Delivery Address</label>
-					<input style="padding: 8px 10px; margin-top: 15px; letter-spacing: 1.1px;" type="text" id="delivery-address" placeholder="Address" />
+					<input style="padding: 8px 10px; margin-top: 15px; letter-spacing: 1.1px;" type="text"  name="delivery-address" id="delivery-address" placeholder="Address" />
 				</div>
 				<div style="display: flex; color: #555; margin-top: 25px;">
 					<input type="checkbox" id="address-check" onclick="checkAddress()">&nbsp;<label style="margin-bottom: 0px;" for="address-check">Use my address</label>	

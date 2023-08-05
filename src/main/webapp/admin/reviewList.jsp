@@ -8,7 +8,7 @@
 // Description	: review list page
 %>
 
-<%@ page import="java.util.ArrayList, java.util.Date, model.Review"%>
+<%@ page import="java.util.ArrayList, java.util.Date, model.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -72,47 +72,35 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	String error = (String) request.getAttribute("error");
-	request.removeAttribute("error");
-	String success = (String) request.getAttribute("success");
-	request.removeAttribute("success");
-	if (error != null) {
-		if (error.equals("invalid")) {
-			out.println("<script>alert('Invalid Request!'); location='" + request.getContextPath()
-			+ "/admin/authors';</script>");
-		} else if (error.equals("serverError")) {
-			out.println(
-			"<script>alert('Server Error!'); location='" + request.getContextPath() + "/admin/authors';</script>");
-		} else if (error.equals("serverRetrieveError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-			+ "/admin/adminHomePage.jsp';</script>");
-			return;
-		} else if (error.equals("unauthorized")) {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
-			return;
-		} else {
-			out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
+		String status = (String) request.getAttribute("status");
+		request.removeAttribute("status");
+		
+		if(status != null) {
+			if(status.equals(Status.serverError)) {
+				out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.invalidData)) {
+				out.println("<script>alert('Invalid data!'); location='" + request.getContextPath() + URL.getReviewListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.invalidRequest)) {
+				out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + URL.getReviewListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.updateSuccess)) {
+				out.println("<script>alert('Review updated!');</script>"); 
+				out.println("<script>location='" + request.getContextPath() + URL.getReviewListServlet + "';</script>");
+				return;
+			}
+		}
+	
+		ArrayList<Review> reviewList = (ArrayList<Review>) request.getAttribute("reviewList");
+		if(reviewList == null) {
+			out.println("<script>alert('Server error!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
 			return;
 		}
-	}
-	if (success != null) {
-		if (success.equals("delete")) {
-			out.println("<script>alert('The author is successfully deleted!'); location='" + request.getContextPath()
-			+ "/admin/authors';</script>");
-			return;
-		}
-	}
-
-	String servlet = (String) request.getAttribute("servlet");
-	request.removeAttribute("servlet");
-	if (servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + "/admin/reviews';</script>");
-		return;
-	}
-
-	ArrayList<Review> reviewList = (ArrayList<Review>) request.getAttribute("reviewList");
 	%>
 
 	<main id="main" class="main">
@@ -143,12 +131,12 @@
 								<thead>
 									<tr>
 										<th scope="col">No.</th>
-										<th scope="col">Title</th>
-										<th scope="col">ReviewDate</th>
+										<th scope="col">Date</th>
 										<th scope="col">ISBNNo</th>
 										<th scope="col">Rating</th>
 										<th scope="col">Description</th>
-										<th scope="col">MemberID</th>
+										<th scope="col">Name</th>
+										<th scope="col">Status</th>
 										<th scope="col">Action</th>
 									</tr>
 								</thead>
@@ -157,15 +145,18 @@
 									for (int i = 0; i < reviewList.size(); i++) {
 										out.println("<tr>");
 										out.println("<td>" + (i + 1) + ".</td>");
-										out.println("<td>" + reviewList.get(i).getTitle() + "</td>");
 										out.println("<td>" + reviewList.get(i).getReviewDate() + "</td>");
 										out.println("<td>" + reviewList.get(i).getISBNNo() + "</td>");
 										out.println("<td>" + reviewList.get(i).getRating() + "</td>");
 										out.println("<td>" + reviewList.get(i).getDescription() + "</td>");
-										out.println("<td>" + reviewList.get(i).getMemberID() + "</td>");
-										out.println("<td><a href='" + request.getContextPath() + "/admin/reviewApprove/" + reviewList.get(i).getReviewID()
-										+ " '>Approve</a> | <a href='" + request.getContextPath() + "/admin/reviewDeny/"
-										+ reviewList.get(i).getReviewID() + "'>Deny</a></td>");
+										out.println("<td>" + reviewList.get(i).getMemberName() + "</td>");
+										out.println("<td>" + reviewList.get(i).getStatus() + "</td>");
+										
+										if(reviewList.get(i).getStatus().equals("pending")) {
+											out.println("<td><a href='" + request.getContextPath() + URL.updateReviewStatusServlet + reviewList.get(i).getReviewID() + "/approved'>Approve</a>");
+											out.println(" | <a href='" + request.getContextPath() + URL.updateReviewStatusServlet + reviewList.get(i).getReviewID() + "/denied'>Deny</a></td>");
+										}
+											
 										out.println("</tr>");
 									}
 									%>

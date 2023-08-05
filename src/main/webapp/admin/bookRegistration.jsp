@@ -200,7 +200,7 @@ input::placeholder {
 	
 								<div class="col-md-12">
 									<label for="isbn" id="label-isbn" class="form-label">ISBN
-										No <span id="check-isbn"></span>
+										No
 									</label> <input type="text" name="isbn" class="form-control" id="isbn"
 										value="<%=update.equals("true") ? book.getISBNNo() : ""%>"
 										placeholder="111-1234567890" required>
@@ -211,9 +211,7 @@ input::placeholder {
 									</label> <input type="text" name="title" class="form-control"
 										id="title"
 										value="<%=update.equals("true") ? book.getTitle() : ""%>" placeholder="Book Title"
-										required> <span
-										style="float: right; color: red; font-weight: bold;"
-										id="charCount-title">0 / 100</span>
+										required>
 								</div>
 
 								<div class="col-md-4">
@@ -379,53 +377,7 @@ input::placeholder {
 				}
 			});
 			$('#description').on("input", checkDescription);
-			$('#isbn').on("input", checkISBN);
 		})
-
-		function checkISBN() {
-			let value = $('#isbn').val();
-			if (value.length == 14) {
-				let condition = true;
-				for (let i = 0; i < value.length; i++) {
-					if (i == 3) {
-						if (value[i] !== "-") {
-							condition = false;
-							break;
-						}
-					} else {
-						if (isNaN(value[i])) {
-							condition = false;
-							break;
-						}
-					}
-				}
-				if (condition) {
-					$('#check-isbn').html("&#x2713;");
-					$('#label-isbn').css({
-						"color" : "green",
-						"fontWeight" : "bold"
-					});
-				} else {
-					$('#check-isbn').html("&#x2717;");
-					$('#label-isbn').css({
-						"color" : "red",
-						"fontWeight" : "bold"
-					});
-				}
-			} else if (value.length == 0) {
-				$('#check-isbn').html("");
-				$('#label-isbn').css({
-					"color" : "black",
-					"fontWeight" : "normal"
-				});
-			} else {
-				$('#check-isbn').html("&#x2717;");
-				$('#label-isbn').css({
-					"color" : "red",
-					"fontWeight" : "bold"
-				});
-			}
-		}
 
 		function checkDescription() {
 			let count = $('#description').val().length;

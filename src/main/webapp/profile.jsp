@@ -10,7 +10,7 @@
 <%@page import="java.time.LocalDate"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="model.Member, controller.Authentication"%>
+<%@ page import="model.*"%>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -57,10 +57,21 @@
 	<%@ include file="header.jsp"%>
 	
 	<%
-	//if (!auth.testMember(session)) {
-	//	out.println("<script>alert('Please Log In First!'); location='" + request.getContextPath() + "/signout.jsp';</script>");
-	////	return;
-	//}
+		if(session != null && !session.isNew()) {
+			String token = (String) session.getAttribute("token");
+			String role = (String) session.getAttribute("role");
+			
+			if(token == null || token.isEmpty() || role == null || !role.equals("ROLE_MEMBER")) {
+				request.setAttribute("status", Status.unauthorized);
+				request.getRequestDispatcher(URL.signOut).forward(request, response);
+				return;
+			}
+		}
+		else {
+			request.setAttribute("status", Status.unauthorized);
+			request.getRequestDispatcher(URL.signOut).forward(request, response);
+			return;
+		}
 	
 	String errCode = (String) request.getAttribute("errCode");
 	if (errCode != null) {
