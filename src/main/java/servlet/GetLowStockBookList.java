@@ -54,7 +54,8 @@ public class GetLowStockBookList extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
-		String url = URL.lowStockBookList;
+		//String url = URL.lowStockBookList;
+		String url="";
 		boolean condition = true;
 		String status = "";
 

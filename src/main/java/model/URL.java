@@ -39,13 +39,7 @@ public class URL {
 	public static final String memberRegistration = "/admin/memberRegistration.jsp";
 	public static final String genreList = "/admin/genreList.jsp";
 	public static final String genreRegistration = "/admin/genreRegistration.jsp";
-<<<<<<< Updated upstream
 	public static final String reviewList = "/admin/reviewList.jsp";
-=======
-	public static final String bestSellingBookList = "/admin/bestSellingBookList.jsp";
-	public static final String leastSellingBookList = "/admin/leastSellingBookList.jsp";
-	public static final String lowStockBookList = "/admin/lowStockBookList.jsp";
->>>>>>> Stashed changes
 	
 	
 	
@@ -71,9 +65,6 @@ public class URL {
 	public static final String updateBookServlet = "/UpdateBook/";
 	public static final String getBookByISBNServlet = "/GetBookByISBN/";
 	public static final String deleteBookServlet = "/DeleteBook/";
-	public static final String getBestSellingBookListServlet = "/GetBestSellingBookList";
-	public static final String getLeastSellingBookListServlet = "/GetLeastSellingBookList";
-	public static final String getLowStockBookListServlet = "/GetLowStockBookList";
 	public static final String defaultBookNormalImage = "book/normal/defaultBookHavenImage_normal.png";
 	public static final String defaultBook3DImage = "book/3d/defaultBookHavenImage_3d.png";
 	
@@ -122,7 +113,6 @@ public class URL {
 	public static final String history = "/history.jsp";
 	public static final String cart = "/cart.jsp";
 	public static final String authorDetail = "/authorDetail.jsp";
-	public static final String search = "/search.jsp";
 	public static final String signUp = "/signup.jsp";
 	public static final String header = "/header.jsp";
 	public static final String footer = "/footer.jsp";
@@ -135,8 +125,5 @@ public class URL {
 	public static final String updateGenreServlet = "/UpdateGenre";	
 	public static final String deleteGenreServlet = "/DeleteGenre/";
 	
-	//sale servlets
-	public static final String getBookSalesServlet = "/GetBookSales";
-	public static final String getTopCustomerseServlet = "/GetTopCustomers";	
-	public static final String getCustomersByBookIDServlet = "/GetCustomersByBookID";
+	
 }
