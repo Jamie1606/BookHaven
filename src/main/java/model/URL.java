@@ -95,6 +95,11 @@ public class URL {
 	
 	
 	
+	// review servlets
+	public static final String makeReviewServlet = "/ReviewServlet";
+	
+	
+	
 	// customer jsp pages
 	public static final String homePage = "/index.jsp";
 	public static final String bookDetail = "/bookDetail.jsp";

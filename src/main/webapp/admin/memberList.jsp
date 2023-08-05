@@ -200,7 +200,7 @@
 										out.println("<td>" + lastActive + "</td>");
 										out.println("<td><a href='" + request.getContextPath() + URL.getMemberByIDServlet + memberID + "'>Edit</a> ");
 										out.println("|");
-										out.println("<a href='" + request.getContextPath() + URL.deleteMemberServlet + memberList.get(i).getMemberID() + "'>Delete</a></td>");
+										out.println("<a data-member-name='" + name + "' class='delLink' href='" + request.getContextPath() + URL.deleteMemberServlet + memberList.get(i).getMemberID() + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
 								%>
@@ -232,6 +232,25 @@
 
 	</main>
 	<!-- End #main -->
+	
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        Are you sure you want to delete <span id="memberNameDelete"></span>?
+	      </div>
+	      <div class="modal-footer">
+	      	<button type="button" class="btn btn-danger btnDelete">Delete</button>
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>	        
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
 	<%@ include file="adminfooter.jsp"%>
 
@@ -270,6 +289,24 @@
 			"pageLength": 25,
 			"stateSave": true,
 			"colReorder": true
+		});
+		
+		document.addEventListener('click', function(event) {
+			let target = event.target;
+			
+			if(target.classList.contains("delLink")) {
+				event.preventDefault();
+				
+				var deleteModal = new bootstrap.Modal(document.getElementById("exampleModal"));
+				let memberName = target.getAttribute('data-member-name');
+				document.getElementById("memberNameDelete").textContent = "\"" + memberName + "\"";
+				deleteModal.show();
+				
+				document.querySelector('#exampleModal .btnDelete').addEventListener('click', function() {
+					window.location.href = target.getAttribute('href');
+					deleteModal.hide();
+				})
+			}
 		});
 	</script>
 </body>

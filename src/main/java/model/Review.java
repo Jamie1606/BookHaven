@@ -11,7 +11,6 @@ import java.sql.Date;
 
 public class Review {
 	private int reviewID;
-	private String title;
 	private String description;
 	private Date reviewDate;
 	private short rating;
@@ -27,17 +26,6 @@ public class Review {
 	public void setReviewID(int reviewID) {
 		this.reviewID = reviewID;
 	}
-
-
-	public String getTitle() {
-		return title;
-	}
-
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
 
 	public String getDescription() {
 		return description;
