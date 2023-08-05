@@ -116,6 +116,8 @@ public class URL {
 	
 	//genre servlets
 	public static final String getGenreListServlet = "/GetGenreList";
+	public static final String getGenreByIDServlet = "/GetGenreByID/";
 	public static final String createGenreServlet = "/CreateGenre";
 	public static final String updateGenreServlet = "/UpdateGenre";	
+	public static final String deleteGenreServlet = "/DeleteGenre/";
 }

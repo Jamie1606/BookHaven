@@ -226,7 +226,6 @@
 									<label for="addressID" class="form-label">Address</label> <input
 										type="text" class="form-control" name="address" id="addressID"
 										value="<%=(update.equals("true")) ? address : ""%>" required>
-										value="<%=(update.equals("true")) ? address : ""%>" required>
 								</div>
 
 								<!-- Postal input -->

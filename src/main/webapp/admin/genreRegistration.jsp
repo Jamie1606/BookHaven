@@ -118,8 +118,7 @@
 		}
 	}
 
-	String update = "";
-	//String update = (String) request.getAttribute("update");
+	String update = (String) request.getAttribute("update");
 	request.removeAttribute("update");
 	if (update == null) {
 		update = "";
