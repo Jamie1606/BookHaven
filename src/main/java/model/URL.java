@@ -74,7 +74,7 @@ public class URL {
 	public static final String getMemberByIDServlet = "/GetMemberByID/";
 	public static final String updateMemberServlet = "/UpdateMember";
 	public static final String createMemberServlet = "/CreateMember";
-	public static final String deleteMemberServlet = "/DeleteMember";
+	public static final String deleteMemberServlet = "/DeleteMember/";
 	
 	
 	
@@ -111,6 +111,8 @@ public class URL {
 	
 	//genre servlets
 	public static final String getGenreListServlet = "/GetGenreList";
+	public static final String getGenreByIDServlet = "/GetGenreByID/";
 	public static final String createGenreServlet = "/CreateGenre";
 	public static final String updateGenreServlet = "/UpdateGenre";	
+	public static final String deleteGenreServlet = "/DeleteGenre/";
 }

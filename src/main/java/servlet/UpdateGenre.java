@@ -2,15 +2,12 @@
 // Admin No		: 2235022
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 3.8.2023
-// Description	: create genre
+// Date			: 4.8.2023
+// Description	: update genre
 
 package servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,25 +22,23 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
-import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import model.Genre;
 import model.Status;
 import model.URL;
 
 /**
- * Servlet implementation class CreateGenre
+ * Servlet implementation class UpdateGenre
  */
-@WebServlet("/CreateGenre")
-public class CreateGenre extends HttpServlet {
+@WebServlet("/UpdateGenre")
+public class UpdateGenre extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public CreateGenre() {
+	public UpdateGenre() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -65,10 +60,12 @@ public class CreateGenre extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+
 		HttpSession session = request.getSession();
-		String status = "";
-		String url = URL.genreRegistration;
 		boolean condition = true;
+		String status = "";
+		String url = URL.genreList;
+
 		if (session != null && !session.isNew()) {
 			String token = (String) session.getAttribute("token");
 
@@ -76,11 +73,12 @@ public class CreateGenre extends HttpServlet {
 				status = Status.unauthorized;
 				url = URL.signOut;
 			} else {
-
 				Genre genre = new Genre();
+				String genreID = request.getParameter("genreID");
 				String genreName = request.getParameter("genre");
 				try {
 					genre.setGenre(genreName.trim());
+					genre.setGenreID(Integer.parseInt(genreID.trim()));
 				} catch (Exception e) {
 					e.printStackTrace();
 					status = Status.invalidData;
@@ -88,35 +86,30 @@ public class CreateGenre extends HttpServlet {
 					condition = false;
 				}
 				if (condition) {
-					Client client = ClientBuilder.newClient();
-					WebTarget target = client.target(URL.baseURL).path("/createGenre");
-					Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
-					invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
+					Client client = ClientBuilder.newClient();
+					WebTarget target = client.target(URL.baseURL).path("updateGenre");
+					Invocation.Builder invocationBuilder = target.request();
+					invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 					ObjectMapper obj = new ObjectMapper();
-					String json = obj.writeValueAsString(genre);// data
-					Response resp = invocationBuilder.post(Entity.json(json)); // perform HTTP POST method
-					System.out.println("status: " + resp.getStatus());
+					String json = obj.writeValueAsString(genre);
+					Response resp = invocationBuilder.put(Entity.json(json));
 
 					if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
-						System.out.println("success");
-
-						// https://www.logicbig.com/tutorials/java-ee-tutorial/jax-rs/generic-entity.html
 
 						Integer row = resp.readEntity(Integer.class);
-						if(row == 1) {
-							status = Status.insertSuccess;
-						}
-						else {
-							System.out.println("..... Invalid genre data in CreateGenre servlet .....");
+
+						if (row == 1) {
+							status = Status.updateSuccess;
+						} else {
+							System.out.println("..... Invalid genre id in GenreMember servlet .....");
 							status = Status.invalidData;
 						}
-
-					} else if(resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
+					} else if (resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
 						status = Status.unauthorized;
 						url = URL.signOut;
-					}else {
-						//url = URL.genreRegistration;
+					} else {
+						System.out.println("..... Error in UpdateMember servlet .....");
 						status = Status.serverError;
 					}
 				}
@@ -126,9 +119,7 @@ public class CreateGenre extends HttpServlet {
 			url = URL.signOut;
 		}
 		request.setAttribute("status", status);
-		RequestDispatcher rd = request.getRequestDispatcher(url);
-		rd.forward(request, response);
+		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
-
 }

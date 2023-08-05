@@ -147,8 +147,8 @@
 										out.println("<tr>");
 										out.println("<td>" + (i + 1) + ".</td>");
 										out.println("<td>" + genreList.get(i).getGenre() + "</td>");
-										out.println("<td><a href='" + request.getContextPath() + "/admin/genreUpdate/" + genreList.get(i).getGenreID()
-										+ " '>Edit</a> | <a href='" + request.getContextPath() + "/admin/genreDelete/"
+										out.println("<td><a href='" + request.getContextPath() + URL.getGenreByIDServlet+ genreList.get(i).getGenreID()
+										+ " '>Edit</a> | <a href='" + request.getContextPath() + URL.deleteGenreServlet
 										+ genreList.get(i).getGenreID() + "'>Delete</a></td>");
 										out.println("</tr>");
 									}
