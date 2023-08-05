@@ -43,6 +43,7 @@
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/animate.min.css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/owl.carousel.css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/main.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/custom-css/style.css">
 <link rel="icon" type="image/png" href="<%= request.getContextPath() %>/img/logo.png">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/custom-css/style.css">
 
@@ -98,6 +99,35 @@
 			
 		</div>
 	</div>
+	
+	<div class="modal" tabindex="-1" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title">Rating</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	      	<label>Rating score: </label><span id="rating-score" style="display: none; visibility: hidden;"></span>
+	      	<div style="display: inline-block; user-select: none; cursor: default; font-size: 30px; vertical-align: middle; margin-left: 25px;" class="book-rating">
+	      		<span id="star1" onclick="changeRating(this)" data-value="1" class="empty-star"></span>
+	      		<span id="star2" onclick="changeRating(this)" data-value="2" class="empty-star"></span>
+	      		<span id="star3" onclick="changeRating(this)" data-value="3" class="empty-star"></span>
+	      		<span id="star4" onclick="changeRating(this)" data-value="4" class="empty-star"></span>
+	      		<span id="star5" onclick="changeRating(this)" data-value="5" class="empty-star"></span>
+	      	</div><br>
+	      	<label>Review:</label><br>
+      		<textarea id="review-text" style="width: 100%; height: 170px; text-indent: 5px; letter-spacing: 1.1px;" placeholder="Please write only English reviews"></textarea>
+      		<br>
+      		<span style="float: right; font-weight: 500" id="charCount"></span>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-primary btnRate">Rate</button>
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
 	<%@ include file="footer.jsp"%>
 
@@ -111,6 +141,8 @@
 	<script src="<%= request.getContextPath() %>/js/superfish.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/jquery.ajaxchimp.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/jquery.magnific-popup.min.js"></script>
+		<script
+		src="<%=request.getContextPath()%>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/owl.carousel.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/jquery.sticky.js"></script>
 	<script src="<%= request.getContextPath() %>/js/jquery.nice-select.min.js"></script>
@@ -121,6 +153,54 @@
 	<script src="<%= request.getContextPath() %>/js/main.js"></script>
 
 	<script>
+		const textarea = document.getElementById("review-text");
+		
+		textarea.addEventListener('input', function(event) {
+			document.getElementById("charCount").textContent = textarea.value.length + "/255";
+			if(textarea.value.length > 255) {
+				document.getElementById("charCount").style.color = "red";
+			}
+			else {
+				document.getElementById("charCount").style.color = "darkgreen";
+			}
+		})
+	
+		function changeRating(element) {
+			if(element != undefined) {
+				let value = element.getAttribute('data-value');
+				console.log(value);
+				document.getElementById("rating-score").textContent = value;
+				
+				for(let i = 1; i <= 5; i++) {
+					if(!document.getElementById("star" + i).classList.contains("empty-star")) {
+						document.getElementById("star" + i).classList.add("empty-star");		
+					}
+				}
+				
+				for(let i = 1; i <= value; i ++) {
+					console.log(document.getElementById("star" + i));
+					document.getElementById("star" + i).classList.add("full-star");
+					document.getElementById("star" + i).classList.remove("empty-star");
+				}
+			}
+		}
+	
+		function showRatingModel(orderid, isbn) {
+			let ratingModel = new bootstrap.Modal(document.getElementById("exampleModal"));
+			ratingModel.show();
+			
+			document.querySelector('#exampleModal .btnRate').addEventListener('click', function() {
+				
+				let rating = document.getElementById('rating-score').textContent;
+				let review = document.getElementById('review-text').value;
+				
+				fetch(request.getContextPath() + URL.makeReviewServlet, {
+					method: 'POST'
+				})
+				ratingModel.hide();
+			})
+		}
+	
 		function makeActive(element) {
 			const elements = document.getElementsByClassName("active");
 			for(let i = 0; i < elements.length; i++) {
@@ -169,7 +249,6 @@
 			})
 			.then(response => response.json())
 			.then(data => {
-				console.log(data);
 				if(data != undefined && data != null) {
 					htmlStr = "";
 					let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -217,9 +296,9 @@
 									htmlStr += '<button onclick="addtoCart(\'' + items[j].book.isbnno + '\')">Buy it again</button>';
 								}
 								else if(items[j].status == "delivered") {
-									console.log(items[j].status);
 									htmlStr += '<button onclick="addtoCart(\'' + items[j].book.isbnno + '\')">Buy it again</button>';
-									htmlStr += '<button>Rate your item</button>';
+									if(items[j].rated == 0)
+										htmlStr += '<button onclick="showRatingModel(\'' + data[i].orderid +'\', \'' + items[j].book.isbnno +'\')">Rate your item</button>';
 								}
 								htmlStr += '</div></div>';
 								htmlStr += '<label class="order-item-status">' + makeCapital(items[j].status) + '</label>';

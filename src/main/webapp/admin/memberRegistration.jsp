@@ -279,7 +279,6 @@
 								<!-- Submit button -->
 								<div class="text-center">
 									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update.equals("true")) ? "Update" : "Save"%></button>
-									<button id="btnSave" type="submit" class="btn btn-primary"><%=(update.equals("true")) ? "Update" : "Save"%></button>
 								</div>
 							</form>
 							<!-- End Member Registration Form -->

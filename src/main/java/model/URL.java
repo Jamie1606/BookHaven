@@ -74,7 +74,7 @@ public class URL {
 	public static final String getMemberByIDServlet = "/GetMemberByID/";
 	public static final String updateMemberServlet = "/UpdateMember";
 	public static final String createMemberServlet = "/CreateMember";
-	public static final String deleteMemberServlet = "/DeleteMember";
+	public static final String deleteMemberServlet = "/DeleteMember/";
 	
 	
 	
@@ -92,6 +92,11 @@ public class URL {
 	public static final String completeOrderServlet = "/CompleteOrder/";
 	public static final String cancelOrderServlet = "/CancelOrder/";
 	public static final String getOrderDetailListServlet = "/GetOrderDetailList/";
+	
+	
+	
+	// review servlets
+	public static final String makeReviewServlet = "/ReviewServlet";
 	
 	
 	

@@ -62,7 +62,7 @@ public class DeleteMember extends HttpServlet {
 				if(condition) {
 					
 					Client client = ClientBuilder.newClient();
-					WebTarget target = client.target(URL.baseURL).path("").path("{id}").resolveTemplate("id", id);
+					WebTarget target = client.target(URL.baseURL).path("deleteMember").path("{id}").resolveTemplate("id", id);
 					Invocation.Builder invocationBuilder = target.request();
 					invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 					Response resp = invocationBuilder.delete();
