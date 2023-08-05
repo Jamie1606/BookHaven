@@ -9,6 +9,7 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -103,7 +104,7 @@ public class UpdateBook extends HttpServlet {
 					
 					if(Functions.checkISBN13(isbn) && Functions.checkISBN13(pathisbn)) {
 						
-						image = Functions.uploadImage(title, isbn, "booknormal", request.getPart("image"), token);
+						image = Functions.uploadImage(title, LocalDate.now().toString() + "_" + isbn, "booknormal", request.getPart("image"), token);
 						if(image == null) {
 							if(oldimage == null || oldimage.isEmpty()) {
 								image = URL.defaultBookNormalImage;
@@ -112,14 +113,28 @@ public class UpdateBook extends HttpServlet {
 								image = oldimage.trim();
 							}
 						}
+						else {
+							if(oldimage != null && !oldimage.isEmpty() && !oldimage.equals(URL.defaultBookNormalImage)) {
+								if(!Functions.deleteImage(oldimage.trim(), token)) {
+									System.out.println("..... Error in deleting old image in UpdateBook servlet .....");
+								}
+							}
+						}
 		
-						image3d = Functions.uploadImage(title, isbn, "book3d", request.getPart("image3d"), token);
+						image3d = Functions.uploadImage(title, LocalDate.now().toString() + "_" + isbn, "book3d", request.getPart("image3d"), token);
 						if(image3d == null) {
 							if(oldimage3d == null || oldimage3d.isEmpty()) {
 								image3d = URL.defaultBook3DImage;
 							}
 							else {
 								image3d = oldimage3d.trim();
+							}
+						}
+						else {
+							if(oldimage3d != null && !oldimage3d.isEmpty() && !oldimage3d.equals(URL.defaultBook3DImage)) {
+								if(!Functions.deleteImage(oldimage3d.trim(), token)) {
+									System.out.println("..... Error in deleting old image in UpdateBook servlet .....");
+								}
 							}
 						}
 						

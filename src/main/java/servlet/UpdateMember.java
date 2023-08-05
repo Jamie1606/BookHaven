@@ -77,11 +77,6 @@ public class UpdateMember extends HttpServlet {
 				
 				try {
 						
-					if(oldimage != null && !oldimage.isEmpty() && !oldimage.equals(URL.defaultMemberImage)) {
-						if(!Functions.deleteImage(oldimage.trim())) {
-							System.out.println("..... Error in deleting old image in UpdateMember servlet .....");
-						}
-					}
 					image = Functions.uploadImage(name, LocalDate.now().toString() + "_" + memberid, "member", request.getPart("image"), token);
 					if(image == null) {
 						if(oldimage == null || oldimage.isEmpty()) {
@@ -89,6 +84,13 @@ public class UpdateMember extends HttpServlet {
 						}
 						else {
 							image = oldimage.trim();
+						}
+					}
+					else {
+						if(oldimage != null && !oldimage.isEmpty() && !oldimage.equals(URL.defaultMemberImage)) {
+							if(!Functions.deleteImage(oldimage.trim(), token)) {
+								System.out.println("..... Error in deleting old image in UpdateMember servlet .....");
+							}
 						}
 					}
 					
