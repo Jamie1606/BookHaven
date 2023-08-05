@@ -54,6 +54,7 @@
 	href="<%=request.getContextPath()%>/css/animate.min.css">
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/owl.carousel.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/custom-css/style.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/main.css">
 <link rel="icon" type="image/png"
 	href="<%=request.getContextPath()%>/img/logo.png">
@@ -212,14 +213,14 @@
 		<div
 			style="display: flex; flex: 1; flex-direction: row; justify-content: space-between;">
 			<div
-				style="display: flex; flex-direction: column; align-items: space-between; text-align: left; justify-content: center;">
+				style="display: flex; flex-direction: column; align-items: space-between; text-align: left; justify-content: flex-start;">
 				<h2 style="user-select: none;">
 					<span style="cursor: pointer;" id="btn-detail"
 						onclick="showDetail()">Book Detail</span> <span
 						style="cursor: pointer; margin-left: 90px; color: grey;"
 						id="btn-review" onclick="showReview()">Reviews</span>
 				</h2>
-				<div
+				<div id="book-detail"
 					style="display: flex; margin-top: 50px; margin-left: 30px; flex-direction: row; color: black;">
 					<div
 						style="display: flex; flex-direction: column; justify-content: center; font-size: 16px; font-weight: bold;">
@@ -255,53 +256,13 @@
 						<label id="book-detail-genre"></label>
 					</div>
 				</div>
+				
+				<div id="book-review" style="margin-top: 35px; display: flex; flex-direction: column; display: none; visibility: hidden;">
+					
+				</div>
 			</div>
-			<div
-				style="display: flex; width: 30%; flex-direction: column; text-align: left;">
-				<h2>Related Books</h2>
-				<div id="related-book1"
-					style="display: flex; padding-bottom: 30px; visibility: hidden; flex-direction: row; margin-top: 15px;">
-					<img
-						style="width: 100px; height: 150px; margin-right: 30px; border-radius: 7px;"
-						id="book-related-image1" src="" />
-					<div
-						style="display: flex; flex-direction: column; align-items: flex-start;">
-						<a href="" id="book-related-title1"
-							style="font-size: 14px; color: black; font-weight: bold; text-decoration: none;"></a>
-						<div style="margin-top: 15px;">
-							<span id="book-related-rating1"
-								style="font-size: 20px; vertical-align: middle; color: gold;"></span>
-							<span id="book-related-ratingtext1"
-								style="margin-left: 10px; font-weight: bold; color: #777; vertical-align: middle; letter-spacing: 1.1px;"></span>
-						</div>
-						<p
-							style="letter-spacing: 1.1px; margin-top: 10px; font-weight: bold; color: #555;"
-							id="book-related-price1"></p>
-						<p style="font-weight: bold;" id="book-related-status1"></p>
-					</div>
-				</div>
-
-				<div id="related-book2"
-					style="display: flex; padding-bottom: 30px; visibility: hidden; flex-direction: row; margin-top: 15px;">
-					<img
-						style="width: 100px; height: 150px; margin-right: 30px; border-radius: 7px;"
-						id="book-related-image2" src="" />
-					<div
-						style="display: flex; flex-direction: column; align-items: flex-start;">
-						<a href="" id="book-related-title2"
-							style="font-size: 14px; color: black; font-weight: bold; text-decoration: none;"></a>
-						<div style="margin-top: 15px;">
-							<span id="book-related-rating2"
-								style="font-size: 20px; vertical-align: middle; color: gold;"></span>
-							<span id="book-related-ratingtext2"
-								style="margin-left: 10px; font-weight: bold; color: #777; vertical-align: middle; letter-spacing: 1.1px;"></span>
-						</div>
-						<p
-							style="letter-spacing: 1.1px; margin-top: 10px; font-weight: bold; color: #555;"
-							id="book-related-price2"></p>
-						<p style="font-weight: bold;" id="book-related-status2"></p>
-					</div>
-				</div>
+			<div id="book-related" style="display: flex; width: 30%; flex-direction: column; visibility: hidden; text-align: left;">
+				
 			</div>
 		</div>
 	</div>
@@ -409,40 +370,80 @@
 							star[i].innerHTML = "&#9734;";
 						}
 					}
-					
-					fetch('<%= URL.baseURL + URL.getRelatedBook + id %>/2', {
-						method: 'GET'
-					})
-					.then(response => response.json())
-					.then(data => {
-						if(data == undefined) {
-							alert('Error in retrieving related book!');
+				}
+			});
+			
+			fetch('<%= URL.baseURL + URL.getRelatedBook + id %>/5', {
+				method: 'GET'
+			})
+			.then(response => response.json())
+			.then(data => {
+				if(data == undefined) {
+					alert('Error in retrieving related book!');
+				}
+				else {
+					let htmlStr = '<h2>Related Books</h2>';
+					for(let i = 0; i < data.length; i++) {
+						htmlStr += '<div style="display: flex; padding-bottom: 30px; flex-direction: row; margin-top: 15px;"><img style="width: 100px; height: 150px; margin-right: 30px; border-radius: 7px;" src="<%= URL.imageLink %>' + data[i].image + '" />';
+						htmlStr += '<div style="display: flex; flex-direction: column; align-items: flex-start;"><a href="<%= request.getContextPath() + URL.bookDetail %>?id=' + data[i].isbnno + '" id="book-related-title1" style="font-size: 14px; color: black; font-weight: bold; text-decoration: none;">' + data[i].title + '</a>';
+						
+						htmlStr += '<div style="margin-top: 15px;"><span style="font-size: 20px;" class="full-star"></span><span  style="margin-left: 10px; font-weight: bold; color: #777; vertical-align: middle; letter-spacing: 1.1px;">' + data[i].rating.toFixed(1) + '</span>';
+						
+						if(data[i].status == "available") {
+							htmlStr += '</div><p style="letter-spacing: 1.1px; margin-top: 10px; font-weight: bold; color: #555;">' + data[i].price.toFixed(2) + '</p><p style="font-weight: bold; color: green;">' + data[i].status + '</p></div>';
 						}
 						else {
-							for(let i = 0; i < data.length; i++) {
-								$('#related-book' + (i + 1)).css({"visibility": "visible"});
-								$('#book-related-image' + (i + 1)).attr("src", '<%= URL.imageLink %>' + data[i].image);
-								$('#book-related-title' + (i + 1)).html(data[i].title);
-								$('#book-related-title' + (i + 1)).attr("href", "<%=request.getContextPath()%>/bookDetail.jsp?id=" + data[i].isbnno);
-								$('#book-related-ratingtext' + (i + 1)).html(data[i].rating.toFixed(1));
-								if(data[i].rating > 0) {
-									$('#book-related-rating' + (i + 1)).html("&#9733;");
-								}
-								else {
-									$('#book-related-rating' + (i + 1)).html("&#9734;");
-								}
-								$('#book-related-price' + (i + 1)).html("$" + data[i].price.toFixed(2));
-								$('#book-related-status' + (i + 1)).html(makeCapital(data[i].status));
-								if(data[i].status == "available") {
-									$('#book-related-status' + (i + 1)).css({"color": "green"});
-								}
-								else {
-									$('#book-related-status' + (i + 1)).css({"color": "red"});
-								}
-							}
+							htmlStr += '</div><p style="letter-spacing: 1.1px; margin-top: 10px; font-weight: bold; color: #555;">' + data[i].price.toFixed(2) + '</p><p style="font-weight: bold; color: red;">' + data[i].status + '</p></div>';
 						}
-					})
+						
+						
+						htmlStr += '</div>';
+					}
+					$('#book-related').html(htmlStr);
+					$('#book-related').css({"visibility": "visible"});
 				}
+			})
+			.catch(error => {
+				console.log(error);
+				alert('Error in retrieving related books!');
+			})
+			
+			fetch('<%= URL.baseURL + URL.getReviewByISBN + id %>', {
+				method: 'GET'
+			})
+			.then(response => response.json())
+			.then(data => {
+				if(data != undefined && data != null) {
+					let htmlStr = "";
+					for(let i = 0; i < data.length; i++) {
+						htmlStr += '<div style="display: flex; flex-direction: column; margin-bottom: 25px;">';
+						htmlStr += '<div style="display: flex; flex-direction: row;">';
+						htmlStr += '<img style="width: 60px; height: 60px; border-radius: 100%; margin-right: 15px;" src="<%= URL.imageLink %>' + data[i].memberImage + '">';
+						htmlStr += '<div style="display: flex; flex-direction: column; justify-content: space-around;">';
+						htmlStr += '<label style="font-size: 17px; color: black; font-weight: bold;">' + data[i].memberName + '</label>';
+						let date =  new Date(data[i].reviewDate);
+						htmlStr += '<label style="letter-spacing: 1.1px;">' + date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear() + '</label>';
+						htmlStr += '</div></div>';
+						htmlStr += '<div style="font-size: 20px; margin-top: 10px;">';
+						for(let j = 1; j <= data[i].rating; j++) {
+							htmlStr += '<span class="full-star"></span>';
+						}
+						for(let j = data[i].rating + 1; j <= 5; j++) {
+							htmlStr += '<span class="empty-star"></span>';
+						}
+						htmlStr += '<label style="margin-left: 5px; font-size: 14px; font-weight: 400; color: black;">(' + data[i].rating.toFixed(1) + ')</label>';
+						htmlStr += '</div><p>' + data[i].description + '</p>';
+						if(i != data.length - 1) {
+							htmlStr += '<hr style="border: 1px solid #ddd; width: 100%;">';
+						}
+						htmlStr += '</div>';
+					}
+					$('#book-review').html(htmlStr);
+				}
+			})
+			.catch(error => {
+				alert('Error in retrieving reviews!');
+				console.log(error);
 			});
 		})
 		
@@ -453,11 +454,15 @@
 		function showReview() {
 			$('#btn-detail').css({"color": "grey"});
 			$('#btn-review').css({"color": "black"});
+			$('#book-detail').css({"display": "none", "visibility": "hidden"});
+			$('#book-review').css({"display": "flex", "visibility": "visible"});
 		}
 		
 		function showDetail() {
 			$('#btn-review').css({"color": "grey"});
 			$('#btn-detail').css({"color": "black"});
+			$('#book-detail').css({"display": "flex", "visibility": "visible"});
+			$('#book-review').css({"display": "none", "visibility": "hidden"});
 		}
 		
 		function changeQty(num) {

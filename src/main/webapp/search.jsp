@@ -8,7 +8,7 @@
 %>
 
 <!-- [IMPORT] -->
-<%@ page import="java.util.ArrayList, model.Genre, model.Book, controller.Authentication"%>
+<%@ page import="java.util.ArrayList, model.*"%>
 
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
@@ -91,7 +91,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="row justify-content-center" style="margin-bottom: 0px;" id="bookResultList">
+			
+			<div class="homepage-section">
+				<div>
+					<h1>Latest Releases</h1>
+					<div class="book-div" id="bookResultList"></div>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -132,7 +137,8 @@
 
 		    if (searchOption === 'author') {
 		      searchAuthor(searchInput);
-		    } else if (searchOption === 'book') {
+		    } 
+		    else if (searchOption === 'book') {
 		      searchBook(searchInput);
 		    }
 		  }
@@ -142,13 +148,30 @@
 			    	method:'GET'
 			    	})
 			    .then(response=>response.json())
-			    .then(data=>{
+			    .then(data => {
+			    	
 			    	var status=data.status;
 			    	var bookList=data.list;
 			    	var authorList=data.authorList;
-			    	if(status=="success"){
+			    	if(status == "success"){
+			    		
 			    		var htmlString="";
-			    		for(let i = 0; i < bookList.length; i++) {
+			    		let htmlStr = "";
+			    		for(let i = 0; i < data.length; i++) {
+			    			
+			    			htmlStr += '<div>';
+							
+							htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="<%= URL.imageLink %>' + data[i].image + '"><span class="rating">';
+							htmlStr += '<span class="full-star"></span> ' + data[i].rating.toFixed(1) + '</span></div>';
+							
+							title = data[i].title;
+							if(title.length > 30) {
+								title = title.slice(0, 25) + "...";
+							}
+							htmlStr += '<label class="book-title" onclick="goto(\'' + data[i].isbnno +'\')">' + title + '</label>';
+							htmlStr += '<label class="book-title" onclick="goto(\'' + data[i].isbnno +'\')">' + title + '</label>';
+							htmlStr += '</div>';
+			    			
 			    			htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a><a href="<%= request.getContextPath() %>/authorDetail.jsp?id=' + authorList[i].authorID + '"><h6 style="color: blue;">' + authorList[i].name + '</h6></a></div></div>';
 			    		}
 						if(bookList.length==0){
@@ -156,9 +179,11 @@
 						}
 						$('#bookResultList').html(htmlString);
 						document.getElementById('search-text').innerHTML = "Search Result For Book By Author \""+searchValue+"\"";
-			    	}else if(status == "serverError"){
+			    	}
+			    	else if(status == "serverError") {
 			    		alert('Server Error!');
-			    	}else if(status == "invalid"){
+			    	}
+			    	else if(status == "invalid") {
 			    		alert('Invalid Request or Data!');
 			    	}
 			    })

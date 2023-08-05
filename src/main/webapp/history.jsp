@@ -168,7 +168,6 @@
 		function changeRating(element) {
 			if(element != undefined) {
 				let value = element.getAttribute('data-value');
-				console.log(value);
 				document.getElementById("rating-score").textContent = value;
 				
 				for(let i = 1; i <= 5; i++) {
@@ -178,7 +177,6 @@
 				}
 				
 				for(let i = 1; i <= value; i ++) {
-					console.log(document.getElementById("star" + i));
 					document.getElementById("star" + i).classList.add("full-star");
 					document.getElementById("star" + i).classList.remove("empty-star");
 				}
@@ -188,14 +186,54 @@
 		function showRatingModel(orderid, isbn) {
 			let ratingModel = new bootstrap.Modal(document.getElementById("exampleModal"));
 			ratingModel.show();
+			document.getElementById("charCount").textContent = "";
+			document.getElementById('review-text').value = "";
+			
+			for(let i = 1; i <= 5; i++) {
+				if(!document.getElementById("star" + i).classList.contains("empty-star")) {
+					document.getElementById("star" + i).classList.add("empty-star");		
+				}
+			}
 			
 			document.querySelector('#exampleModal .btnRate').addEventListener('click', function() {
+				
+				let htmlStr = '<div class="order">';
+				htmlStr += '<div class="order-header"><div class="order-header-item"><label style="font-weight: bold;">Loading...</label>';
+				htmlStr += '</div></div>';
+				$('#order-items').html(htmlStr);
 				
 				let rating = document.getElementById('rating-score').textContent;
 				let review = document.getElementById('review-text').value;
 				
-				fetch(request.getContextPath() + URL.makeReviewServlet, {
-					method: 'POST'
+				const formData = new FormData();
+				
+				formData.append('rating', rating);
+				formData.append('review', review);
+				formData.append('orderid', orderid);
+				formData.append('isbn', isbn);
+				
+				fetch('<%= request.getContextPath() + URL.reviewBookServlet %>', {
+					method: 'POST',
+					body: formData
+				})
+				.then(response => response.text())
+				.then(data => {
+					console.log(data);
+					if(data == '<%= Status.ok %>') {
+						alert("Review success!");
+						location.reload();
+					}
+					else if(data == '<%= Status.invalidData %>') {
+						alert("Invalid review!");
+						location.reload();
+					}
+					else if(data == '<%= Status.serverError %>') {
+						alert("Server error!");
+						location.reload();
+					}
+				})
+				.catch(error => {
+					alert('Server error');
 				})
 				ratingModel.hide();
 			})

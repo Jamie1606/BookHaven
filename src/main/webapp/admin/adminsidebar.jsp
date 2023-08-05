@@ -81,7 +81,7 @@
 				</li>
 				
 				<li>
-					<a href="<%= request.getContextPath() %>/admin/reviews"> 
+					<a href="<%= request.getContextPath() + URL.getReviewListServlet %>"> 
 						<i class="bi bi-circle"></i><span>Review List</span>
 					</a>
 				</li>

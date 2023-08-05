@@ -23,6 +23,7 @@ public class URL {
 	public static final String getBestSeller = "/getBestSeller/";
 	public static final String getTopRated = "/getTopRated/";
 	public static final String imageLink = "http://s3.us-east-1.amazonaws.com/bookhavenjad10/";
+	public static final String getReviewByISBN = "/getReview/";
 	
 	
 	
@@ -38,6 +39,7 @@ public class URL {
 	public static final String memberRegistration = "/admin/memberRegistration.jsp";
 	public static final String genreList = "/admin/genreList.jsp";
 	public static final String genreRegistration = "/admin/genreRegistration.jsp";
+	public static final String reviewList = "/admin/reviewList.jsp";
 	
 	
 	
@@ -96,7 +98,9 @@ public class URL {
 	
 	
 	// review servlets
-	public static final String makeReviewServlet = "/ReviewServlet";
+	public static final String reviewBookServlet = "/ReviewBook";
+	public static final String getReviewListServlet = "/GetReviewList";
+	public static final String updateReviewStatusServlet = "/UpdateReviewStatus/";
 	
 	
 	

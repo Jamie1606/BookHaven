@@ -8,6 +8,7 @@
 package model;
 
 
+
 import javax.servlet.http.Part;
 
 import org.apache.http.HttpEntity;
@@ -151,12 +152,39 @@ public class Functions {
 	 * @return True if the image is successfully deleted
 	 *  
 	 */
-	public static boolean deleteImage(String image) {
-		boolean condition = false;
+	public static boolean deleteImage(String image, String token) {
 		
+		boolean condition = false;
+		if(image == null || image.isEmpty()) {
+			return false;
+		}
+		String type = "";
+		String[] parts = image.split("/");
+		if(parts.length == 3) {
+			if(parts[1].equals("3d")) {
+				type = "book3d";
+			}
+			else if(parts[1].equals("normal")) {
+				type = "booknormal";
+			}
+			else {
+				return false;
+			}
+		}
+		else if(parts.length == 2) {
+			type = "member";
+		}
+		else {
+			return false;
+		}
+		
+		image = parts[parts.length - 1];
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(URL.baseURL).path("deleteImage").path("{image}").resolveTemplate("image", image);
+		WebTarget target = client.target(URL.baseURL).path("deleteImage")
+				.path("{type}").resolveTemplate("type", type)
+				.path("{image}").resolveTemplate("image", image);
 		Invocation.Builder invocationBuilder = target.request();
+		invocationBuilder.header(jakarta.ws.rs.core.HttpHeaders.AUTHORIZATION, "Bearer " + token);
 		Response resp = invocationBuilder.delete();
 		
 		if(resp.getStatus() == Response.Status.OK.getStatusCode()) {			
@@ -166,7 +194,7 @@ public class Functions {
 			System.out.println("..... Error in deleteImage in Functions.....");
 			return false;
 		}
-		
+			
 		return condition;
 	}
 }
