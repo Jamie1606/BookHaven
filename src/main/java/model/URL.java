@@ -107,6 +107,9 @@ public class URL {
 	public static final String bestSellingBookList = "/admin/bestSellingBookList.jsp";
 	public static final String leastSellingBookList = "/admin/leastSellingBookList.jsp";
 	public static final String lowStockBookList = "/admin/lowStockBookList.jsp";
+	public static final String bestSellingServlet = "/GetBestSellingBookList";
+	public static final String leastSellingServlet = "/GetLeastSellingBookList";
+	public static final String lowStockBookServlet = "/GetLowStockBookList";
 	public static final String getBookSalesServlet = "/GetBookSales";
 	public static final String getTopCustomerseServlet = "/GetTopCustomers";	
 	public static final String getCustomersByBookIDServlet = "/GetCustomersByBookID";
