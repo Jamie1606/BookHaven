@@ -47,9 +47,8 @@
 <link
 	href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css"
 	rel="stylesheet">
-<link
-	href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
-	rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" />
 
 <!-- Template Main CSS File -->
 <link href="<%=request.getContextPath()%>/assets/css/style.css"
@@ -127,7 +126,7 @@
 							<h5 class="card-title">Review Information</h5>
 
 							<!-- Table with stripped rows -->
-							<table class="table datatable">
+							<table class="display data-table nowrap hover" style="width: 100%">
 								<thead>
 									<tr>
 										<th scope="col">No.</th>
@@ -153,8 +152,11 @@
 										out.println("<td>" + reviewList.get(i).getStatus() + "</td>");
 										
 										if(reviewList.get(i).getStatus().equals("pending")) {
-											out.println("<td><a href='" + request.getContextPath() + URL.updateReviewStatusServlet + reviewList.get(i).getReviewID() + "/approved'>Approve</a>");
-											out.println(" | <a href='" + request.getContextPath() + URL.updateReviewStatusServlet + reviewList.get(i).getReviewID() + "/denied'>Deny</a></td>");
+											out.println("<td><a data-review-id='" + reviewList.get(i).getReviewID() + "' class='orderCompleteLink' href='" + request.getContextPath() + URL.updateReviewStatusServlet + reviewList.get(i).getReviewID() + "/approved'>Approve</a>");
+											out.println(" | <a data-review-id='" + reviewList.get(i).getReviewID() + "' class='orderCancelLink' href='" + request.getContextPath() + URL.updateReviewStatusServlet + reviewList.get(i).getReviewID() + "/denied'>Deny</a></td>");
+										}
+										else {
+											out.println("<td></td>");
 										}
 											
 										out.println("</tr>");
@@ -175,6 +177,25 @@
 
 	</main>
 	<!-- End #main -->
+	
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        <span id="modal-text"></span>
+	      </div>
+	      <div class="modal-footer">
+	      	<button type="button" id="btnDelete" class="btn btn-danger btnDelete">Delete</button>
+	        <button type="button" class="btn btn-secondary" id="btnCancel" data-bs-dismiss="modal">Cancel</button>	        
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
 	<%@ include file="adminfooter.jsp"%>
 
@@ -197,14 +218,68 @@
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/quill/quill.min.js"></script>
 	<script
-		src="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
-	<script
 		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
+		
+		<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+	<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 
 	<!-- Template Main JS File -->
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
+	
+	<script>
+		function makeCapital(str) {
+			return str.charAt(0).toUpperCase() + str.slice(1);
+		}
+	
+		let table = new DataTable('.data-table', {
+			"scrollX": true,
+			"pageLength": 25,
+			"stateSave": true,
+			"colReorder": true
+		});
+		
+		document.addEventListener('click', function(event) {
+			let target = event.target;
+			
+			if(target.classList.contains("orderCompleteLink")) {
+				event.preventDefault();
+				
+				var completeModal = new bootstrap.Modal(document.getElementById("exampleModal"));
+				let orderid = target.getAttribute('data-review-id');
+				document.getElementById("modal-text").textContent = "Are you sure you want to approve this review #'" + orderid + "'?";
+				document.getElementById("btnDelete").textContent = "Approve Review";
+				document.getElementById("btnCancel").textContent = "No";
+				completeModal.show();
+				
+				document.querySelector('#exampleModal .btnDelete').addEventListener('click', function() {
+					window.location.href = target.getAttribute('href');
+					completeModal.hide();
+				})
+			}
+		});
+		
+		document.addEventListener('click', function(event) {
+			let target = event.target;
+			
+			if(target.classList.contains("orderCancelLink")) {
+				event.preventDefault();
+				
+				var completeModal = new bootstrap.Modal(document.getElementById("exampleModal"));
+				let orderid = target.getAttribute('data-review-id');
+				document.getElementById("modal-text").textContent = "Are you sure you want to deny this review #'" + orderid + "'?";
+				document.getElementById("btnDelete").textContent = "Deny Review";
+				document.getElementById("btnCancel").textContent = "No";
+				completeModal.show();
+				
+				document.querySelector('#exampleModal .btnDelete').addEventListener('click', function() {
+					window.location.href = target.getAttribute('href');
+					completeModal.hide();
+				})
+			}
+		});
+	</script>
 
 </body>
 

@@ -114,7 +114,8 @@ public class UpdateAuthor extends HttpServlet {
 				
 				if(condition) {
 					Client client = ClientBuilder.newClient();
-					WebTarget target = client.target(URL.baseURL).path("updateAuthor");
+					WebTarget target = client.target(URL.baseURL).path("updateAuthor")
+							.path("{id}").resolveTemplate("id", id);
 					Invocation.Builder invocationBuilder = target.request();
 					invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 					
