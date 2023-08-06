@@ -19,8 +19,8 @@
 			<nav id="nav-menu-container">
 				<ul class="nav-menu">
 					<li><a href="<%= request.getContextPath() + URL.homePage %>">Home</a></li>
-					<li><a href="<%= request.getContextPath() %>/search.jsp">Search</a></li>
-					<li><a href="<%= request.getContextPath() %>/bookGenre.jsp">Genre</a></li>
+					<li><a href="<%= request.getContextPath() + URL.search %>">Search</a></li>
+					<li><a href="<%= request.getContextPath() + URL.bookGenre %>">Genre</a></li>
 					<%
 						if(session != null) {
 							String role = (String) session.getAttribute("role");

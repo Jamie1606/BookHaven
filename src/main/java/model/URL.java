@@ -24,6 +24,10 @@ public class URL {
 	public static final String getTopRated = "/getTopRated/";
 	public static final String imageLink = "http://s3.us-east-1.amazonaws.com/bookhavenjad10/";
 	public static final String getReviewByISBN = "/getReview/";
+	public static final String searchBookByTitle = "/getBook/title/";
+	public static final String searchBookByAuthor = "/getBook/author/";
+	public static final String getAllGenreList = "/getAllGenre";
+	public static final String getBookByGenreID = "/getBookByGenreID/";
 	
 	
 	
@@ -77,6 +81,7 @@ public class URL {
 	public static final String updateMemberServlet = "/UpdateMember";
 	public static final String createMemberServlet = "/CreateMember";
 	public static final String deleteMemberServlet = "/DeleteMember/";
+	public static final String createNewAccountServlet = "/CreateNewAccount";
 	
 	
 	
@@ -97,6 +102,17 @@ public class URL {
 	
 	
 	
+	
+	// report pages
+	public static final String bestSellingBookList = "/admin/bestSellingBookList.jsp";
+	public static final String leastSellingBookList = "/admin/leastSellingBookList.jsp";
+	public static final String lowStockBookList = "/admin/lowStockBookList.jsp";
+	public static final String getBookSalesServlet = "/GetBookSales";
+	public static final String getTopCustomerseServlet = "/GetTopCustomers";	
+	public static final String getCustomersByBookIDServlet = "/GetCustomersByBookID";
+	
+	
+	
 	// review servlets
 	public static final String reviewBookServlet = "/ReviewBook";
 	public static final String getReviewListServlet = "/GetReviewList";
@@ -112,6 +128,8 @@ public class URL {
 	public static final String profile = "/profile.jsp";
 	public static final String history = "/history.jsp";
 	public static final String cart = "/cart.jsp";
+	public static final String search = "/search.jsp";
+	public static final String bookGenre = "/bookGenre.jsp";
 	public static final String authorDetail = "/authorDetail.jsp";
 	public static final String signUp = "/signup.jsp";
 	public static final String header = "/header.jsp";

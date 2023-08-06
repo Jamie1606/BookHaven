@@ -42,6 +42,7 @@
 <link rel="stylesheet" href="css/nice-select.css">
 <link rel="stylesheet" href="css/magnific-popup.css">
 <link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/custom-css/style.css">
 <link rel="stylesheet" href="css/main.css">
 <link rel="icon" type="image/png"
 	href="<%=request.getContextPath()%>/img/logo.png">
@@ -84,7 +85,10 @@
 					</div>
 				</div>
 			</div>
-			<div class="row" style="margin-bottom: 0px;" id="bookResultList">
+			<div style="padding: 10px 0;" class="homepage-section">
+				<div>
+					<div class="book-div" id="bookResultList"></div>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -143,14 +147,24 @@
 		.then(data => {
 			if(data != undefined && data != null) {
 				document.getElementById('book-count').innerHTML = data.length + " Book &#128213;";
-				var htmlString = "";
+				let htmlStr = "";
 				for(let i = 0; i < data.length; i++) {
-	    			htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%= URL.imageLink %>' + data[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + data[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() + URL.bookDetail  %>?id=' + data[i].isbnno + '"><h4>' + data[i].title + '</h4></a><p></p></div></div>';
+					htmlStr += '<div>';
+					
+					htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="<%= URL.imageLink %>' + data[i].image + '"><span class="rating">';
+					htmlStr += '<span class="full-star"></span> ' + data[i].rating.toFixed(1) + '</span></div>';
+					
+					title = data[i].title;
+					if(title.length > 30) {
+						title = title.slice(0, 25) + "...";							
+					}
+					htmlStr += '<label class="book-title" onclick="goto(\'' + data[i].isbnno +'\')">' + title + '</label>';
+					htmlStr += '</div>';
 		    	}
 				if(data.length == 0) {
-					htmlString += "<p>No Books Yet</p>";
+					htmlStr += "<p>No Books Yet</p>";
 				}
-				$('#bookResultList').html(htmlString);
+				$('#bookResultList').html(htmlStr);
 			}
 			else {
 				alert("Server error!");
