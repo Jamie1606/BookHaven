@@ -1,5 +1,5 @@
-// Author		: Thu Htet San
-// Admin No		: 2235022
+// Author		: Zay Yar Tun
+// Admin No		: 2235035
 // Class		: DIT/FT/2A/02
 // Group		: 10
 // Date			: 3.8.2023
