@@ -401,10 +401,10 @@
 						htmlStr += '<div style="margin-top: 15px;"><span style="font-size: 20px;" class="full-star"></span><span  style="margin-left: 10px; font-weight: bold; color: #777; vertical-align: middle; letter-spacing: 1.1px;">' + data[i].rating.toFixed(1) + '</span>';
 						
 						if(data[i].status == "available") {
-							htmlStr += '</div><p style="letter-spacing: 1.1px; margin-top: 10px; font-weight: bold; color: #555;">' + data[i].price.toFixed(2) + '</p><p style="font-weight: bold; color: green;">' + data[i].status + '</p></div>';
+							htmlStr += '</div><p style="letter-spacing: 1.1px; margin-top: 10px; font-weight: bold; color: #555;">$' + data[i].price.toFixed(2) + '</p><p style="font-weight: bold; color: green;">' + data[i].status + '</p></div>';
 						}
 						else {
-							htmlStr += '</div><p style="letter-spacing: 1.1px; margin-top: 10px; font-weight: bold; color: #555;">' + data[i].price.toFixed(2) + '</p><p style="font-weight: bold; color: red;">' + data[i].status + '</p></div>';
+							htmlStr += '</div><p style="letter-spacing: 1.1px; margin-top: 10px; font-weight: bold; color: #555;">$' + data[i].price.toFixed(2) + '</p><p style="font-weight: bold; color: red;">' + data[i].status + '</p></div>';
 						}
 						
 						

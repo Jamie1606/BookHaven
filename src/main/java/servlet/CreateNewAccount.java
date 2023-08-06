@@ -16,7 +16,7 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
-
+import model.InvalidErrorException;
 import model.Member;
 import model.Status;
 import model.URL;
@@ -32,8 +32,6 @@ public class CreateNewAccount extends HttpServlet {
         super();
 
     }
-
-
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -58,19 +56,28 @@ public class CreateNewAccount extends HttpServlet {
 			member.setPassword(password.trim());
 			
 			if(postalCode.length() > 6 || postalCode.length() < 6) {
-				throw new Error();
+				throw new InvalidErrorException();
+			}
+			
+			if(address.trim().length() <= 0) {
+				throw new InvalidErrorException();
 			}
 			
 			address = address.trim() + " |" + postalCode.trim();
 			member.setAddress(address);
 			
 			if(phone.length() > 8 || phone.length() < 8) {
-				throw new Error();
+				throw new InvalidErrorException();
 			}
 			member.setPhone(phone.trim());
 			member.setGender('N');
 			
 			member.setImage(image.trim());
+		}
+		catch(InvalidErrorException e) {
+			status = Status.invalidData;
+			System.out.println("..... Invalid member data in CreateNewAccount servlet .....");
+			condition = false;
 		}
 		catch(Exception e) {
 			e.printStackTrace();

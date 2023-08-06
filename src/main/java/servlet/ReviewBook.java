@@ -25,6 +25,7 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
+import model.InvalidErrorException;
 import model.Review;
 import model.Status;
 import model.URL;
@@ -64,13 +65,18 @@ public class ReviewBook extends HttpServlet {
 				
 				try {
 					if(review.trim().length() > 255) {
-						throw new Error();
+						throw new InvalidErrorException();
 					}
 					
 					reviewObj.setISBNNo(isbn.trim());
 					reviewObj.setDescription(review.trim());
 					reviewObj.setRating(Short.parseShort(rating));
 					reviewObj.setStatus("pending");
+				}
+				catch(InvalidErrorException e) {
+					status = Status.invalidData;
+					System.out.println("..... Invalid data in ReviewBook servlet .....");
+					condition = false;
 				}
 				catch(Exception e) {
 					e.printStackTrace();

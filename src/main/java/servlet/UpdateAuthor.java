@@ -31,6 +31,7 @@ import jakarta.ws.rs.core.Response;
 
 import model.URL;
 import model.Author;
+import model.InvalidErrorException;
 import model.Status;
 
 /**
@@ -77,7 +78,7 @@ public class UpdateAuthor extends HttpServlet {
 						LocalDate testBirthDate = tmpBirthDate.toLocalDate();
 						long diff = ChronoUnit.DAYS.between(testBirthDate, LocalDate.now()) / 365;
 						if(diff < 5) {
-							throw new Error();
+							throw new InvalidErrorException();
 						}
 						else {
 							author.setBirthDate(tmpBirthDate);
@@ -98,6 +99,11 @@ public class UpdateAuthor extends HttpServlet {
 					if(link != null && !link.isEmpty()) {
 						author.setLink(link.trim());
 					}
+				}
+				catch(InvalidErrorException e) {
+					System.out.println(".... Invalid id in UpdateAuthor servlet .....");
+					status = Status.invalidData;
+					condition = false;
 				}
 				catch(Exception e) {
 					e.printStackTrace();

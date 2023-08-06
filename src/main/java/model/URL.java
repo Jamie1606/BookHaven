@@ -10,8 +10,8 @@ package model;
 public class URL {
 	
 	// backend api
-	public static final String baseURL = "http://localhost:8081/bookhaven/api";
-//	public static final String baseURL = "http://35.175.15.211:8081/bookhaven/api";
+//	public static final String baseURL = "http://localhost:8081/bookhaven/api";
+	public static final String baseURL = "http://35.175.15.211:8081/bookhaven/api";
 	public static final String bookNormalImageUpload = "/uploadImage/book/normal";
 	public static final String book3DImageUpload = "/uploadImage/book/3d";
 	public static final String memberImageUpload = "/uploadImage/member";

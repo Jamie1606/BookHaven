@@ -11,8 +11,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
-<%@ page%>
-
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -132,8 +130,8 @@
 		<input placeholder="&#x2709; Email" type="email" id="emailID" name="email" style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" required/>
 		<input placeholder="&#x1F511; Password" type="password" id="passwordID" name="password" style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" required/>
 		<input placeholder="Address" type="text" name="address" style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" required/>
-		<input placeholder="Postal Code" type="number" name="postalCode" style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" required/>
-		<input placeholder="Phone" type="number" name="phone" style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" required/>
+		<input placeholder="123456" type="number" name="postalCode" style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" required/>
+		<input placeholder="12345678" type="number" name="phone" style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" required/>
 		<button id="btnSignUp" type="submit"
 			style="font-size: 13px; margin-top: 40px; color: white; padding: 10px 30px; outline: none; border: 1px solid #6c5dd4; background-color: #6c5dd4; font-weight: bold; letter-spacing: 1.1px; border-radius: 10px; box-shadow: 2px 2px 5px 1px #777;">SIGN
 			UP</button>

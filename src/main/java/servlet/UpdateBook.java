@@ -10,6 +10,8 @@ package servlet;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -104,7 +106,10 @@ public class UpdateBook extends HttpServlet {
 					
 					if(Functions.checkISBN13(isbn) && Functions.checkISBN13(pathisbn)) {
 						
-						image = Functions.uploadImage(title, LocalDate.now().toString() + "_" + isbn, "booknormal", request.getPart("image"), token);
+						LocalDateTime now = LocalDateTime.now();
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+						String formattedDateTime = now.format(formatter);
+						image = Functions.uploadImage(title, formattedDateTime + "_" + isbn, "booknormal", request.getPart("image"), token);
 						if(image == null) {
 							if(oldimage == null || oldimage.isEmpty()) {
 								image = URL.defaultBookNormalImage;
@@ -121,7 +126,7 @@ public class UpdateBook extends HttpServlet {
 							}
 						}
 		
-						image3d = Functions.uploadImage(title, LocalDate.now().toString() + "_" + isbn, "book3d", request.getPart("image3d"), token);
+						image3d = Functions.uploadImage(title, formattedDateTime + "_" + isbn, "book3d", request.getPart("image3d"), token);
 						if(image3d == null) {
 							if(oldimage3d == null || oldimage3d.isEmpty()) {
 								image3d = URL.defaultBook3DImage;

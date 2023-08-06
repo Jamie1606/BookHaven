@@ -3,6 +3,8 @@ package servlet;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import javax.servlet.ServletException;
@@ -23,6 +25,7 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import model.Functions;
+import model.InvalidErrorException;
 import model.Member;
 import model.Password;
 import model.Status;
@@ -75,8 +78,12 @@ public class UpdateProfile extends HttpServlet {
 				String oldimage = request.getParameter("oldimage");
 				
 				try {
+					
+					LocalDateTime now = LocalDateTime.now();
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+					String formattedDateTime = now.format(formatter);
 						
-					image = Functions.uploadImage(name, LocalDate.now().toString() + "_" + memberid, "member", request.getPart("image"), token);
+					image = Functions.uploadImage(name, formattedDateTime + "_" + memberid, "member", request.getPart("image"), token);
 					if(image == null) {
 						if(oldimage == null || oldimage.isEmpty()) {
 							image = URL.defaultMemberImage;
@@ -112,7 +119,7 @@ public class UpdateProfile extends HttpServlet {
 						LocalDate testBirthDate = tmpBirthDate.toLocalDate();
 						long diff = ChronoUnit.DAYS.between(testBirthDate, LocalDate.now());
 						if(diff < 0) {
-							throw new Error();
+							throw new InvalidErrorException();
 						}
 						
 						member.setBirthDate(tmpBirthDate);
@@ -133,6 +140,11 @@ public class UpdateProfile extends HttpServlet {
 					}
 					
 					member.setImage(image.trim());
+				}
+				catch(InvalidErrorException e) {
+					status = Status.invalidData;
+					System.out.println("..... Invalid member data in UpdateProfile servlet .....");
+					condition = false;
 				}
 				catch(Exception e) {
 					e.printStackTrace();
@@ -171,7 +183,7 @@ public class UpdateProfile extends HttpServlet {
 						status = Status.serverError;
 					}
 					
-					if(currentPassword != null && newPassword != null) {
+					if(currentPassword != null && newPassword != null && !currentPassword.isEmpty() && !newPassword.isEmpty()) {
 						
 						Password passwordrequest =  new Password();
 						passwordrequest.setCurrentPassword(currentPassword);
