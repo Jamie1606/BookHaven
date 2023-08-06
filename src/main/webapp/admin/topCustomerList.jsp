@@ -4,12 +4,11 @@
 // Admin No		: 2235022
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 5.8.2023
-// Description	: least selling book list page
+// Date			: 6.8.2023
+// Description	: top customer list
 %>
 
-<%@ page
-	import="java.util.ArrayList, java.util.Date, model.Book, model.Status, model.URL"%>
+<%@ page import="java.util.ArrayList, java.util.Date, model.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -19,7 +18,7 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<title>BookHaven | Book Report</title>
+<title>BookHaven | Member List</title>
 <meta content="" name="description">
 <meta content="" name="keywords">
 
@@ -45,13 +44,16 @@
 <link
 	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.bubble.css"
 	rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
-<link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" />
 <link
 	href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css"
 	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
+	rel="stylesheet">
 
-  <link href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" />
+
 <!-- Template Main CSS File -->
 <link href="<%=request.getContextPath()%>/assets/css/style.css"
 	rel="stylesheet">
@@ -73,44 +75,42 @@
 	<%@ include file="adminsidebar.jsp"%>
 
 	<%
-	String status = (String) request.getAttribute("status");
-	if (status != null) {
-		if (status.equals(Status.invalidData)) {
-			out.println("<script>alert('Invalid data!');</script>");
-			out.println("<script>location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
-			return;
-		} else if (status.equals(Status.invalidRequest)) {
-			out.println("<script>alert('Invalid request!');</script>");
-			out.println("<script>location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
-			return;
-		} else if (status.equals(Status.serverError)) {
-			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage
-			+ "';</script>");
-			return;
-		} else if (!status.equals(Status.servletStatus)) {
-			out.println("<script>location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
+		String status = (String) request.getAttribute("status");
+		request.removeAttribute("status");
+		
+		if(status != null) {
+			if(status.equals(Status.serverError)) {
+				out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.invalidData)) {
+				out.println("<script>alert('Invalid data!'); location='" + request.getContextPath() + URL.getMemberListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.invalidRequest)) {
+				out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + URL.getMemberListServlet + "';</script>");
+				return;
+			}
+		}
+	
+		ArrayList<Member> memberList = (ArrayList<Member>) request.getAttribute("memberList");
+		if(memberList == null) {
+			out.println("<script>alert('Server error!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
 			return;
 		}
-	}
-
-	ArrayList<Book> bookList = (ArrayList<Book>) request.getAttribute("bookList");
-	if (bookList == null) {
-		out.println("<script>alert('Server error!');</script>");
-		out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
-		return;
-	}
 	%>
 
 	<main id="main" class="main">
 
 		<div class="pagetitle">
-			<h1>Book Table</h1>
+			<h1>Member Table</h1>
 			<nav>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item"><a
 						href="<%=request.getContextPath() + URL.adminHomePage %>">Home</a></li>
-					<li class="breadcrumb-item">Book Report</li>
-					<li class="breadcrumb-item active">Least Selling</li>
+					<li class="breadcrumb-item">Data List</li>
+					<li class="breadcrumb-item active">Top Customers</li>
 				</ol>
 			</nav>
 		</div>
@@ -122,44 +122,84 @@
 
 					<div class="card">
 						<div class="card-body">
-							<h5 class="card-title">Least Selling Books</h5>
+							<h5 class="card-title">Top Customers</h5>
 
 							<!-- Table with stripped rows -->
-							<table class="display data-table nowrap hover"
-								style="width: 100%">
+							<table class="display data-table nowrap hover" style="width: 100%">
 								<thead>
 									<tr>
-										<th scope="col">No</th>
-										<th scope="col">ISBN</th>
-										<th scope="col">Title</th>
-										<th scope="col">Sales</th>
-										<th scope="col">Price</th>
-										<th scope="col">Revenue</th>
+										<th scope="col">No.</th>
+										<th scope="col">Name</th>
+										<th scope="col">Gender</th>
+										<th scope="col">BirthDate</th>
+										<th scope="col">Phone</th>
+										<th scope="col">Address</th>
+										<th scope="col">Email</th>
 									</tr>
 								</thead>
 								<tbody>
-									<%
-									for (int i = 0; i < bookList.size(); i++) {
-										out.println("<tr>");
-										out.println("<td>" + (i+1) + "</td>");
-										out.println("<td>" + bookList.get(i).getISBNNo() + "</td>");
-										out.println("<td>" + bookList.get(i).getTitle() + "</td>");
+								<%
+									for (int i = 0; i < memberList.size(); i++) {
 										
-										out.println("<td>" + bookList.get(i).getSoldqty() + "</td>");
-										out.println("<td>$" + String.format("%.2f", bookList.get(i).getPrice()) + "</td>");
-										out.println("<td>$" + String.format("%.2f", bookList.get(i).getSoldqty()*bookList.get(i).getPrice()) + "</td>");
+										int memberID = memberList.get(i).getMemberID();
+										String name = memberList.get(i).getName();
+										char gender = memberList.get(i).getGender();
+										Date birthDate = memberList.get(i).getBirthDate();
+										String phone = memberList.get(i).getPhone();
+										String email = memberList.get(i).getEmail();
+										
+										String lastActive = "";
+										if(memberList.get(i).getLastActive() != null) {
+											lastActive = memberList.get(i).getLastActive().toString();											
+										}
+										
+										String address = memberList.get(i).getAddress();
+										String[] addressArr = address.split("\\|");
+										address = addressArr[0];
+										
+										if(addressArr.length == 2) {
+											address += " S" + addressArr[1];
+										}
+										
+										out.println("<tr>");
+										out.println("<td>" + (i + 1) + ".</td>");
+										out.println("<td>" + name + "</td>");
+										
+										if (gender == 'M') {
+											out.println("<td>Male</td>");
+										} 
+										else if (gender == 'F') {
+											out.println("<td>Female</td>");
+										} 
+										else {
+											out.println("<td>N/A</td>");
+										}
+										
+										if (birthDate == null) {
+											out.println("<td></td>");
+										} 
+										else {
+											out.println("<td>" + birthDate.toString() + "</td>");
+										}
+										
+										out.println("<td>" + phone + "</td>");
+										out.println("<td>" + address + "</td>");
+										out.println("<td>" + email + "</td>");
+										
+									
 										out.println("</tr>");
 									}
-									%>
+								%>
 								</tbody>
 								<tfoot>
 									<tr>
-										<th scope="col">No</th>
-										<th scope="col">ISBN</th>
-										<th scope="col">Title</th>
-										<th scope="col">Sales</th>
-										<th scope="col">Price</th>
-										<th scope="col">Revenue</th>
+										<th scope="col">No.</th>
+										<th scope="col">Name</th>
+										<th scope="col">Gender</th>
+										<th scope="col">BirthDate</th>
+										<th scope="col">Phone</th>
+										<th scope="col">Address</th>
+										<th scope="col">Email</th>
 									</tr>
 								</tfoot>
 							</table>
@@ -171,8 +211,12 @@
 				</div>
 			</div>
 		</section>
+
+		<p id="test-info"></p>
+
 	</main>
 	<!-- End #main -->
+
 
 	<%@ include file="adminfooter.jsp"%>
 
@@ -194,21 +238,18 @@
 		src="<%=request.getContextPath()%>/assets/vendor/echarts/echarts.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/quill/quill.min.js"></script>
-		<script href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
-  
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
-
+		
 	<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
-	<script
-		src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
-
+	<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 
 	<!-- Template Main JS File -->
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
-		<script>
+
+	<script>
 		let table = new DataTable('.data-table', {
 			"scrollX": true,
 			"pageLength": 25,
@@ -216,7 +257,6 @@
 			"colReorder": true
 		});
 	</script>
-
 </body>
 
 </html>

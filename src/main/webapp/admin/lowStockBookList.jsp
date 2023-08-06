@@ -45,8 +45,8 @@
 <link
 	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.bubble.css"
 	rel="stylesheet">
-<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
-<link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" /> -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" />
 <link
 	href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css"
 	rel="stylesheet">
@@ -125,9 +125,8 @@
 							<h5 class="card-title">Low Stock Books</h5>
 
 							<!-- Table with stripped rows -->
-							<table class="table datatable">
-								<!--<table class="display data-table nowrap hover"
-								style="width: 100%">  <table class="table datatable"> -->
+							<table class="display data-table nowrap hover"
+								style="width: 100%">
 								<thead>
 									<tr>
 										<th scope="col">No</th>
@@ -200,14 +199,21 @@
 		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
-<!-- 
+
 	<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
 	<script
-		src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script> -->
+		src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 
 
 	<!-- Template Main JS File -->
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
+		<script>
+		let table = new DataTable('.data-table', {
+			"scrollX": true,
+			"pageLength": 25,
+			"stateSave": true,
+			"colReorder": true
+		});
 	</script>
 
 </body>

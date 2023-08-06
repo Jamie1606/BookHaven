@@ -47,7 +47,10 @@ public class GetBookList extends HttpServlet {
 		HttpSession session = request.getSession();
 		String url = URL.bookList;
 		String status = "";
-		
+		if(request.getParameter("report")!=null) {
+			if((request.getParameter("report")).equals("customer")) {
+			url = URL.customersOfBook;}
+		}
 		if(session != null && !session.isNew()) {
 			String token = (String) session.getAttribute("token");
 			

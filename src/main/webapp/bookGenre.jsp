@@ -8,7 +8,11 @@
 %>
 
 <!-- [IMPORT] -->
+<<<<<<< Updated upstream
 <%@ page import="java.util.ArrayList, model.*"%>
+=======
+<%@ page import="java.util.ArrayList, model.Genre, model.Book"%>
+>>>>>>> Stashed changes
 
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
