@@ -383,7 +383,7 @@ input::placeholder {
 			let count = $('#description').val().length;
 			$('#charCount-description').html(count + " / 1000");
 			if (count > 1000) {
-				$('#charCount').css({
+				$('#charCount-description').css({
 					"color" : "red"
 				});
 				$('#check-description').html("&#x2717;");
@@ -392,7 +392,7 @@ input::placeholder {
 					"fontWeight" : "bold"
 				});
 			} else if (count == 0) {
-				$('#charCount').css({
+				$('#charCount-description').css({
 					"color" : "green"
 				});
 				$('#check-description').html("");
@@ -401,7 +401,7 @@ input::placeholder {
 					"fontWeight" : "normal"
 				});
 			} else {
-				$('#charCount').css({
+				$('#charCount-description').css({
 					"color" : "green"
 				});
 				$('#check-description').html("&#x2713;");
