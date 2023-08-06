@@ -4,12 +4,12 @@
 // Admin No		: 2235022
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 5.8.2023
-// Description	: least selling book list page
+// Date			: 6.8.2023
+// Description	: book sales page
 %>
 
 <%@ page
-	import="java.util.ArrayList, java.util.Date, model.Book, model.Status, model.URL"%>
+	import="java.util.ArrayList, java.util.Date,java.time.LocalDate, model.Book,model.OrderItem, model.Order, model.Status, model.URL"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -45,13 +45,17 @@
 <link
 	href="<%=request.getContextPath()%>/assets/vendor/quill/quill.bubble.css"
 	rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
-<link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" />
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" />
 <link
 	href="<%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css"
 	rel="stylesheet">
 
-  <link href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
+	rel="stylesheet">
 <!-- Template Main CSS File -->
 <link href="<%=request.getContextPath()%>/assets/css/style.css"
 	rel="stylesheet">
@@ -93,12 +97,20 @@
 		}
 	}
 
-	ArrayList<Book> bookList = (ArrayList<Book>) request.getAttribute("bookList");
-	if (bookList == null) {
-		out.println("<script>alert('Server error!');</script>");
-		out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
-		return;
-	}
+	ArrayList<Order> orderList = (ArrayList<Order>) request.getAttribute("orderList");
+	/* 	ArrayList<Book> bookList = new ArrayList<Book>();
+		for (Order order : orderList) {
+			ArrayList<OrderItem> orderItemList = order.getOrderitems();
+		    for (OrderItem orderItem : orderItemList) {
+		    	Book book = orderItem.getBook();
+		    	bookList.add(book);
+		    } 
+		}*/
+	/* 	if (bookList == null) {
+			out.println("<script>alert('Server error!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
+			return;
+		} */
 	%>
 
 	<main id="main" class="main">
@@ -108,9 +120,9 @@
 			<nav>
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item"><a
-						href="<%=request.getContextPath() + URL.adminHomePage %>">Home</a></li>
-					<li class="breadcrumb-item">Book Report</li>
-					<li class="breadcrumb-item active">Least Selling</li>
+						href="<%=request.getContextPath()%>/admin/adminHomePage.jsp">Home</a></li>
+					<li class="breadcrumb-item">Sales Report</li>
+					<li class="breadcrumb-item active">Book Sales</li>
 				</ol>
 			</nav>
 		</div>
@@ -122,7 +134,33 @@
 
 					<div class="card">
 						<div class="card-body">
-							<h5 class="card-title">Least Selling Books</h5>
+							<h5 class="card-title">Book Sales</h5>
+							<h6 class="card-title">
+								Sales History From
+								<%=request.getAttribute("startDate")%>
+								To
+								<%=request.getAttribute("endDate")%></h6>
+
+							<form id="dateForm" class="row g-3"
+								action='<%=request.getContextPath() + URL.getBookSalesServlet%>'
+								method="get" enctype="multipart/form-data">
+								<!-- Start Date input -->
+								<div class="col-md-4">
+									<label for="startID" class="form-label">Start Date</label> <input
+										type="date" class="form-control" name="startDate"
+										id="startID" max="<%=LocalDate.now()%>">
+								</div>
+								<!-- End Date input -->
+								<div class="col-md-4">
+									<label for="endID" class="form-label">End Date</label> <input
+										type="date" class="form-control" name="endDate"
+										id="endID" max="<%=LocalDate.now()%>">
+								</div>
+								<!-- Submit button -->
+								<div class="col-md-4 text-center">
+									<button id="btnSave" type="submit" class="btn btn-primary">Search</button>
+								</div>
+							</form>
 
 							<!-- Table with stripped rows -->
 							<table class="display data-table nowrap hover"
@@ -135,20 +173,29 @@
 										<th scope="col">Sales</th>
 										<th scope="col">Price</th>
 										<th scope="col">Revenue</th>
+										<th scope="col">Date</th>
 									</tr>
 								</thead>
 								<tbody>
 									<%
-									for (int i = 0; i < bookList.size(); i++) {
+									System.out.print("orderList" + orderList);
+									if (orderList != null) {
+										for (int j = 0; j < orderList.size(); j++) {
+											ArrayList<OrderItem> orderItemList = orderList.get(j).getOrderitems();
+											for (int i = 0; i < orderItemList.size(); i++) {
+										Book book = orderItemList.get(i).getBook();
 										out.println("<tr>");
-										out.println("<td>" + (i+1) + "</td>");
-										out.println("<td>" + bookList.get(i).getISBNNo() + "</td>");
-										out.println("<td>" + bookList.get(i).getTitle() + "</td>");
-										
-										out.println("<td>" + bookList.get(i).getSoldqty() + "</td>");
-										out.println("<td>$" + String.format("%.2f", bookList.get(i).getPrice()) + "</td>");
-										out.println("<td>$" + String.format("%.2f", bookList.get(i).getSoldqty()*bookList.get(i).getPrice()) + "</td>");
+										out.println("<td>" + (i + 1) + "</td>");
+										out.println("<td>" + book.getISBNNo() + "</td>");
+										out.println("<td>" + book.getTitle() + "</td>");
+
+										out.println("<td>" + book.getSoldqty() + "</td>");
+										out.println("<td>$" + String.format("%.2f", book.getPrice()) + "</td>");
+										out.println("<td>$" + String.format("%.2f", book.getSoldqty() * book.getPrice()) + "</td>");
+										out.println("<td>" + orderList.get(j).getOrderdate() + "</td>");
 										out.println("</tr>");
+											}
+										}
 									}
 									%>
 								</tbody>
@@ -160,6 +207,7 @@
 										<th scope="col">Sales</th>
 										<th scope="col">Price</th>
 										<th scope="col">Revenue</th>
+										<th scope="col">Date</th>
 									</tr>
 								</tfoot>
 							</table>
@@ -194,8 +242,9 @@
 		src="<%=request.getContextPath()%>/assets/vendor/echarts/echarts.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/quill/quill.min.js"></script>
-		<script href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
-  
+	<script
+		href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
+
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
 	<script
@@ -208,12 +257,12 @@
 
 	<!-- Template Main JS File -->
 	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
-		<script>
+	<script>
 		let table = new DataTable('.data-table', {
-			"scrollX": true,
-			"pageLength": 25,
-			"stateSave": true,
-			"colReorder": true
+			"scrollX" : true,
+			"pageLength" : 25,
+			"stateSave" : true,
+			"colReorder" : true
 		});
 	</script>
 

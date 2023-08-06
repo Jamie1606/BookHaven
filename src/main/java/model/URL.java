@@ -44,7 +44,12 @@ public class URL {
 	public static final String genreList = "/admin/genreList.jsp";
 	public static final String genreRegistration = "/admin/genreRegistration.jsp";
 	public static final String reviewList = "/admin/reviewList.jsp";
-	
+	public static final String bestSellingBookList = "/admin/bestSellingBookList.jsp";
+	public static final String leastSellingBookList = "/admin/leastSellingBookList.jsp";
+	public static final String lowStockBookList = "/admin/lowStockBookList.jsp";
+	public static final String topCustomerList = "/admin/topCustomerList.jsp";
+	public static final String bookSales = "/admin/bookSales.jsp";
+	public static final String customersOfBook = "/admin/customersOfBook.jsp";
 	
 	
 	// authentication servlets
@@ -71,7 +76,9 @@ public class URL {
 	public static final String deleteBookServlet = "/DeleteBook/";
 	public static final String defaultBookNormalImage = "book/normal/defaultBookHavenImage_normal.png";
 	public static final String defaultBook3DImage = "book/3d/defaultBookHavenImage_3d.png";
-	
+	public static final String getBestSellingBookListServlet = "/GetBestSellingBookList";
+	public static final String getLeastSellingBookListServlet = "/GetLeastSellingBookList";
+	public static final String getLowStockBookListServlet = "/GetLowStockBookList";
 	
 	
 	// member servlets
@@ -129,6 +136,7 @@ public class URL {
 	public static final String signOut = "/signout.jsp";
 	public static final String signIn = "/signin.jsp";
 	public static final String profile = "/profile.jsp";
+	public static final String search = "/search.jsp";
 	public static final String history = "/history.jsp";
 	public static final String cart = "/cart.jsp";
 	public static final String search = "/search.jsp";
@@ -146,5 +154,8 @@ public class URL {
 	public static final String updateGenreServlet = "/UpdateGenre";	
 	public static final String deleteGenreServlet = "/DeleteGenre/";
 	
-	
+	//sale servlets
+		public static final String getBookSalesServlet = "/GetBookSales";
+		public static final String getTopCustomerListServlet = "/GetTopCustomerList";	
+		public static final String getCustomerListByBookIDServlet = "/GetCustomerListByBookID";
 }
