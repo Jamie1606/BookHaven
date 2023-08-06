@@ -389,10 +389,12 @@
 								<form action="<%=request.getContextPath()+URL.deleteAccountServlet%>/<%= member.getMemberID() %>"
 									method="post" enctype="multipart/form-data">
 									<input type="hidden" name="memberID" value="<%=member.getMemberID()%>" />
-									<h5 class="card-title">Are you sure you want to delete?</h5>
+									<div  style="background-color: rgba(108, 93, 212, 0.05); padding: 20px; border-radius: 10px; box-shadow: 2px 2px 5px #ccc;">
+									<h5 class="card-title text-center">Are you sure to delete the account?</h5>
 									<!-- Submit button -->
 									<div class="text-center">
-										<button type="submit" class="btn btn-primary">Delete</button>
+										<button style="background-color: #6c5dd4; border: none; color: white; padding: 10px 40px; text-align: center; text-decoration: none; display: inline-block; font-size: 14px; margin: 20px 20px 10px 0px; cursor: pointer; outline: none; border: 1px solid #6c5dd4; background-color: #6c5dd4; font-weight: bold; letter-spacing: 1.1px; border-radius: 10px; box-shadow: 2px 2px 5px 1px #777;" type="submit" class="btn btn-primary">Delete</button>
+									</div>
 									</div>
 								</form>
 								<!-- End Profile Edit Form -->
