@@ -133,13 +133,30 @@
 					</a>
 				</li>
 				
+<<<<<<< Updated upstream
 				<li><a href="<%= request.getContextPath() + URL.getTopCustomerListServlet %>"> 
+=======
+				<li>
+
+					<a href="<%= request.getContextPath() + URL.getTopCustomerseServlet %>"> 
+
+					<a href="<%= request.getContextPath() + URL.getTopCustomerListServlet %>"> 
+
+>>>>>>> Stashed changes
 						<i class="bi bi-circle"></i><span>Top Customers</span>
 					</a>
 				</li>
 				
 				<li>
+<<<<<<< Updated upstream
 					<a href="<%= request.getContextPath() + URL.getBookListServlet + "?report=customer" %>"> 
+=======
+
+					<a href="<%= request.getContextPath() + URL.getCustomersByBookIDServlet %>"> 
+
+					<a href="<%= request.getContextPath() + URL.getBookListServlet + "?report=customer" %>"> 
+
+>>>>>>> Stashed changes
 						<i class="bi bi-circle"></i><span>Customers of the Book</span>
 					</a>
 				</li>
