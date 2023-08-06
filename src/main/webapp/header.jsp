@@ -27,7 +27,7 @@
 							String token = (String) session.getAttribute("token");
 							if(role != null && token != null) {
 								if(role.equals("ROLE_MEMBER")) {
-									out.println("<li><a href='" + request.getContextPath() + URL.profile + "'>Profile</a></li>");
+									out.println("<li><a href='" + request.getContextPath() + URL.getProfileDataServlet + "'>Profile</a></li>");
 									out.println("<li><a href='" + request.getContextPath() + URL.history + "'>History</a></li>");
 									out.println("<li><a href='" + request.getContextPath() + URL.cart + "'>Cart</a></li>");
 									out.println("<li><a href='" + request.getContextPath() + URL.signOut + "'>Sign Out</a></li>");

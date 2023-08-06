@@ -1,169 +1,133 @@
-<%@page import="model.URL" %>
+<%@page import="model.URL"%>
 
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
 
 	<ul class="sidebar-nav" id="sidebar-nav">
 
-		<li class="nav-item">
-			<a class="nav-link collapsed" href="<%= request.getContextPath() + URL.adminHomePage %>"> 
-				<i class="bi bi-grid"></i> <span>Dashboard</span>
-			</a>
-		</li>
+		<li class="nav-item"><a class="nav-link collapsed"
+			href="<%=request.getContextPath() + URL.adminHomePage%>"> <i
+				class="bi bi-grid"></i> <span>Dashboard</span>
+		</a></li>
 
-		<li class="nav-item">
-			<a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#"> 
-				<i class="bi bi-journal-text"></i><span>Registration Forms</span>
-				<i class="bi bi-chevron-down ms-auto"></i>
-			</a>
-			
-			<ul id="forms-nav" class="nav-content collapse"	data-bs-parent="#sidebar-nav">
-			
-				<li>
-					<a href="<%= request.getContextPath() + URL.authorRegistration %>"> 
+		<li class="nav-item"><a class="nav-link collapsed"
+			data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#"> <i
+				class="bi bi-journal-text"></i><span>Registration Forms</span> <i
+				class="bi bi-chevron-down ms-auto"></i>
+		</a>
+
+			<ul id="forms-nav" class="nav-content collapse"
+				data-bs-parent="#sidebar-nav">
+
+				<li><a
+					href="<%=request.getContextPath() + URL.authorRegistration%>">
 						<i class="bi bi-circle"></i><span>Author Registration</span>
-					</a>
-				</li>
-				<li>
-					<a href="<%= request.getContextPath() + URL.getBookRegistrationServlet %>"> 
+				</a></li>
+				<li><a
+					href="<%=request.getContextPath() + URL.getBookRegistrationServlet%>">
 						<i class="bi bi-circle"></i><span>Book Registration</span>
-					</a>
-				</li>
-				<li>
-					<a href="<%= request.getContextPath() + URL.genreRegistration %>"> 
-						<i class="bi bi-circle"></i><span>Genre	Registration</span>
-					</a>
-				</li>
-				<li>
-					<a href="<%= request.getContextPath() + URL.memberRegistration %>"> 
+				</a></li>
+				<li><a
+					href="<%=request.getContextPath() + URL.genreRegistration%>"> <i
+						class="bi bi-circle"></i><span>Genre Registration</span>
+				</a></li>
+				<li><a
+					href="<%=request.getContextPath() + URL.memberRegistration%>">
 						<i class="bi bi-circle"></i><span>Member Registration</span>
-					</a>
-				</li>
-			</ul>
-		</li>
+				</a></li>
+			</ul></li>
 
-		<li class="nav-item">
-			<a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-				<i class="bi bi-layout-text-window-reverse"></i><span>Data List</span><i class="bi bi-chevron-down ms-auto"></i>
-			</a>
-			
+		<li class="nav-item"><a class="nav-link collapsed"
+			data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+				<i class="bi bi-layout-text-window-reverse"></i><span>Data
+					List</span><i class="bi bi-chevron-down ms-auto"></i>
+		</a>
+
 			<ul id="tables-nav" class="nav-content collapse "
 				data-bs-parent="#sidebar-nav">
-				
-				<li>
-					<a href="<%= request.getContextPath() + URL.getAuthorListServlet %>"> 
+
+				<li><a
+					href="<%=request.getContextPath() + URL.getAuthorListServlet%>">
 						<i class="bi bi-circle"></i><span>Author List</span>
-					</a>
-				</li>
-				
-				<li>
-					<a href="<%= request.getContextPath() + URL.getBookListServlet %>"> 
+				</a></li>
+
+				<li><a
+					href="<%=request.getContextPath() + URL.getBookListServlet%>">
 						<i class="bi bi-circle"></i><span>Book List</span>
-					</a>
-				</li>
-				
-				<li>
-					<a href="<%= request.getContextPath() + URL.getGenreListServlet %>"> 
+				</a></li>
+
+				<li><a
+					href="<%=request.getContextPath() + URL.getGenreListServlet%>">
 						<i class="bi bi-circle"></i><span>Genre List</span>
-					</a>
-				</li>
-				
-				<li>
-					<a href="<%= request.getContextPath() + URL.getMemberListServlet %>"> 
+				</a></li>
+
+				<li><a
+					href="<%=request.getContextPath() + URL.getMemberListServlet%>">
 						<i class="bi bi-circle"></i><span>Member List</span>
-					</a>
-				</li>
-				
-				<li>
-					<a href="<%= request.getContextPath() + URL.getOrderListServlet %>"> 
+				</a></li>
+
+				<li><a
+					href="<%=request.getContextPath() + URL.getOrderListServlet%>">
 						<i class="bi bi-circle"></i><span>Order List</span>
-					</a>
-				</li>
-				
-				<li>
-					<a href="<%= request.getContextPath() + URL.getReviewListServlet %>"> 
+				</a></li>
+
+				<li><a
+					href="<%=request.getContextPath() + URL.getReviewListServlet%>">
 						<i class="bi bi-circle"></i><span>Review List</span>
-					</a>
-				</li>
-				
-			</ul>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
-				<i class="bi bi-layout-text-window-reverse"></i><span>Book Report</span><i class="bi bi-chevron-down ms-auto"></i>
-			</a>
-			
+				</a></li>
+
+			</ul></li>
+		<li class="nav-item"><a class="nav-link collapsed"
+			data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
+				<i class="bi bi-layout-text-window-reverse"></i><span>Book
+					Report</span><i class="bi bi-chevron-down ms-auto"></i>
+		</a>
+
 			<ul id="charts-nav" class="nav-content collapse "
 				data-bs-parent="#sidebar-nav">
-				
-				<li>
-					<a href="<%= request.getContextPath() + URL.bestSellingServlet %>"> 
-						<i class="bi bi-circle"></i><span>Best Selling</span>
-					</a>
-				</li>
-				
-				<li>
-					<a href="<%= request.getContextPath() + URL.leastSellingServlet %>"> 
-						<i class="bi bi-circle"></i><span>Least Selling</span>
-					</a>
-				</li>
-				
-				<li>
-					<a href="<%= request.getContextPath() + URL.lowStockBookServlet %>"> 
-						<i class="bi bi-circle"></i><span>Low Stock</span>
-					</a>
-				</li>
 
-				
-			</ul>
-		</li>
-		
-		<li class="nav-item">
-			<a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-				<i class="bi bi-layout-text-window-reverse"></i><span>Sales Report</span><i class="bi bi-chevron-down ms-auto"></i>
-			</a>
-			
+				<li><a
+					href="<%=request.getContextPath() + URL.bestSellingServlet%>">
+						<i class="bi bi-circle"></i><span>Best Selling</span>
+				</a></li>
+
+				<li><a
+					href="<%=request.getContextPath() + URL.leastSellingServlet%>">
+						<i class="bi bi-circle"></i><span>Least Selling</span>
+				</a></li>
+
+				<li><a
+					href="<%=request.getContextPath() + URL.lowStockBookServlet%>">
+						<i class="bi bi-circle"></i><span>Low Stock</span>
+				</a></li>
+
+
+			</ul></li>
+
+		<li class="nav-item"><a class="nav-link collapsed"
+			data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#"> <i
+				class="bi bi-layout-text-window-reverse"></i><span>Sales
+					Report</span><i class="bi bi-chevron-down ms-auto"></i>
+		</a>
+
 			<ul id="icons-nav" class="nav-content collapse "
 				data-bs-parent="#sidebar-nav">
-				
-				<li>
-					<a href="<%= request.getContextPath() + URL.getBookSalesServlet %>"> 
-					<!-- URL.getBookSalesServlet -->
-						<i class="bi bi-circle"></i><span>Book Sales</span>
-					</a>
-				</li>
-				
-<<<<<<< Updated upstream
-				<li><a href="<%= request.getContextPath() + URL.getTopCustomerListServlet %>"> 
-=======
-				<li>
 
-					<a href="<%= request.getContextPath() + URL.getTopCustomerseServlet %>"> 
-
-					<a href="<%= request.getContextPath() + URL.getTopCustomerListServlet %>"> 
-
->>>>>>> Stashed changes
+				<li><a
+					href="<%=request.getContextPath() + URL.getBookSalesServlet%>">
+						<!-- URL.getBookSalesServlet --> <i class="bi bi-circle"></i><span>Book
+							Sales</span>
+				</a></li>
+				<li><a
+					href="<%=request.getContextPath() + URL.getTopCustomerListServlet%>">
 						<i class="bi bi-circle"></i><span>Top Customers</span>
-					</a>
-				</li>
-				
-				<li>
-<<<<<<< Updated upstream
-					<a href="<%= request.getContextPath() + URL.getBookListServlet + "?report=customer" %>"> 
-=======
+				</a></li>
 
-					<a href="<%= request.getContextPath() + URL.getCustomersByBookIDServlet %>"> 
-
-					<a href="<%= request.getContextPath() + URL.getBookListServlet + "?report=customer" %>"> 
-
->>>>>>> Stashed changes
+				<li><a
+					href="<%=request.getContextPath() + URL.getBookListServlet + "?report=customer"%>">
 						<i class="bi bi-circle"></i><span>Customers of the Book</span>
-					</a>
-				</li>
-
-				
-			</ul>
-		</li>
+				</a></li>
+			</ul></li>
 	</ul>
 </aside>
 <!-- End Sidebar-->

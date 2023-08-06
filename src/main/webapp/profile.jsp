@@ -127,7 +127,7 @@
 
 	member = (Member) request.getAttribute("member");
 	request.removeAttribute("member");
-	
+	if(member!=null){
 	memberid = member.getMemberID();
 	name = member.getName();
 	gender = member.getGender();
@@ -146,6 +146,7 @@
 	
 	if(member.getBirthDate() != null) {
 		birthdate = member.getBirthDate().toString();
+	}
 	}
 	%>
 
@@ -191,6 +192,10 @@
 							</li>
 
 
+							<li class="nav-item">
+								<button class="nav-link" data-bs-toggle="tab"
+									data-bs-target="#profile-delete" style="outline: none;">Delete Account</button>
+							</li>
 						</ul>
 						<div class="tab-content pt-2">
 
@@ -257,9 +262,9 @@
 							<div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
 								<!-- Profile Edit Form -->
-								<form action="<%=request.getContextPath()%>/profile"
+								<form action="<%=request.getContextPath()+URL.updateProfileServlet%>"
 									method="post" enctype="multipart/form-data">
-									<input type="hidden" name="status" value="profileEdit" />
+									<input type="hidden" name="memberID" value="<%=member.getMemberID()%>" />
 									<!-- Name input -->
 									<div class="row mb-3">
 										<label for="fullName" class="col-md-4 col-lg-3 col-form-label">Name</label>
@@ -365,7 +370,23 @@
 								<!-- End Profile Edit Form -->
 
 							</div>
+<!-- delete -->
+<div class="tab-pane fade profile-delete pt-3" id="profile-delete">
 
+								<!-- Profile Edit Form -->
+								<form action="<%=request.getContextPath()+URL.deleteAccountServlet%>/<%= member.getMemberID() %>"
+									method="post" enctype="multipart/form-data">
+									<input type="hidden" name="memberID" value="<%=member.getMemberID()%>" />
+									<h5 class="card-title">Are you sure you want to delete?</h5>
+									<!-- Submit button -->
+									<div class="text-center">
+										<button type="submit" class="btn btn-primary">Delete</button>
+									</div>
+								</form>
+								<!-- End Profile Edit Form -->
+
+							</div>
+							<!--  delete  end -->
 
 						</div>
 
