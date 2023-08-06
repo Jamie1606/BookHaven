@@ -54,7 +54,8 @@ public class GetLeastSellingBookList extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
-		String url = URL.leastSellingBookList;
+		//String url = URL.leastSellingBookList;
+		String url="";
 		boolean condition = true;
 		String status = "";
 		String limit = "";

@@ -138,4 +138,6 @@ public class URL {
 	public static final String createGenreServlet = "/CreateGenre";
 	public static final String updateGenreServlet = "/UpdateGenre";	
 	public static final String deleteGenreServlet = "/DeleteGenre/";
+	
+	
 }

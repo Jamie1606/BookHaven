@@ -1,14 +1,15 @@
+
 <%
 // Author 	  	: Thu Htet San
 // Admin No    	: 2235022
 // Class       	: DIT/FT/2A/02
 // Group		: 10
-// Date		  	: 15.6.2023
+// Date		  	: 5.8.2023
 // Description 	: Search Books/Authors
 %>
 
-<!-- [IMPORT] -->
 <%@ page import="java.util.ArrayList, model.*"%>
+
 
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
@@ -45,15 +46,24 @@
 <link rel="icon" type="image/png" href="<%= request.getContextPath() %>/img/logo.png">
 </head>
 <body>
-<%
-	String errCode = request.getParameter("errCode");
-
-	if (errCode != null) {
-		if (errCode.equals("invalid")) {
-			out.println("<script>alert('Invalid Data!!'); location='" + request.getContextPath() + "/search.jsp';</script>");
-			return;
+	<%
+		String status = (String) request.getAttribute("status");
+		if(status != null) {
+			if(status.equals(Status.invalidData)) {
+				out.println("<script>alert('Invalid data!');</script>"); 
+				out.println("<script>location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.invalidRequest)) {
+				out.println("<script>alert('Invalid request!');</script>");
+				out.println("<script>location='" + request.getContextPath() + URL.getBookListServlet + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.serverError)) {
+				out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.search + "';</script>");
+				return;
+			}
 		}
-	}
 	%>
 
 	<%@ include file="header.jsp"%><!-- #header -->
@@ -62,17 +72,15 @@
 		<div>
 			<div style="padding: 80px">
 				<div>
-					<div style="display: flex; flex-direction: row; justify-content: center;">
-						<label style="margin: 5px 10px; for="searchInput">Search By:</label> 
-						<select
+					<div
+						style="display: flex; flex-direction: row; justify-content: center;">
+						<label style="margin: 5px 10px;"searchInput">Search By:</label> <select
 							id="searchOption" name="searchOption"
 							style="padding: 5px; margin-right: 10px;">
 							<option value="book">Title</option>
 							<option value="author">Author</option>
-						</select>
-						<input type="text"
-							id="searchInput" name="searchInput"
-							style="padding: 5px; margin-right: 10px;"> 
+						</select> <input type="text" id="searchInput" name="searchInput"
+							style="padding: 5px; margin-right: 10px;">
 						<button onclick="search()"
 							style="padding: 5px 10px; background-color: #337ab7; color: #fff; border: none; cursor: pointer;">Search</button>
 					</div>
@@ -107,7 +115,8 @@
 	<!-- End footer Area -->
 
 
-	<script src="<%= request.getContextPath() %>/js/vendor/jquery-2.2.4.min.js"></script>
+	<script
+		src="<%= request.getContextPath() %>/js/vendor/jquery-2.2.4.min.js"></script>
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -116,14 +125,18 @@
 	<script src="<%= request.getContextPath() %>/js/easing.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/hoverIntent.js"></script>
 	<script src="<%= request.getContextPath() %>/js/superfish.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/jquery.ajaxchimp.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/jquery.magnific-popup.min.js"></script>
+	<script
+		src="<%= request.getContextPath() %>/js/jquery.ajaxchimp.min.js"></script>
+	<script
+		src="<%= request.getContextPath() %>/js/jquery.magnific-popup.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/owl.carousel.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/jquery.sticky.js"></script>
-	<script src="<%= request.getContextPath() %>/js/jquery.nice-select.min.js"></script>
+	<script
+		src="<%= request.getContextPath() %>/js/jquery.nice-select.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/parallax.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/waypoints.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/jquery.counterup.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/mail-script.js"></script>
 	<script src="<%= request.getContextPath() %>/js/main.js"></script>
 
 	<script>

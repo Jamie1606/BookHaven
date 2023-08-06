@@ -89,48 +89,61 @@
 			</ul>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link collapsed" data-bs-target="#reports-nav" data-bs-toggle="collapse" href="#">
-				<i class="bi bi-layout-text-window-reverse"></i><span>Reports</span><i class="bi bi-chevron-down ms-auto"></i>
+			<a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
+				<i class="bi bi-layout-text-window-reverse"></i><span>Book Report</span><i class="bi bi-chevron-down ms-auto"></i>
 			</a>
 			
-			<ul id="reports-nav" class="nav-content collapse "
+			<ul id="charts-nav" class="nav-content collapse "
 				data-bs-parent="#sidebar-nav">
 				
 				<li>
-					<a href="<%= request.getContextPath() + URL.getAuthorListServlet %>"> 
-						<i class="bi bi-circle"></i><span>Author List</span>
+					<a href="<%= request.getContextPath() + URL.getBestSellingBookListServlet %>"> 
+						<i class="bi bi-circle"></i><span>Best Selling</span>
 					</a>
 				</li>
 				
 				<li>
-					<a href="<%= request.getContextPath() + URL.getBookListServlet %>"> 
-						<i class="bi bi-circle"></i><span>Book List</span>
+					<a href="<%= request.getContextPath() + URL.getLeastSellingBookListServlet %>"> 
+						<i class="bi bi-circle"></i><span>Least Selling</span>
 					</a>
 				</li>
 				
 				<li>
-					<a href="<%= request.getContextPath() %>/admin/genres"> 
-						<i class="bi bi-circle"></i><span>Genre List</span>
+					<a href="<%= request.getContextPath() + URL.getLowStockBookListServlet %>"> 
+						<i class="bi bi-circle"></i><span>Low Stock</span>
+					</a>
+				</li>
+
+				
+			</ul>
+		</li>
+		
+		<li class="nav-item">
+			<a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+				<i class="bi bi-layout-text-window-reverse"></i><span>Sales Report</span><i class="bi bi-chevron-down ms-auto"></i>
+			</a>
+			
+			<ul id="icons-nav" class="nav-content collapse "
+				data-bs-parent="#sidebar-nav">
+				
+				<li>
+					<a href="<%= request.getContextPath() + URL.getBookSalesServlet %>"> 
+						<i class="bi bi-circle"></i><span>Book Sales</span>
+					</a>
+				</li>
+				
+				<li>
+					<a href="<%= request.getContextPath() + URL.getTopCustomers %>"> 
+						<i class="bi bi-circle"></i><span>Top Customers</span>
 					</a>
 				</li>
 				
 				<li>
 					<a href="<%= request.getContextPath() + URL.getMemberListServlet %>"> 
-						<i class="bi bi-circle"></i><span>Member List</span>
+						<i class="bi bi-circle"></i><span>Customers of the Book</span>
 					</a>
 				</li>
-				
-				<li>
-					<a href="<%= request.getContextPath() + URL.getOrderListServlet %>"> 
-						<i class="bi bi-circle"></i><span>Order List</span>
-					</a>
-				</li>
-				
-				<li>
-					<a href="<%= request.getContextPath() %>/admin/reviews"> 
-						<i class="bi bi-circle"></i><span>Review List</span>
-					</a>
-				</li>
+
 				
 			</ul>
 		</li>

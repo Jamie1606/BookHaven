@@ -44,14 +44,6 @@ public class DeleteGenre extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		String url = URL.genreList;
 		boolean condition = true;
@@ -83,19 +75,20 @@ public class DeleteGenre extends HttpServlet {
 				if(condition) {
 					
 					Client client = ClientBuilder.newClient();
-					WebTarget target = client.target(URL.baseURL).path("").path("{id}").resolveTemplate("id", id);
+					WebTarget target = client.target(URL.baseURL).path("deleteGenre").path("{id}").resolveTemplate("id", id);
 					Invocation.Builder invocationBuilder = target.request();
 					invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 					Response resp = invocationBuilder.delete();
 					
 					if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
-						Integer row = resp.readEntity(Integer.class);	
+						Integer row = resp.readEntity(Integer.class);
+						System.out.println(row);
 						if(row == 1) {
 							status = Status.deleteSuccess;
 						}
 						else {
 							System.out.println("..... Genre not deleted in DeleteGenre servlet .....");
-							status = Status.invalidData;
+							status = Status.invalidRequest;
 						}
 					}
 					else if(resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
@@ -117,6 +110,14 @@ public class DeleteGenre extends HttpServlet {
 		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

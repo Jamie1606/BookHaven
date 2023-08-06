@@ -52,6 +52,9 @@
 	href="<%=request.getContextPath()%>/assets/vendor/simple-datatables/style.css"
 	rel="stylesheet">
 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.7.0/css/colReorder.dataTables.min.css" />
+
 <!-- Template Main CSS File -->
 <link href="<%=request.getContextPath()%>/assets/css/style.css"
 	rel="stylesheet">
@@ -72,29 +75,28 @@
 	<%@ include file="adminheader.jsp"%>
 	<%@ include file="adminsidebar.jsp"%>
 
-	<%			
+	<%
 	System.out.println("......in genreList.jsp ..");
 	String status = (String) request.getAttribute("status");
 	request.removeAttribute("status");
-	if(status != null) {
-		if(status.equals(Status.serverError)) {
-			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
+	if (status != null) {
+		if (status.equals(Status.serverError)) {
+			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage
+			+ "';</script>");
 			return;
-		}
-		else if(status.equals(Status.invalidData)) {
-			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
+		} else if (status.equals(Status.invalidData)) {
+			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath() + URL.getGenreListServlet
+			+ "';</script>");
 			return;
-		}
-		else if(status.equals(Status.invalidRequest)) {
-			out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
+		} else if (status.equals(Status.invalidRequest)) {
+			out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + URL.getGenreListServlet
+			+ "';</script>");
 			return;
-		}
-		else if(status.equals(Status.updateSuccess)) {
-			out.println("<script>alert('Genre is successfully updated!');</script>"); 
+		} else if (status.equals(Status.updateSuccess)) {
+			out.println("<script>alert('Genre is successfully updated!');</script>");
 			out.println("<script>location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
 			return;
-		}
-		else if(status.equals(Status.deleteSuccess)) {
+		} else if (status.equals(Status.deleteSuccess)) {
 			out.println("<script>alert('Genre is successfully deleted!');</script>");
 			out.println("<script>location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
 			return;
@@ -102,7 +104,7 @@
 	}
 
 	ArrayList<Genre> genreList = (ArrayList<Genre>) request.getAttribute("genreList");
-	if(genreList == null) {
+	if (genreList == null) {
 		out.println("<script>alert('Server error!');</script>");
 		out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
 		return;
@@ -133,7 +135,7 @@
 							<h5 class="card-title">Genre Information</h5>
 
 							<!-- Table with stripped rows -->
-							<table class="table datatable">
+							<table class="display data-table nowrap hover" style="width: 100%">
 								<thead>
 									<tr>
 										<th scope="col">No.</th>
@@ -144,12 +146,18 @@
 								<tbody>
 									<%
 									for (int i = 0; i < genreList.size(); i++) {
+										int genreID = genreList.get(i).getGenreID();
+										String genreName = genreList.get(i).getGenre();
+										
 										out.println("<tr>");
 										out.println("<td>" + (i + 1) + ".</td>");
 										out.println("<td>" + genreList.get(i).getGenre() + "</td>");
-										out.println("<td><a href='" + request.getContextPath() + URL.getGenreByIDServlet+ genreList.get(i).getGenreID()
-										+ " '>Edit</a> | <a href='" + request.getContextPath() + URL.deleteGenreServlet
-										+ genreList.get(i).getGenreID() + "'>Delete</a></td>");
+										out.println("<td><a href='" + request.getContextPath() + URL.getGenreByIDServlet + genreID + "'>Edit</a> ");
+										out.println("|");
+										out.println("<a data-genre-name='" + genreName + "' class='delLink' href='" + request.getContextPath() + URL.deleteGenreServlet + genreList.get(i).getGenreID() + "'>Delete</a></td>");
+
+										
+										
 										out.println("</tr>");
 									}
 									%>
@@ -168,7 +176,25 @@
 
 	</main>
 	<!-- End #main -->
-
+	
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        Are you sure you want to delete <span id="genreNameDelete"></span>?
+	      </div>
+	      <div class="modal-footer">
+	      	<button type="button" class="btn btn-danger btnDelete">Delete</button>
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>	        
+	      </div>
+	    </div>
+	  </div>
+	</div>
 	<%@ include file="adminfooter.jsp"%>
 
 	<a href="#"
@@ -190,15 +216,46 @@
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/quill/quill.min.js"></script>
 	<script
-		src="<%=request.getContextPath()%>/assets/vendor/simple-datatables/simple-datatables.js"></script>
-	<script
 		src="<%=request.getContextPath()%>/assets/vendor/tinymce/tinymce.min.js"></script>
 	<script
 		src="<%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
+		
+	<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+	<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
 
 	<!-- Template Main JS File -->
-	<script src="<%= request.getContextPath()%>/assets/js/main.js"></script>
+	<script src="<%=request.getContextPath()%>/assets/js/main.js"></script>
+	
+	
+	<script>
+		let table = new DataTable('.data-table', {
+			"scrollX" : true,
+			"pageLength" : 25,
+			"stateSave" : true,
+			"colReorder" : true
+		});
 
+		document.addEventListener('click', function(event) {
+			let target = event.target;
+
+			if (target.classList.contains("delLink")) {
+				event.preventDefault();
+
+				var deleteModal = new bootstrap.Modal(document
+						.getElementById("exampleModal"));
+				let genreName = target.getAttribute('data-genre-name');
+				document.getElementById("genreNameDelete").textContent = "\""
+						+ genreName + "\"";
+				deleteModal.show();
+
+				document.querySelector('#exampleModal .btnDelete')
+						.addEventListener('click', function() {
+							window.location.href = target.getAttribute('href');
+							deleteModal.hide();
+						})
+			}
+		});
+	</script>
 </body>
 
 </html>
