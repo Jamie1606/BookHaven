@@ -141,6 +141,9 @@
 										int orderID = orderList.get(i).getOrderid();
 										String orderDate = orderList.get(i).getOrderdate().toString();
 										String memberName = orderList.get(i).getMember().getName();
+										if(memberName == null) {
+											memberName = "";
+										}
 										double totalAmount = orderList.get(i).getTotalamount();
 										String deliveryAddress = orderList.get(i).getDeliveryaddress();
 										String orderStatus = orderList.get(i).getOrderstatus();

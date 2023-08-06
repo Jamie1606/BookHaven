@@ -154,9 +154,17 @@
 										String contextPath = request.getContextPath();
 										int orderID = itemList.get(i).getOrderid();
 										String isbnno = itemList.get(i).getIsbnno();
-										String title = itemList.get(i).getBook().getTitle();
-										int qty = itemList.get(i).getQty();
+										if(isbnno == null) {
+											isbnno = "";
+										}
 										double price = itemList.get(i).getBook().getPrice();
+										String priceStr = "$" + String.format("%.2f", price);
+										String title = itemList.get(i).getBook().getTitle();
+										if(title == null) {
+											title = "";
+											priceStr = "N/A";
+										}
+										int qty = itemList.get(i).getQty();
 										double amount = itemList.get(i).getAmount();
 										String orderStatus = itemList.get(i).getStatus();
 										
@@ -165,7 +173,7 @@
 										out.println("<td>" + isbnno + "</td>");
 										out.println("<td>" + title + "</td>");
 										out.println("<td>" + qty + "</td>");
-										out.println("<td>$" + String.format("%.2f", price) + "</td>");
+										out.println("<td>" + priceStr + "</td>");
 										out.println("<td>$" + String.format("%.2f", amount) + "</td>");
 										out.println("<td>" + orderStatus.substring(0,1).toUpperCase() + orderStatus.substring(1) + "</script></td>");
 										out.println("<td>");
