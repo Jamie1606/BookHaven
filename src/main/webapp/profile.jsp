@@ -107,26 +107,30 @@
 			+ "';</script>");
 			return;
 		} else if (status.equals(Status.invalidData)) {
-			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath() + URL.getGenreListServlet
+			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath() + URL.getProfileDataServlet
 			+ "';</script>");
 			return;
 		} else if (status.equals(Status.invalidRequest)) {
-			out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + URL.getGenreListServlet
+			out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + URL.getProfileDataServlet
 			+ "';</script>");
 			return;
 		} else if (status.equals(Status.updateSuccess)) {
-			out.println("<script>alert('Genre is successfully updated!');</script>");
-			out.println("<script>location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
+			out.println("<script>alert('Profile is successfully updated!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.getProfileDataServlet + "';</script>");
 			return;
 		} else if (status.equals(Status.deleteSuccess)) {
-			out.println("<script>alert('Genre is successfully deleted!');</script>");
-			out.println("<script>location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
+			out.println("<script>alert('Account is successfully deleted!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.signOut + "';</script>");
 			return;
 		}
 	}
 
 	member = (Member) request.getAttribute("member");
 	request.removeAttribute("member");
+	if(member == null) {
+		out.println("<script>location='" + request.getContextPath() + URL.getProfileDataServlet + "';</script>");
+		return;
+	}
 	if(member!=null){
 	memberid = member.getMemberID();
 	name = member.getName();
@@ -158,7 +162,7 @@
 					<div
 						class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-						<img src="<%=request.getContextPath() + member.getImage()%>"
+						<img src="<%= URL.imageLink + member.getImage()%>"
 							class="rounded-circle">
 						<h2><%=member.getName()%></h2>
 						<h3>Member</h3>
@@ -207,7 +211,7 @@
 									<div class="col-lg-3 col-md-4 label ">Profile Image</div>
 									<div class="col-lg-9 col-md-8">
 										<img style="width: 100px; height: 100px;"
-											src="<%=request.getContextPath() + member.getImage()%>"
+											src="<%= URL.imageLink + member.getImage()%>"
 											alt="Profile">
 
 									</div>
@@ -262,7 +266,7 @@
 							<div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
 								<!-- Profile Edit Form -->
-								<form action="<%=request.getContextPath()+URL.updateProfileServlet%>"
+								<form action="<%= request.getContextPath() + URL.updateProfileServlet%>"
 									method="post" enctype="multipart/form-data">
 									<input type="hidden" name="memberID" value="<%=member.getMemberID()%>" />
 									<!-- Name input -->
@@ -270,7 +274,15 @@
 										<label for="fullName" class="col-md-4 col-lg-3 col-form-label">Name</label>
 										<div class="col-md-8 col-lg-9">
 											<input name="name" type="text" class="form-control"
-												id="nameID" value="<%=member.getName()%>" required>
+												id="nameID" value="<%= member.getName()%>" required>
+										</div>
+									</div>
+									
+									<div class="row mb-3">
+										<label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email</label>
+										<div class="col-md-8 col-lg-9">
+											<input name="email" type="text" class="form-control"
+												id="nameID" value="<%= member.getEmail() %>" readonly>
 										</div>
 									</div>
 
