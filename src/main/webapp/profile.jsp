@@ -1,9 +1,10 @@
+
 <%
 // Author 	  	: Thu Htet San
 // Admin No    	: 2235022
 // Class       	: DIT/FT/2A/02
 // Group		: 10
-// Date		  	: 15.6.2023
+// Date		  	: 6.8.2023
 // Description 	: Show user profile
 %>
 
@@ -19,7 +20,8 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- Favicon-->
-<link rel="shortcut icon" href="<%= request.getContextPath() %>/img/fav.png">
+<link rel="shortcut icon"
+	href="<%=request.getContextPath()%>/img/fav.png">
 <!-- Author Meta -->
 <meta name="author" content="codepixer">
 <!-- Meta Description -->
@@ -35,91 +37,117 @@
 	href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700"
 	rel="stylesheet">
 <!--CSS============================================= -->
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/linearicons.css">
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/font-awesome.min.css">
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/bootstrap.css">
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/magnific-popup.css">
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/nice-select.css">
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/animate.min.css">
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/owl.carousel.css">
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/main.css">
-<link rel="icon" type="image/png" href="<%= request.getContextPath() %>/img/logo.png">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/linearicons.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/bootstrap.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/magnific-popup.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/nice-select.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/animate.min.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/owl.carousel.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/main.css">
+<link rel="icon" type="image/png"
+	href="<%=request.getContextPath()%>/img/logo.png">
 
-<link href="<%= request.getContextPath() %>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
+<link
+	href="<%=request.getContextPath()%>/assets/vendor/bootstrap-icons/bootstrap-icons.css"
 	rel="stylesheet">
 
 <!-- Template Main CSS File -->
-<link href="<%= request.getContextPath() %>/assets/css/style.css" rel="stylesheet">
+<link href="<%=request.getContextPath()%>/assets/css/style.css"
+	rel="stylesheet">
 
 </head>
 
 <body>
 	<%@ include file="header.jsp"%>
-	
+
 	<%
-		if(session != null && !session.isNew()) {
-			String token = (String) session.getAttribute("token");
-			String role = (String) session.getAttribute("role");
-			
-			if(token == null || token.isEmpty() || role == null || !role.equals("ROLE_MEMBER")) {
-				request.setAttribute("status", Status.unauthorized);
-				request.getRequestDispatcher(URL.signOut).forward(request, response);
-				return;
-			}
-		}
-		else {
+	
+	System.out.println("......in profile.jsp ..");
+	
+	Member member = null;
+	
+	int memberid = 0;
+	String name = "";
+	char gender = 'N';
+	String birthdate = "";
+	String phone = "";
+	String email = "";
+	String image = "";
+	String postalCode = "";
+	String address = "";
+	if (session != null && !session.isNew()) {
+		String token = (String) session.getAttribute("token");
+		String role = (String) session.getAttribute("role");
+
+		if (token == null || token.isEmpty() || role == null || !role.equals("ROLE_MEMBER")) {
 			request.setAttribute("status", Status.unauthorized);
 			request.getRequestDispatcher(URL.signOut).forward(request, response);
 			return;
 		}
-	
-	String errCode = (String) request.getAttribute("errCode");
-	if (errCode != null) {
-		if (errCode.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath()
-			+ "/index.jsp';</script>");
-			return;
-		} else if (errCode.equals("invalid")) {
-			out.println("<script>alert('Invalid Data or Request!'); location='" + request.getContextPath()
-			+ "/profile.jsp';</script>");
-			return;
-		}else if (errCode.equals("invalidEmail")) {
-			out.println("<script>alert('Invalid Email!'); location='" + request.getContextPath()
-			+ "/profile.jsp';</script>");
-			return;
-		}else if (errCode.equals("unauthorized")) {
-			out.println("<script>alert('Unauthorized!'); location='" + request.getContextPath()
-			+ "/signout.jsp';</script>");
-			return;
-		}else {
-			out.println("<script>alert('Unexpected Error! Please contact IT team!'); location='" + request.getContextPath()
-			+ "/index.jsp';</script>");
-			return;
-		}
 	} else {
-		String success = (String)request.getAttribute("success");
-		if (success != null) {
-			if (success.equals("update")) {
-		out.println("<script>alert('Member data is successfully updated!'); location='" + request.getContextPath()
-				+ "/profile.jsp';</script>");
+		request.setAttribute("status", Status.unauthorized);
+		request.getRequestDispatcher(URL.signOut).forward(request, response);
 		return;
-			}
+	}
+	
+	
+	String status = (String) request.getAttribute("status");
+	request.removeAttribute("status");
+	if (status != null) {
+		if (status.equals(Status.serverError)) {
+			out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.adminHomePage
+			+ "';</script>");
+			return;
+		} else if (status.equals(Status.invalidData)) {
+			out.println("<script>alert('Invalid data!'); location='" + request.getContextPath() + URL.getGenreListServlet
+			+ "';</script>");
+			return;
+		} else if (status.equals(Status.invalidRequest)) {
+			out.println("<script>alert('Invalid request!'); location='" + request.getContextPath() + URL.getGenreListServlet
+			+ "';</script>");
+			return;
+		} else if (status.equals(Status.updateSuccess)) {
+			out.println("<script>alert('Genre is successfully updated!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
+			return;
+		} else if (status.equals(Status.deleteSuccess)) {
+			out.println("<script>alert('Genre is successfully deleted!');</script>");
+			out.println("<script>location='" + request.getContextPath() + URL.getGenreListServlet + "';</script>");
+			return;
 		}
 	}
-	String servlet = (String)request.getAttribute("servlet");
-	request.removeAttribute("servlet");
-	if(servlet == null || !servlet.equals("true")) {
-		out.println("<script>location='" + request.getContextPath() + "/profile';</script>");
-		return;
-	}
-	Member member = (Member) request.getAttribute("member");
+
+	member = (Member) request.getAttribute("member");
 	request.removeAttribute("member");
+	if(member!=null){
+	memberid = member.getMemberID();
+	name = member.getName();
+	gender = member.getGender();
+	email = member.getEmail();
+	phone = member.getPhone();
+	image = member.getImage();
+	
 	String[] addressArr = member.getAddress().split("\\|");
-	String postalCode = "";
-	if(addressArr.length == 2) {
-		postalCode = addressArr[1];
+	if (addressArr.length == 2) {
+		address = addressArr[0].trim();
+		postalCode = addressArr[1].trim();
 	}
-	String address = addressArr[0];
+	if (addressArr.length == 1) {
+		address = addressArr[0].trim();
+	}
+	
+	if(member.getBirthDate() != null) {
+		birthdate = member.getBirthDate().toString();
+	}
+	}
 	%>
 
 	<section class="section profile" style="padding: 100px 20px 20px 20px;">
@@ -159,10 +187,15 @@
 
 							<li class="nav-item">
 								<button class="nav-link" data-bs-toggle="tab"
-									data-bs-target="#profile-edit" style="outline: none;">Edit Profile</button>
+									data-bs-target="#profile-edit" style="outline: none;">Edit
+									Profile</button>
 							</li>
 
 
+							<li class="nav-item">
+								<button class="nav-link" data-bs-toggle="tab"
+									data-bs-target="#profile-delete" style="outline: none;">Delete Account</button>
+							</li>
 						</ul>
 						<div class="tab-content pt-2">
 
@@ -173,8 +206,7 @@
 								<div class="row">
 									<div class="col-lg-3 col-md-4 label ">Profile Image</div>
 									<div class="col-lg-9 col-md-8">
-										<img
-										style="width: 100px; height: 100px;"
+										<img style="width: 100px; height: 100px;"
 											src="<%=request.getContextPath() + member.getImage()%>"
 											alt="Profile">
 
@@ -208,23 +240,21 @@
 
 								<div class="row">
 									<div class="col-lg-3 col-md-4 label">Birth Date</div>
-									<div class="col-lg-9 col-md-8"><%=member.getBirthDate()==null? "N/A" : member.getBirthDate()%></div>
+									<div class="col-lg-9 col-md-8"><%=member.getBirthDate() == null ? "N/A" : member.getBirthDate()%></div>
 								</div>
 
 								<div class="row">
 									<div class="col-lg-3 col-md-4 label">Gender</div>
 									<%
-										if(member.getGender() == 'M') {
-											out.println("<div class='col-lg-9 col-md-8'>Male</div>");
-										}
-										else if(member.getGender() == 'F') {
-											out.println("<div class='col-lg-9 col-md-8'>Female</div>");
-										}
-										else {
-											out.println("<div class='col-lg-9 col-md-8'>N/A</div>");
-										}
+									if (member.getGender() == 'M') {
+										out.println("<div class='col-lg-9 col-md-8'>Male</div>");
+									} else if (member.getGender() == 'F') {
+										out.println("<div class='col-lg-9 col-md-8'>Female</div>");
+									} else {
+										out.println("<div class='col-lg-9 col-md-8'>N/A</div>");
+									}
 									%>
-									
+
 								</div>
 
 							</div>
@@ -232,8 +262,9 @@
 							<div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
 								<!-- Profile Edit Form -->
-								<form action="<%= request.getContextPath() %>/profile"  method="post" enctype="multipart/form-data">
-								<input type="hidden" name="status" value="profileEdit"/>
+								<form action="<%=request.getContextPath()+URL.updateProfileServlet%>"
+									method="post" enctype="multipart/form-data">
+									<input type="hidden" name="memberID" value="<%=member.getMemberID()%>" />
 									<!-- Name input -->
 									<div class="row mb-3">
 										<label for="fullName" class="col-md-4 col-lg-3 col-form-label">Name</label>
@@ -242,20 +273,25 @@
 												id="nameID" value="<%=member.getName()%>" required>
 										</div>
 									</div>
-									
+
 									<!-- Current Password input -->
 									<div class="row mb-3">
-										<label for="currentPasswordID" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+										<label for="currentPasswordID"
+											class="col-md-4 col-lg-3 col-form-label">Current
+											Password</label>
 										<div class="col-md-8 col-lg-9">
-											<input type="password" class="form-control" name="currentPassword" id="currentPasswordID">
+											<input type="password" class="form-control"
+												name="currentPassword" id="currentPasswordID">
 										</div>
 									</div>
-									
+
 									<!-- New Password input -->
 									<div class="row mb-3">
-										<label for="currentPasswordID" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+										<label for="currentPasswordID"
+											class="col-md-4 col-lg-3 col-form-label">New Password</label>
 										<div class="col-md-8 col-lg-9">
-											<input type="password" class="form-control" name="newPassword" id="newPasswordID">
+											<input type="password" class="form-control"
+												name="newPassword" id="newPasswordID">
 										</div>
 									</div>
 
@@ -294,7 +330,8 @@
 											class="col-md-4 col-lg-3 col-form-label">Birth Date</label>
 										<div class="col-md-8 col-lg-9">
 											<input type="date" class="form-control" name="birthDate"
-												id="birthDateID" max="<%= LocalDate.now() %>" value="<%=member.getBirthDate()%>">
+												id="birthDateID" max="<%=LocalDate.now()%>"
+												value="<%=member.getBirthDate()%>">
 										</div>
 									</div>
 
@@ -302,8 +339,9 @@
 									<div class="row mb-3">
 										<label for="genderID" class="col-md-4 col-lg-3 col-form-label">Gender</label>
 										<div class="col-md-8 col-lg-9">
-											<select name="gender" id="genderID"  class="form-control" >
-												<option value="N" <%= member.getGender() == 'N'? "selected" :"" %>>N/A</option>
+											<select name="gender" id="genderID" class="form-control">
+												<option value="N"
+													<%=member.getGender() == 'N' ? "selected" : ""%>>N/A</option>
 												<option <%=member.getGender() == 'F' ? "selected" : ""%>
 													value="F">Female</option>
 												<option <%=member.getGender() == 'M' ? "selected" : ""%>
@@ -332,42 +370,62 @@
 								<!-- End Profile Edit Form -->
 
 							</div>
+<!-- delete -->
+<div class="tab-pane fade profile-delete pt-3" id="profile-delete">
 
+								<!-- Profile Edit Form -->
+								<form action="<%=request.getContextPath()+URL.deleteAccountServlet%>/<%= member.getMemberID() %>"
+									method="post" enctype="multipart/form-data">
+									<input type="hidden" name="memberID" value="<%=member.getMemberID()%>" />
+									<h5 class="card-title">Are you sure you want to delete?</h5>
+									<!-- Submit button -->
+									<div class="text-center">
+										<button type="submit" class="btn btn-primary">Delete</button>
+									</div>
+								</form>
+								<!-- End Profile Edit Form -->
 
 							</div>
+							<!--  delete  end -->
 
 						</div>
-						<!-- End Bordered Tabs -->
 
 					</div>
-				</div>
+					<!-- End Bordered Tabs -->
 
+				</div>
 			</div>
+
+		</div>
 	</section>
 
 	<%@ include file="footer.jsp"%>
 
-	<script src="<%= request.getContextPath() %>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/vendor/jquery-2.2.4.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/js/vendor/jquery-2.2.4.min.js"></script>
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
 		crossorigin="anonymous"></script>
-	<script src="<%= request.getContextPath() %>/js/easing.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/hoverIntent.js"></script>
-	<script src="<%= request.getContextPath() %>/js/superfish.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/jquery.ajaxchimp.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/jquery.magnific-popup.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/owl.carousel.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/jquery.sticky.js"></script>
-	<script src="<%= request.getContextPath() %>/js/jquery.nice-select.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/parallax.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/waypoints.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/jquery.counterup.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/mail-script.js"></script>
-	<script src="<%= request.getContextPath() %>/js/main.js"></script>
-	
-	
+	<script src="<%=request.getContextPath()%>/js/easing.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/hoverIntent.js"></script>
+	<script src="<%=request.getContextPath()%>/js/superfish.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/jquery.ajaxchimp.min.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/js/jquery.magnific-popup.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/owl.carousel.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/jquery.sticky.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/js/jquery.nice-select.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/parallax.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/waypoints.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/jquery.counterup.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/mail-script.js"></script>
+	<script src="<%=request.getContextPath()%>/js/main.js"></script>
+
+
 </body>
 
 </html>

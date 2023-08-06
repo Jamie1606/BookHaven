@@ -47,6 +47,10 @@ public class URL {
 	public static final String topCustomerList = "/admin/topCustomerList.jsp";
 	public static final String bookSales = "/admin/bookSales.jsp";
 	public static final String customersOfBook = "/admin/customersOfBook.jsp";
+	public static final String leastSellingBookList = "/admin/leastSellingBookList.jsp";
+	public static final String lowStockBookList = "/admin/lowStockBookList.jsp";
+	public static final String bestSellingBookList = "/admin/bestSellingBookList.jsp";
+	
 	
 	
 	// authentication servlets
@@ -86,6 +90,9 @@ public class URL {
 	public static final String createMemberServlet = "/CreateMember";
 	public static final String deleteMemberServlet = "/DeleteMember/";
 	public static final String createNewAccountServlet = "/CreateNewAccount";
+	public static final String getProfileDataServlet = "/GetProfileData";
+	public static final String updateProfileServlet = "/UpdateProfile";
+	public static final String deleteAccountServlet = "/DeleteAccount";
 	
 	
 	
@@ -108,12 +115,13 @@ public class URL {
 	
 	
 	// report pages
-	public static final String bestSellingBookList = "/admin/bestSellingBookList.jsp";
-	public static final String leastSellingBookList = "/admin/leastSellingBookList.jsp";
-	public static final String lowStockBookList = "/admin/lowStockBookList.jsp";
 	public static final String bestSellingServlet = "/GetBestSellingBookList";
 	public static final String leastSellingServlet = "/GetLeastSellingBookList";
 	public static final String lowStockBookServlet = "/GetLowStockBookList";
+
+	public static final String getTopCustomerseServlet = "/GetTopCustomers";	
+	public static final String getCustomersByBookIDServlet = "/GetCustomersByBookID";
+
 	
 	
 	
