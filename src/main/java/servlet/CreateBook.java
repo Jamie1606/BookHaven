@@ -9,6 +9,8 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -104,12 +106,16 @@ public class CreateBook extends HttpServlet {
 							book.setStatus("available");
 						}
 						
-						image = Functions.uploadImage(book.getTitle(), book.getISBNNo(), "booknormal", request.getPart("image"), token);
+						LocalDateTime now = LocalDateTime.now();
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+						String formattedDateTime = now.format(formatter);
+						
+						image = Functions.uploadImage(book.getTitle(), formattedDateTime + "_" + book.getISBNNo(), "booknormal", request.getPart("image"), token);
 						if(image == null) {
 							image = URL.defaultBookNormalImage;
 						}
 						
-						image3d = Functions.uploadImage(book.getTitle(), book.getISBNNo(), "book3d", request.getPart("image3d"), token);
+						image3d = Functions.uploadImage(book.getTitle(), formattedDateTime + "_" + book.getISBNNo(), "book3d", request.getPart("image3d"), token);
 						if(image3d == null) {
 							image3d = URL.defaultBook3DImage;
 						}

@@ -10,6 +10,8 @@ package servlet;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import javax.servlet.ServletException;
@@ -77,7 +79,10 @@ public class UpdateMember extends HttpServlet {
 				
 				try {
 						
-					image = Functions.uploadImage(name, LocalDate.now().toString() + "_" + memberid, "member", request.getPart("image"), token);
+					LocalDateTime now = LocalDateTime.now();
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+					String formattedDateTime = now.format(formatter);
+					image = Functions.uploadImage(name, formattedDateTime + "_" + memberid, "member", request.getPart("image"), token);
 					if(image == null) {
 						if(oldimage == null || oldimage.isEmpty()) {
 							image = URL.defaultMemberImage;
