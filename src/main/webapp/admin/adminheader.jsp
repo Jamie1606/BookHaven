@@ -11,6 +11,11 @@
 				return;
 			}
 		}
+		else {
+			request.setAttribute("status", Status.unauthorized);
+			request.getRequestDispatcher(URL.signOut).forward(request, response);
+			return;
+		}
 	}
 	else {
 		request.setAttribute("status", Status.unauthorized);

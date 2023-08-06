@@ -97,19 +97,19 @@
 				data-bs-parent="#sidebar-nav">
 				
 				<li>
-					<a href="<%= request.getContextPath() + URL.bestSellingBookList %>"> 
+					<a href="<%= request.getContextPath() + URL.bestSellingServlet %>"> 
 						<i class="bi bi-circle"></i><span>Best Selling</span>
 					</a>
 				</li>
 				
 				<li>
-					<a href="<%= request.getContextPath() + URL.leastSellingBookList %>"> 
+					<a href="<%= request.getContextPath() + URL.leastSellingServlet %>"> 
 						<i class="bi bi-circle"></i><span>Least Selling</span>
 					</a>
 				</li>
 				
 				<li>
-					<a href="<%= request.getContextPath() + URL.lowStockBookList %>"> 
+					<a href="<%= request.getContextPath() + URL.lowStockBookServlet %>"> 
 						<i class="bi bi-circle"></i><span>Low Stock</span>
 					</a>
 				</li>

@@ -54,8 +54,7 @@ public class GetLowStockBookList extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
-		//String url = URL.lowStockBookList;
-		String url="";
+		String url = URL.lowStockBookList;
 		boolean condition = true;
 		String status = "";
 
@@ -102,15 +101,4 @@ public class GetLowStockBookList extends HttpServlet {
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }
