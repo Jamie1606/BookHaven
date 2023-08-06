@@ -171,6 +171,10 @@
 			}
 		})
 	});
+	
+	function goto(isbn) {
+		location = '<%= request.getContextPath() + URL.bookDetail %>?id=' + isbn;
+	}
 	</script>
 </body>
 </html>

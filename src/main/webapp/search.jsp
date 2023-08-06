@@ -8,11 +8,6 @@
 // Description 	: Search Books/Authors
 %>
 
-<<<<<<< Updated upstream
-<%@ page import="java.util.ArrayList, model.*"%>
-
-=======
-
 <%@ page import="java.util.ArrayList, model.*"%>
 
 
@@ -20,12 +15,6 @@
 
 <%@ page import="java.util.ArrayList, model.*"%>
 
-<%@ page
-	import="java.util.ArrayList, model.Genre, model.Book"%>
-
-
-
->>>>>>> Stashed changes
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 <head>
@@ -115,23 +104,11 @@
 					</div>
 				</div>
 			</div>
-<<<<<<< Updated upstream
-=======
-			
->>>>>>> Stashed changes
 			<div style="padding: 10px 0;" class="homepage-section">
 				<div>
 					<div class="book-div" id="bookResultList"></div>
 				</div>
 			</div>
-<<<<<<< Updated upstream
-=======
-
-
-			<div class="row justify-content-center" style="margin-bottom: 0px;"
-				id="bookResultList"></div>
-
->>>>>>> Stashed changes
 		</div>
 	</section>
 	<!-- End Result Area -->
@@ -166,7 +143,6 @@
 	<script src="<%= request.getContextPath() %>/js/main.js"></script>
 
 	<script>
-	//[INSERT] to "Category" area
 		function search() {
 		    var searchOption = document.getElementById("searchOption").value;
 		    var searchInput = document.getElementById("searchInput").value;
@@ -180,10 +156,6 @@
 		  }
 
 		  function searchAuthor(searchValue) {
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 			  document.getElementById('search-text').innerHTML = "Search Result For Author \"" + searchValue + "\"";
 			  let htmlStr = "";
 			  htmlStr += "<h5 style='font-size: 20px; color: grey;'>Loading ...</h5>";
@@ -197,27 +169,8 @@
 			    	
 			    	console.log(data);
 			    	
-			    	htmlStr = "";
 			    	if(data != undefined && data != null && data.length > 0) {
-<<<<<<< Updated upstream
-=======
-
-			  fetch('<%=request.getContextPath()%>/search/author/'+searchValue, {
-			    	method:'GET'
-			    	})
-			    .then(response=>response.json())
-			    .then(data => {
-			    .then(data=>{
-			    	console.log(data);
-			    	var status=data.status;
-			    	var bookList=data.list;
-			    	var authorList=data.authorList;
-			    	if(status == "success"){
-			    		
-			    		var htmlString="";
-			    		let htmlStr = "";
-
->>>>>>> Stashed changes
+			    		htmlStr = "";
 			    		for(let i = 0; i < data.length; i++) {
 			    			htmlStr += '<div style="margin-bottom: 30px;">';
 							
