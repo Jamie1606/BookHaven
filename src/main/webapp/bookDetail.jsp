@@ -139,13 +139,13 @@
 					<h1 style="font-size: 26px;" id="book-title"></h1>
 					<div class="rating"
 						style="margin-top: 20px; vertical-align: middle;">
-						<span class="star">&#9734;</span> <span class="star">&#9734;</span>
-						<span class="star">&#9734;</span> <span class="star">&#9734;</span>
-						<span class="star">&#9734;</span>&ensp;&ensp; <span
+						<span style="font-size: 25px;" class="star"></span> <span style="font-size: 25px;" class="star"></span>
+						<span style="font-size: 25px;" class="star"></span> <span style="font-size: 25px;" class="star"></span>
+						<span style="font-size: 25px;" class="star"></span>&ensp;&ensp; <span
 							style="font-weight: bold; color: #333; vertical-align: middle; margin-right: 50px;"
 							id="book-rating"></span> <span
 							style="font-size: 23px; vertical-align: middle;">&#9993;</span><span
-							style="color: black; vertical-align: middle; font-size: 15px; margin-left: 15px;">0
+							style="color: black; vertical-align: middle; font-size: 15px; margin-left: 15px;" id="book-review-count">0
 							Review</span>
 					</div>
 					<p style="text-align: justify; margin-top: 15px; font-size: 13px;"
@@ -339,6 +339,15 @@
 					else {
 						$('#book-status').css({"color": "red", "backgroundColor": "rgba(220, 0, 0, 0.2)"});
 					}
+					if(data.ratingcount > 1) {
+						$('#book-review-count').html(data.ratingcount + " Reviews");
+					}
+					else {
+						$('#book-review-count').html(data.ratingcount + " Review");
+					}
+					
+					$('#btn-review').html("Reviews (" + data.ratingcount + ")");
+						
 					$('#book-price').html("$" + data.price.toFixed(2));
 					$('#book-rating').html(data.rating.toFixed(1));
 					$('#book-author').html(authors);
@@ -364,10 +373,12 @@
 					let star = document.getElementsByClassName("star");
 					for(let i = 0; i < star.length; i++) {
 						if(i <= data.rating - 1) {
-							star[i].innerHTML = "&#9733;";
+							star[i].classList.add("full-star");
+							//star[i].innerHTML = "&#9733;";
 						}
 						else {
-							star[i].innerHTML = "&#9734;";
+							star[i].classList.add("empty-star");
+							//star[i].innerHTML = "&#9734;";
 						}
 					}
 				}
@@ -413,8 +424,10 @@
 			})
 			.then(response => response.json())
 			.then(data => {
-				if(data != undefined && data != null) {
-					let htmlStr = "";
+				
+				let htmlStr = "";
+				if(data != undefined && data != null && data.length > 0) {
+					
 					for(let i = 0; i < data.length; i++) {
 						htmlStr += '<div style="display: flex; flex-direction: column; margin-bottom: 25px;">';
 						htmlStr += '<div style="display: flex; flex-direction: row;">';
@@ -438,8 +451,12 @@
 						}
 						htmlStr += '</div>';
 					}
-					$('#book-review').html(htmlStr);
+					
 				}
+				else {
+					htmlStr += '<h5 style="color: red; text-align: center; font-weight: bold; margin-top: 30px;">No review</h5>';
+				}
+				$('#book-review').html(htmlStr);
 			})
 			.catch(error => {
 				alert('Error in retrieving reviews!');

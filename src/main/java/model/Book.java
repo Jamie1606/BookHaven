@@ -23,6 +23,7 @@ public class Book {
 	private Date publicationDate;
 	private int qty;
 	private double rating;
+	private int ratingcount;
 	private int soldqty;
 	private String description;
 	private String image;
@@ -30,6 +31,14 @@ public class Book {
 	private String status;
 	private ArrayList<Author> authors;
 	private ArrayList<Genre> genres;
+	
+	public int getRatingcount() {
+		return ratingcount;
+	}
+
+	public void setRatingcount(int ratingcount) {
+		this.ratingcount = ratingcount;
+	}
 
 	public int getSoldqty() {
 		return soldqty;

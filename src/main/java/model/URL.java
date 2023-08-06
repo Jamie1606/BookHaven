@@ -24,6 +24,10 @@ public class URL {
 	public static final String getTopRated = "/getTopRated/";
 	public static final String imageLink = "http://s3.us-east-1.amazonaws.com/bookhavenjad10/";
 	public static final String getReviewByISBN = "/getReview/";
+	public static final String searchBookByTitle = "/getBook/title/";
+	public static final String searchBookByAuthor = "/getBook/author/";
+	public static final String getAllGenreList = "/getAllGenre";
+	public static final String getBookByGenreID = "/getBookByGenreID/";
 	
 	
 	
@@ -77,6 +81,7 @@ public class URL {
 	public static final String updateMemberServlet = "/UpdateMember";
 	public static final String createMemberServlet = "/CreateMember";
 	public static final String deleteMemberServlet = "/DeleteMember/";
+	public static final String createNewAccountServlet = "/CreateNewAccount";
 	
 	
 	
@@ -94,6 +99,15 @@ public class URL {
 	public static final String completeOrderServlet = "/CompleteOrder/";
 	public static final String cancelOrderServlet = "/CancelOrder/";
 	public static final String getOrderDetailListServlet = "/GetOrderDetailList/";
+	
+	
+	
+	
+	// report pages
+	public static final String leastSellingBookList = "";
+	public static final String lowStockBookList = "";
+	public static final String search = "";
+	public static final String bestSellingBookList = "";
 	
 	
 	

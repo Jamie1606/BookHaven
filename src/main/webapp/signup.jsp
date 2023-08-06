@@ -10,7 +10,6 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="controller.Authentication" %>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -19,8 +18,7 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- Favicon-->
-<link rel="shortcut icon"
-	href="<%=request.getContextPath()%>/img/fav.png">
+
 <!-- Author Meta -->
 <meta name="author" content="codepixer">
 <!-- Meta Description -->
@@ -98,34 +96,35 @@
 	<%@ include file="header.jsp"%>
 
 	<%
-	String success = request.getParameter("success");
-	if(success != null && success.equals("true")) {
-		out.println("<script>alert('Your new account is created!'); location='" + request.getContextPath() + "/signin.jsp';</script>");
-		return;
-	}
-	String errCode = request.getParameter("errCode");
-
-	if (errCode != null) {
-		if (errCode.equals("invalidEmail")) {
-			out.println("<script>alert('Email Already Exists!'); location='" + request.getContextPath() + "/signup.jsp';</script>");
-			return;
+		String status = (String) request.getAttribute("status");
+		if(status != null) {
+			if(status.equals(Status.invalidData)) {
+				out.println("<script>alert('Invalid data!'); location='" + request.getContextPath()
+				+ URL.signUp + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.duplicateEmail)) {
+				out.println("<script>alert('Email already exists!'); location='" + request.getContextPath()
+				+ URL.signUp + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.insertSuccess)) {
+				out.println("<script>alert('Your new account is created!'); location='" + request.getContextPath()
+				+ URL.signIn + "';</script>");
+				return;
+			}
+			else if(status.equals(Status.serverError)) {
+				out.println("<script>alert('Server error!'); location='" + request.getContextPath()
+				+ URL.signUp + "';</script>");
+				return;
+			}
 		}
-		if (errCode.equals("invalid")) {
-			out.println("<script>alert('Invalid Data!!'); location='" + request.getContextPath() + "/signup.jsp';</script>");
-			return;
-		}
-		if (errCode.equals("serverError")) {
-			out.println("<script>alert('Server Error!'); location='" + request.getContextPath() + "/signup.jsp';</script>");
-			return;
-		}
-	}
 	%>
 
-	<form id="signupForm" action="<%=request.getContextPath()%>/signup"
+	<form id="signupForm" action="<%= request.getContextPath() + URL.createNewAccountServlet %>"
 		method="post"
 		style="padding: 100px 0px; display: flex; flex-direction: column; align-items: center;">
 		<h2>SIGN UP FORM</h2>
-		<input type="hidden" name="formName" value="signupForm" />
 		<input type="text" name="name" style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" placeholder="Name" required/>
 		<input placeholder="&#x2709; Email" type="email" id="emailID" name="email" style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" required/>
 		<input placeholder="&#x1F511; Password" type="password" id="passwordID" name="password" style="padding: 8px 10px; margin-top: 30px; letter-spacing: 1.1px; width: 400px;" required/>
@@ -158,7 +157,6 @@
 	<script src="<%=request.getContextPath()%>/js/parallax.min.js"></script>
 	<script src="<%=request.getContextPath()%>/js/waypoints.min.js"></script>
 	<script src="<%=request.getContextPath()%>/js/jquery.counterup.min.js"></script>
-	<script src="<%=request.getContextPath()%>/js/mail-script.js"></script>
 	<script src="<%=request.getContextPath()%>/js/main.js"></script>
 
 	<script>

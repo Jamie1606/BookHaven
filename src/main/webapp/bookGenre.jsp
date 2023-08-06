@@ -8,7 +8,7 @@
 %>
 
 <!-- [IMPORT] -->
-<%@ page import="java.util.ArrayList, model.Genre, model.Book, controller.Authentication"%>
+<%@ page import="java.util.ArrayList, model.*"%>
 
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
@@ -41,7 +41,9 @@
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/nice-select.css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/magnific-popup.css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/bootstrap.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/custom-css/style.css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/main.css">
+<link rel="icon" type="image/png" href="<%= request.getContextPath() %>/img/logo.png">
 <style>
 	#bookResultList h4:hover {
 		color: red;
@@ -76,7 +78,10 @@
 					</div>
 				</div>
 			</div>
-			<div class="row justify-content-center" style="margin-bottom: 0px;" id="bookResultList">
+			<div style="padding: 10px 0;" class="homepage-section">
+				<div>
+					<div class="book-div" id="bookResultList"></div>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -93,8 +98,6 @@
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
 		crossorigin="anonymous"></script>
 	<script src="<%= request.getContextPath() %>/js/vendor/bootstrap.min.js"></script>
-	<script type="text/javascript"
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
 	<script src="<%= request.getContextPath() %>/js/easing.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/hoverIntent.js"></script>
 	<script src="<%= request.getContextPath() %>/js/superfish.min.js"></script>
@@ -106,56 +109,80 @@
 	<script src="<%= request.getContextPath() %>/js/parallax.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/waypoints.min.js"></script>
 	<script src="<%= request.getContextPath() %>/js/jquery.counterup.min.js"></script>
-	<script src="<%= request.getContextPath() %>/js/mail-script.js"></script>
 	<script src="<%= request.getContextPath() %>/js/main.js"></script>
 
 	<script>
 	//[INSERT] to "Category" area
 		$(document).ready(function() {
 			//sends a GET request to the URL
-			fetch('<%=request.getContextPath()%>/genres/all', {
+			fetch('<%= URL.baseURL + URL.getAllGenreList %>', {
 				method: 'GET'
 			})
 			.then(response => response.json())
 			.then(data => {
-				var status = data.status;
-				var genreList = data.list;
-				if(data.status == "success") {
-					var htmlString = "";
-					for(let i = 0; i < genreList.length; i++) {
-						htmlString += "<button onclick='submitGenre(" + genreList[i].genreID + ", \""+ genreList[i].genre +"\")' class='btn btn-light mt-10 ml-10'>"+ genreList[i].genre + "</button>";
+				
+				if(data != undefined && data != null && data.length > 0) {
+					
+					let htmlStr = "";
+					for(let i = 0; i < data.length; i++) {
+						htmlStr += "<button onclick='submitGenre(" + data[i].genreID + ", \""+ data[i].genre +"\")' class='btn btn-light mt-10 ml-10'>"+ data[i].genre + "</button>";
 					}
-					$('#genreList').html(htmlString);
-				}else if(status == "serverError"){
-		    		alert('Server Error!');
-		    	}else if(status == "invalid"){
-		    		alert('Invalid Request or Data!');
-		    	}
+					$('#genreList').html(htmlStr);
+				}
+				else {
+					alert('Server error!');
+				}
+			})
+			.catch(error => {
+				console.log(error);
+				alert("Server error!");
 			})
 		});
 		
 		function submitGenre(id, name) {
-			fetch('<%=request.getContextPath()%>/genres/books/' + id, {
+			let htmlStr = "";
+			document.getElementById('search-text').innerHTML = name + " Books";
+			htmlStr += "<h5 style='font-size: 20px; color: grey;'>Loading ...</h5>";
+			$('#bookResultList').html(htmlStr);
+			
+			
+			fetch('<%= URL.baseURL + URL.getBookByGenreID %>' + id, {
 				method: 'GET'
 			})
 			.then(response => response.json())
 			.then(data => {
-				var status = data.status;
-				var bookList = data.list;
-				if(data.status == "success") {
-					var htmlString = "";
-					for(let i = 0; i < bookList.length; i++) {
-						htmlString += '<div class="col-lg-4 col-md-4 col-sm-12 latest-release" style="text-align: center; padding-bottom: 45px;"><div style="position: relative;"><img style="width: 250px; height: 300px;" class="img-fluid" src="<%=request.getContextPath() %>' + bookList[i].image + '" alt=""><p style="position: absolute; bottom: 0; left: 70px; color: white; background: red; padding: 5px 8px; letter-spacing: 1.1px;">' + bookList[i].status + '</p></div><div style="margin-top: 10px;"><a href="<%= request.getContextPath() %>/bookDetail.jsp?id=' + bookList[i].ISBNNo + '"><h4>' + bookList[i].title + '</h4></a><p></p></div></div>';
+				
+				console.log(data);
+				
+				if(data != undefined && data != null && data.length > 0) {
+					htmlStr = "";
+					for(let i = 0; i < data.length; i++) {
+						htmlStr += '<div>';
+						
+						htmlStr += '<div class="book-img-div" onclick="goto(\'' + data[i].isbnno +'\')"><img src="<%= URL.imageLink %>' + data[i].image + '"><span class="rating">';
+						htmlStr += '<span class="full-star"></span> ' + data[i].rating.toFixed(1) + '</span></div>';
+						
+						title = data[i].title;
+						if(title.length > 30) {
+							title = title.slice(0, 25) + "...";							
+						}
+						htmlStr += '<label class="book-title" onclick="goto(\'' + data[i].isbnno +'\')">' + title + '</label>';
+						htmlStr += '</div>';
 					}
-					if(bookList.length==0){
-						htmlString+="<h5 style='font-size: 20px; color: red;'>No Items Found</h5>";
-					}
-					$('#bookResultList').html(htmlString);
-					document.getElementById('search-text').innerHTML = name + " Books";
-				}else if(status == "serverError"){
-		    		alert('Server Error!');
-		    	}
+					$('#bookResultList').html(htmlStr);
+				}
+				else {
+					htmlStr += "<h5 style='font-size: 20px; color: red;'>No Items Found</h5>";
+				}
 			})
+			.catch(error => {
+				console.log(error);
+				alert("Server error!");
+			})
+		}
+		
+		function goto(isbn) {
+			location = '<%= request.getContextPath() + URL.bookDetail %>?id=' + isbn;
 		}
 	</script>
 </body>
