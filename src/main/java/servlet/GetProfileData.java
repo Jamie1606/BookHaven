@@ -2,7 +2,7 @@
 // Admin No		: 2235022
 // Class		: DIT/FT/2A/02
 // Group		: 10
-// Date			: 4.8.2023
+// Date			: 6.8.2023
 // Description	: get profile data
 
 package servlet;

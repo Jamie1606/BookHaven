@@ -98,19 +98,6 @@
 	}
 
 	ArrayList<Order> orderList = (ArrayList<Order>) request.getAttribute("orderList");
-	/* 	ArrayList<Book> bookList = new ArrayList<Book>();
-		for (Order order : orderList) {
-			ArrayList<OrderItem> orderItemList = order.getOrderitems();
-	for (OrderItem orderItem : orderItemList) {
-		Book book = orderItem.getBook();
-		bookList.add(book);
-	} 
-		}*/
-	/* 	if (bookList == null) {
-			out.println("<script>alert('Server error!');</script>");
-			out.println("<script>location='" + request.getContextPath() + URL.adminHomePage + "';</script>");
-			return;
-		} */
 	%>
 
 	<main id="main" class="main">
@@ -180,7 +167,6 @@
 								</thead>
 								<tbody>
 									<%
-									System.out.print("orderList" + orderList);
 									if (orderList != null) {
 										for (int j = 0; j < orderList.size(); j++) {
 											ArrayList<OrderItem> orderItemList = orderList.get(j).getOrderitems();
