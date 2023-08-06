@@ -60,7 +60,7 @@
 				return;
 			}
 			else if(status.equals(Status.serverError)) {
-				out.println("<script>alert('Server error!'); location='" + request.getContextPath() + URL.search + "';</script>");
+				out.println("<script>alert('Server error!');</script>");
 				return;
 			}
 		}
