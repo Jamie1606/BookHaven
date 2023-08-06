@@ -135,6 +135,7 @@
 										<th scope="col">Phone</th>
 										<th scope="col">Address</th>
 										<th scope="col">Email</th>
+										<th scope="col">Total Purchase</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -147,6 +148,7 @@
 										Date birthDate = memberList.get(i).getBirthDate();
 										String phone = memberList.get(i).getPhone();
 										String email = memberList.get(i).getEmail();
+										Double totalPurchase = memberList.get(i).getTotalPurchase();
 										
 										String lastActive = "";
 										if(memberList.get(i).getLastActive() != null) {
@@ -184,7 +186,7 @@
 										
 										out.println("<td>" + phone + "</td>");
 										out.println("<td>" + address + "</td>");
-										out.println("<td>" + email + "</td>");
+										out.println("<td>" + email + "</td>");out.println("<td>$" + String.format("%.2f", totalPurchase) + "</td>");
 										
 									
 										out.println("</tr>");
@@ -200,6 +202,7 @@
 										<th scope="col">Phone</th>
 										<th scope="col">Address</th>
 										<th scope="col">Email</th>
+										<th scope="col">Total Purchase</th>
 									</tr>
 								</tfoot>
 							</table>
@@ -254,7 +257,9 @@
 			"scrollX": true,
 			"pageLength": 25,
 			"stateSave": true,
-			"colReorder": true
+			"colReorder": true,
+			"searching": false,
+			"paging": false,
 		});
 	</script>
 </body>

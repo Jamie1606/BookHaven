@@ -20,6 +20,15 @@ public class Member {
 	private String password;
 	private String image;
 	private Date lastActive;
+	private double totalPurchase;
+
+	public double getTotalPurchase() {
+		return totalPurchase;
+	}
+
+	public void setTotalPurchase(double totalPurchase) {
+		this.totalPurchase = totalPurchase;
+	}
 
 	public int getMemberID() {
 		return memberID;
