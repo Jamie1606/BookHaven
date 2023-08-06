@@ -3,7 +3,7 @@
 // Class		: DIT/FT/2A/02
 // Group		: 10
 // Date			: 4.8.2023
-// Description	: get member by ID
+// Description	: delete member by ID
 
 package servlet;
 
@@ -51,7 +51,6 @@ public class DeleteMember extends HttpServlet {
 				status = Status.unauthorized;
 				url = URL.signOut;
 
-				System.out.println("..... token .....");
 			}
 			else {
 				try {
@@ -89,8 +88,6 @@ public class DeleteMember extends HttpServlet {
 					else if(resp.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
 						status = Status.unauthorized;
 						url = URL.signOut;
-
-						System.out.println("..... forbitten .....");
 					}
 					else {
 						System.out.println("..... Error in DeleteMember servlet .....");
@@ -102,7 +99,6 @@ public class DeleteMember extends HttpServlet {
 		else {
 			status = Status.unauthorized;
 			url = URL.signOut;
-			System.out.println("..... session .....");
 		}
 			
 		request.setAttribute("status", status);
