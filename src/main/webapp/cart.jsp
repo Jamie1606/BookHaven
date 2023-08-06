@@ -300,10 +300,7 @@
 				</div>
 				<div style="display: flex; flex-direction: column; justify-content: space-between; color: #555; margin-top: 25px;">
 					<label style="font-weight: bold; font-size: 15px;">Delivery Address</label>
-					<input style="padding: 8px 10px; margin-top: 15px; letter-spacing: 1.1px;" type="text"  name="delivery-address" id="delivery-address" placeholder="Address" />
-				</div>
-				<div style="display: flex; color: #555; margin-top: 25px;">
-					<input type="checkbox" id="address-check" onclick="checkAddress()">&nbsp;<label style="margin-bottom: 0px;" for="address-check">Use my address</label>	
+					<input style="padding: 8px 10px; margin-top: 15px; letter-spacing: 1.1px;" type="text" placeholder="Leave blank for default address"  name="delivery-address" id="delivery-address" placeholder="Address" />
 				</div>
 			</form>
 			<button id="btncheckout" onclick="formsubmit()">CHECKOUT</button>
@@ -357,12 +354,6 @@
 	<script src="https://js.stripe.com/v3/"></script>
 
 	<script>				
-	
-		function checkAddress() {
-			let addressCheck = document.getElementById("address-check");
-			document.getElementById("delivery-address").disabled = addressCheck.checked;
-			document.getElementById("delivery-address").focus();
-		}
 		
 		const stripe = Stripe('pk_test_51NYV9WEOz0583OXtxJahhDSkt5M7ODWQMxfkFON63SgRHoD2ZLYRW7JI8Pz1hvLjjIRX7DxXh5jFY2xVyz9ywCLX00WAHJR7Au');
 		const elements = stripe.elements();

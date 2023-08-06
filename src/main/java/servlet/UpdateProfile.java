@@ -23,6 +23,7 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import model.Functions;
+import model.InvalidErrorException;
 import model.Member;
 import model.Password;
 import model.Status;
@@ -112,7 +113,7 @@ public class UpdateProfile extends HttpServlet {
 						LocalDate testBirthDate = tmpBirthDate.toLocalDate();
 						long diff = ChronoUnit.DAYS.between(testBirthDate, LocalDate.now());
 						if(diff < 0) {
-							throw new Error();
+							throw new InvalidErrorException();
 						}
 						
 						member.setBirthDate(tmpBirthDate);
@@ -133,6 +134,11 @@ public class UpdateProfile extends HttpServlet {
 					}
 					
 					member.setImage(image.trim());
+				}
+				catch(InvalidErrorException e) {
+					status = Status.invalidData;
+					System.out.println("..... Invalid member data in UpdateProfile servlet .....");
+					condition = false;
 				}
 				catch(Exception e) {
 					e.printStackTrace();

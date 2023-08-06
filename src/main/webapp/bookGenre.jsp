@@ -153,8 +153,9 @@
 				
 				console.log(data);
 				
+				htmlStr = "";
 				if(data != undefined && data != null && data.length > 0) {
-					htmlStr = "";
+					
 					for(let i = 0; i < data.length; i++) {
 						htmlStr += '<div>';
 						
@@ -168,11 +169,11 @@
 						htmlStr += '<label class="book-title" onclick="goto(\'' + data[i].isbnno +'\')">' + title + '</label>';
 						htmlStr += '</div>';
 					}
-					$('#bookResultList').html(htmlStr);
 				}
 				else {
 					htmlStr += "<h5 style='font-size: 20px; color: red;'>No Items Found</h5>";
 				}
+				$('#bookResultList').html(htmlStr);
 			})
 			.catch(error => {
 				console.log(error);

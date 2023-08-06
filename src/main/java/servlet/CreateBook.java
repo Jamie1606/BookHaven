@@ -32,6 +32,7 @@ import model.Author;
 import model.Book;
 import model.Functions;
 import model.Genre;
+import model.InvalidErrorException;
 import model.Status;
 import model.URL;
 
@@ -131,8 +132,13 @@ public class CreateBook extends HttpServlet {
 						book.setGenres(genreList);
 					}
 					else {
-						throw new Error();
+						throw new InvalidErrorException();
 					}
+				}
+				catch(InvalidErrorException e) {
+					status = Status.invalidData;
+					System.out.println("..... Invalid book data in CreateBook servlet .....");
+					condition = false;
 				}
 				catch(Exception e) {
 					status = Status.invalidData;

@@ -23,6 +23,7 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import model.Functions;
+import model.InvalidErrorException;
 import model.Member;
 import model.Status;
 import model.URL;
@@ -81,7 +82,7 @@ public class CreateMember extends HttpServlet {
 					member.setAddress(address);
 					
 					if(phone.length() > 8) {
-						throw new Error();
+						throw new InvalidErrorException();
 					}
 					member.setPhone(phone.trim());
 					
@@ -90,7 +91,7 @@ public class CreateMember extends HttpServlet {
 						LocalDate testBirthDate = tmpBirthDate.toLocalDate();
 						long diff = ChronoUnit.DAYS.between(testBirthDate, LocalDate.now());
 						if(diff < 0) {
-							throw new Error();
+							throw new InvalidErrorException();
 						}
 						
 						member.setBirthDate(tmpBirthDate);
@@ -111,6 +112,11 @@ public class CreateMember extends HttpServlet {
 					}
 					
 					member.setImage(image.trim());
+				}
+				catch(InvalidErrorException e) {
+					status = Status.invalidData;
+					System.out.println("..... Invalid member data in CreateMember servlet .....");
+					condition = false;
 				}
 				catch(Exception e) {
 					e.printStackTrace();

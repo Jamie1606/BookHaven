@@ -27,6 +27,7 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import model.Book;
+import model.InvalidErrorException;
 import model.Order;
 import model.OrderItem;
 import model.Status;
@@ -72,7 +73,7 @@ public class MakeOrder extends HttpServlet {
 					ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute("cart");
 					
 					if(cart == null || cartQty == null || cart.isEmpty() || cartQty.isEmpty()) {
-						throw new Error();
+						throw new InvalidErrorException();
 					}
 					
 					double total = 0;
@@ -92,6 +93,11 @@ public class MakeOrder extends HttpServlet {
 					order.setGst(8);
 					order.setTotalamount((total * 0.08) + total);
 					order.setOrderstatus("pending");
+				}
+				catch(InvalidErrorException e) {
+					System.out.println("..... Invalid payment in MakeOrder servlet .....");
+					condition = false;
+					status = Status.invalidData;
 				}
 				catch(Exception e) {
 					e.printStackTrace();

@@ -23,7 +23,7 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
-
+import model.InvalidErrorException;
 import model.Status;
 import model.URL;
 
@@ -63,8 +63,13 @@ public class UpdateReviewStatus extends HttpServlet {
 					Integer.parseInt(id);
 					reviewstatus = reviewstatus.trim();
 					if(!reviewstatus.equals("approved") && !reviewstatus.equals("denied")) {
-						throw new Error();
+						throw new InvalidErrorException();
 					}
+				}
+				catch(InvalidErrorException e) {
+					System.out.println(".... Invalid request in UpdateReviewStatus servlet .....");
+					status = Status.invalidRequest;
+					condition = false;
 				}
 				catch(Exception e) {
 					e.printStackTrace();
