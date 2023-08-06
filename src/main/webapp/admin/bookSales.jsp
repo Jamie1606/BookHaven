@@ -101,10 +101,10 @@
 	/* 	ArrayList<Book> bookList = new ArrayList<Book>();
 		for (Order order : orderList) {
 			ArrayList<OrderItem> orderItemList = order.getOrderitems();
-		    for (OrderItem orderItem : orderItemList) {
-		    	Book book = orderItem.getBook();
-		    	bookList.add(book);
-		    } 
+	for (OrderItem orderItem : orderItemList) {
+		Book book = orderItem.getBook();
+		bookList.add(book);
+	} 
 		}*/
 	/* 	if (bookList == null) {
 			out.println("<script>alert('Server error!');</script>");
@@ -135,30 +135,32 @@
 					<div class="card">
 						<div class="card-body">
 							<h5 class="card-title">Book Sales</h5>
-							<h6 class="card-title">
-								Sales History From
+							<h6 class="card-title"
+								style="font-weight: bold; padding-right: 25px;">
+								<span>From</span>
 								<%=request.getAttribute("startDate")%>
-								To
+								<span>To</span>
 								<%=request.getAttribute("endDate")%></h6>
 
-							<form id="dateForm" class="row g-3"
+							<form style="margin-bottom:40px; margin-top:10px; padding:10px 10px 20px 20px; border-radius: 8px;background-color: rgba(108, 93, 212, 0.08);" id="dateForm" class="row g-3"
 								action='<%=request.getContextPath() + URL.getBookSalesServlet%>'
 								method="get" enctype="multipart/form-data">
 								<!-- Start Date input -->
 								<div class="col-md-4">
 									<label for="startID" class="form-label">Start Date</label> <input
-										type="date" class="form-control" name="startDate"
-										id="startID" max="<%=LocalDate.now()%>">
+										type="date" class="form-control" name="startDate" id="startID"
+										max="<%=LocalDate.now()%>" required>
 								</div>
 								<!-- End Date input -->
 								<div class="col-md-4">
 									<label for="endID" class="form-label">End Date</label> <input
-										type="date" class="form-control" name="endDate"
-										id="endID" max="<%=LocalDate.now()%>">
+										type="date" class="form-control" name="endDate" id="endID"
+										max="<%=LocalDate.now()%>" required>
 								</div>
 								<!-- Submit button -->
-								<div class="col-md-4 text-center">
-									<button id="btnSave" type="submit" class="btn btn-primary">Search</button>
+								<div class="col-md-4">
+									<button id="btnSearch" type="submit" class="btn btn-primary"
+										style="width:75%; background-color: #6c5dd4; border: none; color: white; padding: 10px 40px; text-align: center; text-decoration: none; display: inline-block; font-size: 14px; margin: 20px 20px 10px 0px; cursor: pointer; outline: none; border: 1px solid #6c5dd4; background-color: #6c5dd4; font-weight: bold; letter-spacing: 1.1px; border-radius: 10px; box-shadow: 2px 2px 5px 1px #777;">Search</button>
 								</div>
 							</form>
 
@@ -262,7 +264,9 @@
 			"scrollX" : true,
 			"pageLength" : 25,
 			"stateSave" : true,
-			"colReorder" : true
+			"colReorder" : true,
+			"searching" : false,
+			"paging" : false,
 		});
 	</script>
 

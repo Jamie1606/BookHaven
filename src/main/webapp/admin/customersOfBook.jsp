@@ -128,20 +128,33 @@
 						<div class="card-body">
 							<h5 class="card-title">Customers of the book</h5>
 
+							<p style="color: #6c5dd4; 
+                font-size: 16px; font-weight: bold; ">Book Title: </p>
+							<div style="width:100%; ">
 							<select id="searchOption" name="searchOption"
-								style="padding: 5px; margin-bottom: 25px;"> 
+								style="padding: 7px; color: #6c5dd4; margin: 5px 20px 25px 0px; padding: 5px; margin-bottom: 25px; border: 2px solid #6c5dd4; border-radius: 4px; 
+                font-size: 16px;"> 
 								<% if
 								(bookList != null) { 
 								for (int i = 0; i < bookList.size();i++) {
 								String isbn =  bookList.get(i).getISBNNo();
 								String title = bookList.get(i).getTitle();
 										out.println("<td>N/A</td>");
-								out.println("<option value='"+isbn+"'>"+title+"</option>");
+								out.println("<option value='"+isbn+"' style='padding: 8px; font-size: 14px; color: #6c5dd4; background-color: #fff; border-bottom: 1px solid #6c5dd4; font-size: 13px;'>"+title+"</option>");
 								
 								} 
 								} %>
 							</select>
-							<button onclick="getMemberList()">Show Customers</button>
+							<button id="showCustomer" onclick="getMemberList()" style="background-color: #6c5dd4; 
+                border: none;
+                color: white;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                margin: 5px 20px 25px 0px;
+                cursor: pointer;outline: none; border: 1px solid #6c5dd4; background-color: #6c5dd4; font-weight: bold; letter-spacing: 1.1px; border-radius: 10px; box-shadow: 2px 2px 5px 1px #777;">Show Customers</button></div>
 
 
 							<!-- Table with stripped rows -->
@@ -276,7 +289,9 @@
 			"scrollX" : true,
 			"pageLength" : 25,
 			"stateSave" : true,
-			"colReorder" : true
+			"colReorder" : true,
+			"searching": false,
+			"paging": false,
 		});
 	</script>
 
@@ -304,6 +319,15 @@
 			 localStorage.setItem('selectedValue', searchOption);
 			console.log( localStorage.getItem('selectedValue')); 
 		}
+	</script>
+	<script>
+		$(document).ready(function() {
+			$('#showCustomer').click(function(e) {
+				$('#showCustomer').prop('disabled', true);
+				$('#showCustomer').html('Loading...');
+				return true;
+			})	
+		});
 	</script>
 </body>
 

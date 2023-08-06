@@ -40,19 +40,21 @@ import model.URL;
 @WebServlet("/GetBookSales")
 public class GetBookSales extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public GetBookSales() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public GetBookSales() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		String url = URL.bookSales;
@@ -61,78 +63,73 @@ public class GetBookSales extends HttpServlet {
 		String endDate = request.getParameter("endDate");
 		System.out.println(request.getParameter("startDate"));
 		System.out.println(endDate);
-		if(startDate == null || endDate == null) {
+		if (startDate == null || endDate == null) {
 			/*
 			 * LocalDate eDate=LocalDate.now(); LocalDate sDate = eDate.minusDays(7);
 			 * DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); //
 			 * Format the dates startDate = sDate.format(formatter); endDate =
 			 * eDate.format(formatter);
 			 */
-			
+
 			LocalDate currentDate = LocalDate.now();
-	        
-	        // Define the desired format
-	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	        
-	        // Format the current date using the defined format
-	        String formattedDate = currentDate.format(formatter);
+
+			// Define the desired format
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			// Format the current date using the defined format
+			String formattedDate = currentDate.format(formatter);
 
 //			startDate = (new Date()).toString();
 //			endDate = (new Date()).toString();
-	        
-	        startDate = formattedDate;
-	        endDate = formattedDate;
-			request.setAttribute("startDate",startDate);
-			request.setAttribute("endDate",endDate);
-			System.out.println("startDate:"+startDate);
-			System.out.println("endDate:"+endDate);
-			
+
+			startDate = formattedDate;
+			endDate = formattedDate;
+
 		}
-		if(session != null && !session.isNew()) {
+		request.setAttribute("startDate", startDate);
+		request.setAttribute("endDate", endDate);
+		if (session != null && !session.isNew()) {
 			String token = (String) session.getAttribute("token");
-			
-			if(token == null || token.isEmpty()) {
+
+			if (token == null || token.isEmpty()) {
 				status = Status.unauthorized;
 				url = URL.signOut;
-			}
-			else {
+			} else {
 				Client client = ClientBuilder.newClient();
 				WebTarget target = client.target(URL.baseURL).path("getBookByDate").path("{startDate}")
-                        .resolveTemplate("startDate", startDate).path("{endDate}")
-                        .resolveTemplate("endDate", endDate);
+						.resolveTemplate("startDate", startDate).path("{endDate}").resolveTemplate("endDate", endDate);
 				Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
 				invocationBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 				Response resp = invocationBuilder.get();
-				System.out.println(resp.getStatus() );
-				if(resp.getStatus() == Response.Status.OK.getStatusCode()) {	
-					
+				System.out.println(resp.getStatus());
+				if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
+
 					String json = resp.readEntity(String.class);
 					ObjectMapper obj = new ObjectMapper();
-					ArrayList<Order> orderList = obj.readValue(json, new TypeReference<ArrayList<Order>>() {});
-						/*
-						 * for (Order order : orderList) { ArrayList<OrderItem> orderItemList =
-						 * order.getOrderitems(); for (OrderItem orderItem : orderItemList) { Book book
-						 * = orderItem.getBook(); bookList.add(book); }
-						 * //order.setOrderitems(orderItemList); }
-						 */
-						//request.setAttribute("bookList", bookList);
-						request.setAttribute("orderList", orderList);
-						status = Status.servletStatus;
-				}
-				else {
+					ArrayList<Order> orderList = obj.readValue(json, new TypeReference<ArrayList<Order>>() {
+					});
+					/*
+					 * for (Order order : orderList) { ArrayList<OrderItem> orderItemList =
+					 * order.getOrderitems(); for (OrderItem orderItem : orderItemList) { Book book
+					 * = orderItem.getBook(); bookList.add(book); }
+					 * //order.setOrderitems(orderItemList); }
+					 */
+					// request.setAttribute("bookList", bookList);
+					request.setAttribute("orderList", orderList);
+					status = Status.servletStatus;
+				} else {
 					System.out.println("..... Error in GetBookSales servlet .....");
 					status = Status.serverError;
 				}
 			}
-		}
-		else {
+		} else {
 			status = Status.unauthorized;
 			url = URL.signOut;
 		}
-		
+
 		request.setAttribute("status", status);
 		request.getRequestDispatcher(url).forward(request, response);
 		return;
-	
+
 	}
 }
