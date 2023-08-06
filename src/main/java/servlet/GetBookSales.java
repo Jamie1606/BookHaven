@@ -68,9 +68,20 @@ public class GetBookSales extends HttpServlet {
 			 * Format the dates startDate = sDate.format(formatter); endDate =
 			 * eDate.format(formatter);
 			 */
+			
+			LocalDate currentDate = LocalDate.now();
+	        
+	        // Define the desired format
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	        
+	        // Format the current date using the defined format
+	        String formattedDate = currentDate.format(formatter);
 
-			startDate = (new Date()).toString();
-			endDate = (new Date()).toString();
+//			startDate = (new Date()).toString();
+//			endDate = (new Date()).toString();
+	        
+	        startDate = formattedDate;
+	        endDate = formattedDate;
 			request.setAttribute("startDate",startDate);
 			request.setAttribute("endDate",endDate);
 			System.out.println("startDate:"+startDate);
@@ -124,12 +135,4 @@ public class GetBookSales extends HttpServlet {
 		return;
 	
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-
 }

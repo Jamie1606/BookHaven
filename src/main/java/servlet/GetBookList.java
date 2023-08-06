@@ -53,8 +53,9 @@ public class GetBookList extends HttpServlet {
 		}
 		if(session != null && !session.isNew()) {
 			String token = (String) session.getAttribute("token");
+			String role = (String) session.getAttribute("role");
 			
-			if(token == null || token.isEmpty()) {
+			if(token == null || token.isEmpty() || role == null || role.equals("ROLE_MEMBER")) {
 				status = Status.unauthorized;
 				url = URL.signOut;
 			}

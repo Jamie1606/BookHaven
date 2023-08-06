@@ -44,9 +44,6 @@ public class URL {
 	public static final String genreList = "/admin/genreList.jsp";
 	public static final String genreRegistration = "/admin/genreRegistration.jsp";
 	public static final String reviewList = "/admin/reviewList.jsp";
-	public static final String bestSellingBookList = "/admin/bestSellingBookList.jsp";
-	public static final String leastSellingBookList = "/admin/leastSellingBookList.jsp";
-	public static final String lowStockBookList = "/admin/lowStockBookList.jsp";
 	public static final String topCustomerList = "/admin/topCustomerList.jsp";
 	public static final String bookSales = "/admin/bookSales.jsp";
 	public static final String customersOfBook = "/admin/customersOfBook.jsp";
@@ -117,9 +114,6 @@ public class URL {
 	public static final String bestSellingServlet = "/GetBestSellingBookList";
 	public static final String leastSellingServlet = "/GetLeastSellingBookList";
 	public static final String lowStockBookServlet = "/GetLowStockBookList";
-	public static final String getBookSalesServlet = "/GetBookSales";
-	public static final String getTopCustomerseServlet = "/GetTopCustomers";	
-	public static final String getCustomersByBookIDServlet = "/GetCustomersByBookID";
 	
 	
 	
@@ -139,7 +133,6 @@ public class URL {
 	public static final String search = "/search.jsp";
 	public static final String history = "/history.jsp";
 	public static final String cart = "/cart.jsp";
-	public static final String search = "/search.jsp";
 	public static final String bookGenre = "/bookGenre.jsp";
 	public static final String authorDetail = "/authorDetail.jsp";
 	public static final String signUp = "/signup.jsp";
