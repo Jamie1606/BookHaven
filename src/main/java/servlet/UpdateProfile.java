@@ -100,6 +100,11 @@ public class UpdateProfile extends HttpServlet {
 						}
 					}
 					
+					if((currentPassword != null || !currentPassword.isEmpty() || newPassword == null || newPassword.isEmpty()) 
+							|| currentPassword == null || currentPassword.isEmpty() || newPassword != null || !newPassword.isEmpty()) {
+						throw new InvalidErrorException();
+					}
+					
 					if(currentPassword != null && newPassword != null) {
 						currentPassword = currentPassword.trim();
 						newPassword = newPassword.trim();
