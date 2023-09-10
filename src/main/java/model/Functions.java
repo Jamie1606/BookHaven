@@ -9,7 +9,7 @@ package model;
 
 
 
-import javax.servlet.http.Part;
+import jakarta.servlet.http.Part;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
